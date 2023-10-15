@@ -1,85 +1,61 @@
 <script setup lang="ts">
 import { RouterLink, RouterView } from 'vue-router'
-import HelloWorld from './components/HelloWorld.vue'
+import SearchBar from './components/SearchBar.vue';
+import { ref } from 'vue';
+// import { store } from './store'
+
+// let query = ref('')
+
+
 </script>
 
 <template>
   <header>
-    <img alt="Vue logo" class="logo" src="@/assets/logo.svg" width="125" height="125" />
-
     <div class="wrapper">
-      <HelloWorld msg="You did it!" />
+      <div class="nav-center">
+        <a class="brand">
+          <img class="logo" src="./assets/images/cashtokens-logo.png">
+        </a>
+      </div>
 
-      <nav>
-        <RouterLink to="/">Home</RouterLink>
-        <RouterLink to="/about">About</RouterLink>
+      <!-- <SearchBar v-model="query" v-show="$route.name!=='settings'" /> -->
+      <!-- <SearchBar v-model:query="query" v-show="$route.name !== 'settings'" /> -->
+      <SearchBar v-show="$route.name !== 'settings'" />
+
+      <nav class="nav">
+        <div class="nav-center">
+          <div class="tabs">
+            <RouterLink to="/">NFTs</RouterLink>
+            <RouterLink to="/tokens">Tokens</RouterLink>
+            <RouterLink to="/bch">Bitcoin Cash</RouterLink>
+            <RouterLink to="/settings">Settings</RouterLink>
+          </div>
+        </div>
       </nav>
+      <!-- <SearchBar v-model="query" v-show="$route.name !== 'settings'" /> -->
+      <!-- <p>query: {{ store.query }}</p> -->
+
     </div>
   </header>
 
-  <RouterView />
+  <body>
+    <RouterView />
+
+
+  </body>
 </template>
 
 <style scoped>
-header {
-  line-height: 1.5;
-  max-height: 100vh;
+h1 {
+  margin-bottom: 0;
+}
+
+.nav a {
+  align-items: end;
 }
 
 .logo {
-  display: block;
-  margin: 0 auto 2rem;
-}
-
-nav {
-  width: 100%;
-  font-size: 12px;
-  text-align: center;
-  margin-top: 2rem;
-}
-
-nav a.router-link-exact-active {
-  color: var(--color-text);
-}
-
-nav a.router-link-exact-active:hover {
-  background-color: transparent;
-}
-
-nav a {
-  display: inline-block;
-  padding: 0 1rem;
-  border-left: 1px solid var(--color-border);
-}
-
-nav a:first-of-type {
-  border: 0;
-}
-
-@media (min-width: 1024px) {
-  header {
-    display: flex;
-    place-items: center;
-    padding-right: calc(var(--section-gap) / 2);
-  }
-
-  .logo {
-    margin: 0 2rem 0 0;
-  }
-
-  header .wrapper {
-    display: flex;
-    place-items: flex-start;
-    flex-wrap: wrap;
-  }
-
-  nav {
-    text-align: left;
-    margin-left: -1rem;
-    font-size: 1rem;
-
-    padding: 1rem 0;
-    margin-top: 1rem;
-  }
+  max-width: 150px;
+  margin-top: 15px;
 }
 </style>
