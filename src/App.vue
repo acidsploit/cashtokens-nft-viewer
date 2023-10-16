@@ -4,10 +4,6 @@ import SearchBar from './components/SearchBar.vue';
 import { ref } from 'vue';
 import { store } from './store'
 import { QueryType } from './utils';
-
-// let query = ref('')
-
-
 </script>
 
 <template>
@@ -19,8 +15,6 @@ import { QueryType } from './utils';
         </a>
       </div>
 
-      <!-- <SearchBar v-model="query" v-show="$route.name!=='settings'" /> -->
-      <!-- <SearchBar v-model:query="query" v-show="$route.name !== 'settings'" /> -->
       <SearchBar v-show="$route.name !== 'settings'" />
 
       <nav class="nav">
@@ -34,8 +28,6 @@ import { QueryType } from './utils';
           </div>
         </div>
       </nav>
-      <!-- <SearchBar v-model="query" v-show="$route.name !== 'settings'" /> -->
-      <!-- <p>query: {{ store.query }}</p> -->
 
     </div>
   </header>

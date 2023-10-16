@@ -14,6 +14,9 @@ const tokens = ref()
 
 onMounted(async () => {
   console.log("props: " + props.address)
+  if(store.query === ""){
+    store.query = props.address
+  }
   try {
     store.wallet = await Wallet.fromCashaddr(props.address)
     image.value = store.wallet.getTokenDepositQr()
@@ -47,7 +50,7 @@ onMounted(async () => {
     <img v-if="image" :src="image.src" :alt="image.alt" :title="image.title">
 
     <div v-if="store.wallet">{{ store.wallet.tokenaddr }}</div>
-    <div v-if="tokens">NFT ID: {{ tokens }}</div>
+    <div v-if="tokens">TOKEN ID: {{ tokens }}</div>
 
 
   </div>

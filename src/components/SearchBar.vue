@@ -4,15 +4,16 @@
 import { Wallet } from 'mainnet-js'
 import { store } from '../store'
 import {
-    isValidCashAddress,
-    isTokenID,
-    QueryType
+  isValidCashAddress,
+  isTokenID,
+  QueryType
 } from '../utils'
+import { ref } from 'vue'
 
 async function handleSearchQuery(event: Event) {
   let value = (event.target as HTMLInputElement).value
   let isValid = isValidCashAddress(value)
-  if ( isValid === true ) {
+  if (isValid === true) {
     store.query = value
     store.validatedQuery.query = value
     store.validatedQuery.queryType = QueryType.cashaddress
@@ -21,18 +22,20 @@ async function handleSearchQuery(event: Event) {
     store.wallet = null
   }
 
-  if(isTokenID(value)) {
+  if (isTokenID(value)) {
     store.query = value
     store.validatedQuery.query = value
     store.validatedQuery.queryType = QueryType.token
   }
 }
+
 </script>
 
 
 <template>
   <div class="search-box">
-      <input @change="handleSearchQuery" class="search-query" placeholder="search query" />
+    <input @change="handleSearchQuery" id="search-bar" class="search-query" placeholder="search query"
+      :value="store.query" />
   </div>
 </template>
 

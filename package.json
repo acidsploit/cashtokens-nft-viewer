@@ -6,7 +6,7 @@
     "build": "run-p type-check build-only",
     "preview": "vite preview --port 4173",
     "test:unit": "vitest --environment jsdom",
-    "predeploy": "yarn run build",
+    "predeploy": "yarn run build && cp dist/index.html dist/404.html",
     "deploy": "gh-pages -d dist",
     "test:e2e": "start-server-and-test preview http://localhost:4173/ 'cypress open --e2e'",
     "test:e2e:ci": "start-server-and-test preview http://localhost:4173/ 'cypress run --e2e'",
