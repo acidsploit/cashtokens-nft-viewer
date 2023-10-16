@@ -1,0 +1,141 @@
+// import { Buffer } from 'buffer';
+// eslint-disable-next-line
+import { 
+    type CashAddressType,
+    decodeCashAddress, 
+    decodeCashAddressFormatWithoutPrefix, 
+    encodeCashAddress,
+    isHex,
+    hexToBin,
+    binToHex,
+    swapEndianness
+} from '@bitauth/libauth'
+
+export enum QueryType {
+    empty = "EMPTY",
+    cashaddress = "CASH-ADDRESS",
+    tokenaddress = "TOKEN-ADDRESS",
+    token = "TOKEN",
+  }
+
+export function isValidCashAddress(address: string): boolean {
+
+    if (address.slice(0, 12) === 'bitcoincash:') {
+        let decodedCashAddress = decodeCashAddress(address);
+        if (typeof (decodedCashAddress) === 'string') {
+            return false;
+        } else {
+            return true
+        }
+    }
+
+    return false
+}
+
+export function isTokenID(input: string): boolean {
+    if(isHex(input)){
+        let uint8arr = hexToBin(input)
+        console.log(`uint8arr.length: ${uint8arr.length}`)
+        if(uint8arr.length === 32) {
+            return true
+        }
+    }
+
+    return false    
+}
+
+
+// export function validateAddress(address: string, callback: Function) {
+//     // console.log("validateAddress input:", address);
+//     let error;
+//     let encodedCashAddress;
+//     if (address.slice(0, 12) === 'bitcoincash:' || address.slice(0, 13) === 'simpleledger:' || address.slice(0, 8) === 'testnet:') {
+//         let decodedCashAddress = decodeCashAddress(address);
+//         if (typeof (decodedCashAddress) === 'string') {
+//             error = decodedCashAddress;
+//         } else {
+//             encodedCashAddress = encodeCashAddress(decodedCashAddress.prefix, decodedCashAddress.version, decodedCashAddress.hash);
+//         }
+//     } else {
+//         let decodedCashAddress = decodeCashAddressFormatWithoutPrefix(address);
+//         if (typeof (decodedCashAddress) === 'string') {
+//             error = decodedCashAddress;
+//         } else {
+//             encodedCashAddress = encodeCashAddress(decodedCashAddress.prefix, decodedCashAddress.version, decodedCashAddress.hash);
+//         }
+//     }
+
+//     callback(error, encodedCashAddress);
+// }
+
+// export function slpToBchAddress(address) {
+//     let decodedCashAddress = decodeCashAddress(address);
+//     let encodedCashAddress = encodeCashAddress("bitcoincash", decodedCashAddress.version, decodedCashAddress.hash);
+
+//     return encodedCashAddress;
+// }
+
+// export function bchToSlpAddress(address) {
+//     let decodedCashAddress = decodeCashAddress(address);
+//     let encodedCashAddress = encodeCashAddress("simpleledger", decodedCashAddress.version, decodedCashAddress.hash);
+
+//     return encodedCashAddress;
+// }
+
+
+
+// export function sleep(ms) {
+//     return new Promise((resolve) => setTimeout(resolve, ms));
+// }
+
+// export const changeEndianness = (string) => {
+//     if(isHex(string)){
+//         return swapEndianness(string);
+//     } else {
+//         return "error"
+//     }
+    
+// }
+
+
+// /* Convert Uint8 Array to hex and reverse endianness */
+// export const reverseUint8arrIntoHex = (uint8Array) => {
+//     let hex = binToHex(uint8Array)
+//     let reversed = swapEndianness(hex);
+
+//     return reversed;
+// }
+
+
+// /* Reverse endianness of hex string and convert into Uint8 array */
+// export const reverseHexIntoUint8arr = (string) => {
+//     let reversed = swapEndianness(string);
+//     let uint8arr = hexToBin(reversed);
+//     return uint8arr;
+// }
+
+// /**
+//  * 
+//  * @param {*} tx a bchrpc_pb.Transaction()
+//  * @returns sum of outputs value in sats
+//  */
+// export function calcTxValue(tx) {
+//     let value = 0;
+//     tx.getOutputsList().forEach(output => {
+//         value += output.getValue();
+//     });
+
+//     return value;
+// }
+
+
+// /** Convert sats denomination to BCH
+//  * 
+//  * @param {*} sats value as number denominated in satoshis
+//  * @returns value as string denominated in BCH
+//  */
+// export function asBCH(sats) {
+//     let bch = (sats / 100000000).toFixed(8);
+
+//     return bch;
+// }
