@@ -1,9 +1,16 @@
 <script setup lang="ts">
 import { RouterLink, RouterView } from 'vue-router'
-import SearchBar from './components/SearchBar.vue';
+import router from './router'
+import SearchBar from './components/SearchBar.vue'
 import { ref } from 'vue';
 import { store } from './store'
-import { QueryType } from './utils';
+import { QueryType } from './utils'
+
+function handleLogoClick(){
+  router.push('/')
+  store.query = ""
+}
+
 </script>
 
 <template>
@@ -11,7 +18,7 @@ import { QueryType } from './utils';
     <div class="wrapper">
       <div class="nav-center">
         <a class="brand">
-          <img class="logo" src="./assets/images/cashtokens-logo.png">
+          <img @click="handleLogoClick" class="logo" src="./assets/images/cashtokens-logo.png">
         </a>
       </div>
 
@@ -23,7 +30,7 @@ import { QueryType } from './utils';
             <!-- <RouterLink to="/">HOME</RouterLink> -->
             <RouterLink v-if="store.query !== ''" :to="`/nfts/${ store.query }`">NFTs</RouterLink>
             <RouterLink v-if="store.query !== ''" :to="`/tokens/${ store.query }`">Tokens</RouterLink>
-            <RouterLink v-if="store.validatedQuery.queryType === QueryType.cashaddress" :to="`/bch/${ store.query }`">Bitcoin Cash</RouterLink>
+            <RouterLink v-if="store.validatedQuery.queryType === QueryType.cashaddress && store.query !== ''" :to="`/bch/${ store.query }`">Bitcoin Cash</RouterLink>
             <!-- <RouterLink to="/settings">Settings</RouterLink> -->
           </div>
         </div>
