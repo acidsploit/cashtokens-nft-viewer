@@ -32,6 +32,9 @@ async function handleSearchQuery(query: string) {
 
 onMounted(async () => {
   console.log("props: " + props.address)
+  if(store.query === ""){
+    store.query = props.address
+  }
   handleSearchQuery(props.address)
   try {
     store.wallet = await Wallet.fromCashaddr(props.address)

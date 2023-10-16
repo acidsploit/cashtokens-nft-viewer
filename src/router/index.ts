@@ -9,6 +9,7 @@ import NFTsView from '@/views/NFTsView.vue'
 import TokensView from '@/views/TokensView.vue'
 import BCHView from '@/views/BCHView.vue'
 import SettingsView from '@/views/SettingsView.vue'
+import HomeView from '@/views/HomeView.vue'
 
 
 const router = createRouter({
@@ -17,8 +18,7 @@ const router = createRouter({
     {
       path: '/',
       name: 'home',
-      props: true,
-      component: NFTsView
+      component: HomeView
     },
     {
       path: '/nfts/:address',

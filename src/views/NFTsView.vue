@@ -14,6 +14,9 @@ const nfts = ref()
 
 onMounted(async () => {
   console.log("props: " + props.address)
+  if(store.query === ""){
+    store.query = props.address
+  }
   try {
     store.wallet = await Wallet.fromCashaddr(props.address)
     image.value = store.wallet.getTokenDepositQr()

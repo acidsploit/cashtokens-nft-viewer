@@ -34,7 +34,7 @@ async function handleSearchQuery(event: Event) {
 
 <template>
   <div class="search-box">
-    <input @change="handleSearchQuery" id="search-bar" class="search-query" placeholder="search query"
+    <input @change="handleSearchQuery" class="search-query" placeholder="search query"
       :value="store.query" />
   </div>
 </template>
@@ -51,5 +51,6 @@ async function handleSearchQuery(event: Event) {
 .search-query {
   margin-top: 10px;
   max-width: 100%;
+  text-align: center;
 }
 </style>
