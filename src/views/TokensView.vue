@@ -108,11 +108,11 @@ li {
 	counter-increment: list;
 	max-width: 55rem;
 	margin: 2rem auto;
-	padding: 2rem 1rem 1rem;
+	padding: 1rem 1rem 1rem;
 	box-shadow: 0.1rem 0.1rem 1.5rem rgba(0, 0, 0, 0.3);
 	border-radius: 0.25rem;
 	overflow: hidden;
-	background-color: white;
+	background-color: whitesmoke;
 }
 
 li::before {
