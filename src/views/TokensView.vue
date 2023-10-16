@@ -10,7 +10,7 @@ const props = defineProps({
 const image = ref(null as any)
 // const balance = ref<number | BalanceResponse>({})
 const balance = ref(0 as number | undefined)
-const nfts = ref()
+const tokens = ref()
 
 onMounted(async () => {
   console.log("props: " + props.address)
@@ -22,11 +22,11 @@ onMounted(async () => {
       balance.value = balanceResponse.bch
     }
     
-    nfts.value = await store.wallet.getAllNftTokenBalances()
+    tokens.value = await store.wallet.getAllTokenBalances()
 
 
 
-    console.log(nfts.value)
+    console.log(tokens.value)
   } catch (error) { alert(error) }
 })
 
@@ -47,8 +47,17 @@ onMounted(async () => {
     <img v-if="image" :src="image.src" :alt="image.alt" :title="image.title">
 
     <div v-if="store.wallet">{{ store.wallet.tokenaddr }}</div>
-    <div v-if="nfts">{{ nfts }}</div>
+    <div v-if="tokens">NFT ID: {{ tokens }}</div>
 
 
   </div>
 </template> 
+
+<style scoped>
+.wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+</style>

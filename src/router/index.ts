@@ -16,7 +16,14 @@ const router = createRouter({
   routes: [
     {
       path: '/',
+      name: 'home',
+      props: true,
+      component: NFTsView
+    },
+    {
+      path: '/nfts/:address',
       name: 'nfts',
+      props: true,
       component: NFTsView
     },
     {

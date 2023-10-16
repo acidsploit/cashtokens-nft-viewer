@@ -26,7 +26,8 @@ import { QueryType } from './utils';
       <nav class="nav">
         <div class="nav-center">
           <div class="tabs">
-            <RouterLink to="/">NFTs</RouterLink>
+            <!-- <RouterLink to="/">HOME</RouterLink> -->
+            <RouterLink :to="`/nfts/${ store.query }`">NFTs</RouterLink>
             <RouterLink :to="`/tokens/${ store.query }`">Tokens</RouterLink>
             <RouterLink v-if="store.validatedQuery.queryType === QueryType.cashaddress" :to="`/bch/${ store.query }`">Bitcoin Cash</RouterLink>
             <!-- <RouterLink to="/settings">Settings</RouterLink> -->
