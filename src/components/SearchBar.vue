@@ -1,20 +1,38 @@
 <script setup lang="ts">
 // import { ref } from 'vue';
 
+import { Wallet } from 'mainnet-js'
 import { store } from '../store'
+import {
+    isValidCashAddress,
+    isTokenID,
+    QueryType
+} from '../utils'
 
-// let query = ref('')
-// const emit = defineEmits(['userQuery', 'query'])
-// defineProps(['query'])
-// defineEmits(['update:query'])
+async function handleSearchQuery(event: Event) {
+  let value = (event.target as HTMLInputElement).value
+  let isValid = isValidCashAddress(value)
+  if ( isValid === true ) {
+    store.query = value
+    store.validatedQuery.query = value
+    store.validatedQuery.queryType = QueryType.cashaddress
+    store.wallet = await Wallet.fromCashaddr(value)
+  } else {
+    store.wallet = null
+  }
+
+  if(isTokenID(value)) {
+    store.query = value
+    store.validatedQuery.query = value
+    store.validatedQuery.queryType = QueryType.token
+  }
+}
 </script>
 
 
 <template>
   <div class="search-box">
-    <!-- <input :value="query" @input="$emit('update:query', ($event.target as HTMLInputElement).value)" class="search-address"
-      placeholder="search query" /> -->
-    <input v-model="store.query" class="search-address" placeholder="search query" />
+      <input @change="handleSearchQuery" class="search-query" placeholder="search query" />
   </div>
 </template>
 
@@ -27,7 +45,7 @@ import { store } from '../store'
   flex-direction: column;
 }
 
-.search-address {
+.search-query {
   margin-top: 10px;
   max-width: 100%;
 }

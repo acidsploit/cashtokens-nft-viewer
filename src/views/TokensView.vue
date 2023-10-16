@@ -1,31 +1,54 @@
-<script lang="ts">
-import { Wallet } from "mainnet-js";
-import { defineComponent } from "vue";
-export default defineComponent({
-  name: "TokensView",
+<script setup lang="ts">
+import { BalanceResponse, Wallet } from "mainnet-js";
+import { defineComponent, ref, onMounted, onUpdated, type Ref } from "vue";
+import { store } from "../store";
 
-  data(_props) {
-    return {
-      wallet: null as Wallet | null,
-      image: null as any
-    };
-  },
+const props = defineProps({
+  address: { type: String, required: true },
+})
 
-  async mounted() {
-    this.wallet = await Wallet.newRandom();
-    this.image = this.wallet.getDepositQr();
-  },
-});
+const image = ref(null as any)
+// const balance = ref<number | BalanceResponse>({})
+const balance = ref(0 as number | undefined)
+const nfts = ref()
+
+onMounted(async () => {
+  console.log("props: " + props.address)
+  try {
+    store.wallet = await Wallet.fromCashaddr(props.address)
+    image.value = store.wallet.getTokenDepositQr()
+    let balanceResponse = await store.wallet.getBalance()
+    if (typeof(balanceResponse) !== "number") {
+      balance.value = balanceResponse.bch
+    }
+    
+    nfts.value = await store.wallet.getAllNftTokenBalances()
+
+
+
+    console.log(nfts.value)
+  } catch (error) { alert(error) }
+})
+
+// onUpdated(async () => {
+//   console.log("props: " + props.address)
+//   try {
+//     store.wallet = await Wallet.fromCashaddr(props.address);
+//     // image = store.wallet.getDepositQr();
+//     // wallet = store.wallet;
+//     console.log(store.wallet.tokenaddr)
+//   } catch (error) { alert(error) }
+// })
+
 </script>
 
 <template>
-  <header>
-    <img alt="Vue logo" class="logo" src="@/assets/logo.svg" width="125" height="125" />
+  <div class="wrapper">
+    <img v-if="image" :src="image.src" :alt="image.alt" :title="image.title">
 
-    <div class="wrapper">
-      <img v-if="image" :src="image.src" :alt="image.alt" :title="image.title">
+    <div v-if="store.wallet">{{ store.wallet.tokenaddr }}</div>
+    <div v-if="nfts">{{ nfts }}</div>
 
-      <div v-if="wallet">{{ wallet.cashaddr }}</div>
-    </div>
-  </header>
-</template>
+
+  </div>
+</template> 

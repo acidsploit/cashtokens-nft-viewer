@@ -20,13 +20,15 @@ const router = createRouter({
       component: NFTsView
     },
     {
-      path: '/tokens',
+      path: '/tokens/:address',
       name: 'tokens',
+      props: true,
       component: TokensView
     },
     {
-      path: '/bch',
+      path: '/bch/:address',
       name: 'bch',
+      props: true,
       component: BCHView
     },
     {

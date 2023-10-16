@@ -2,7 +2,8 @@
 import { RouterLink, RouterView } from 'vue-router'
 import SearchBar from './components/SearchBar.vue';
 import { ref } from 'vue';
-// import { store } from './store'
+import { store } from './store'
+import { QueryType } from './utils';
 
 // let query = ref('')
 
@@ -26,9 +27,9 @@ import { ref } from 'vue';
         <div class="nav-center">
           <div class="tabs">
             <RouterLink to="/">NFTs</RouterLink>
-            <RouterLink to="/tokens">Tokens</RouterLink>
-            <RouterLink to="/bch">Bitcoin Cash</RouterLink>
-            <RouterLink to="/settings">Settings</RouterLink>
+            <RouterLink :to="`/tokens/${ store.query }`">Tokens</RouterLink>
+            <RouterLink v-if="store.validatedQuery.queryType === QueryType.cashaddress" :to="`/bch/${ store.query }`">Bitcoin Cash</RouterLink>
+            <!-- <RouterLink to="/settings">Settings</RouterLink> -->
           </div>
         </div>
       </nav>
