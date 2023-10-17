@@ -115,6 +115,10 @@ li {
 	background-color: whitesmoke;
 }
 
+li:hover {
+  background-color: white;
+}
+
 li::before {
 	content: '';
 	display: block;
