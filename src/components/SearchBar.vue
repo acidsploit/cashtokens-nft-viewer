@@ -1,6 +1,4 @@
 <script setup lang="ts">
-// import { ref } from 'vue';
-
 import { Wallet } from 'mainnet-js'
 import { store } from '../store'
 import {

@@ -7,9 +7,10 @@ const validatedQuery = {
   queryType: QueryType.empty,
 }
 
-let chaingraphUri: string | null = "https://gql.chaingraph.pat.mn/v1/graphql"
-if (localStorage.getItem("chaingraphuri")){
-  chaingraphUri = localStorage.getItem("chaingraphuri")
+let chaingraphUri: string = "https://gql.chaingraph.pat.mn/v1/graphql"
+let storedChaingraphUri: string | null = localStorage.getItem("chaingraphuri")
+if (typeof storedChaingraphUri === 'string'){
+  chaingraphUri = storedChaingraphUri
 }
 
 export const store = reactive({

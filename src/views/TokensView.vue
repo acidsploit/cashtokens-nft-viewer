@@ -18,6 +18,7 @@ const image = ref(null as any)
 const balance = ref(0 as number | undefined)
 const tokens = ref({} as Object)
 const tokenDetails = ref([] as TokenDetails[])
+const zoom = ref(false)
 
 onMounted(async () => {
   console.log("props: " + props.address)
@@ -39,17 +40,29 @@ onMounted(async () => {
     for (const [key, value] of Object.entries(tokens.value)) {
       // console.log(`${key}: ${value}`);
       try {
-        const authChain = await BCMR.addMetadataRegistryAuthChain({
-        transactionHash: key,
-        followToHead: false
-      })
-      // console.log(authChain)
+        // const authChain = await BCMR.addMetadataRegistryAuthChain({
+        //   transactionHash: key,
+        //   followToHead: true
+        // })
+
+        const authChain = await BCMR.fetchAuthChainFromChaingraph({
+          transactionHash: key,
+          chaingraphUrl: store.chaingraphUrl
+        })
+
+        let httpsUrl = authChain.pop()?.httpsUrl
+        if (typeof httpsUrl !== "undefined") {
+          BCMR.addMetadataRegistryFromUri(httpsUrl)
+        }
+
+        console.log(authChain)
+        console.log(`authChain length: ${authChain.length}`)
       } catch (error) {
-        console.log(error)
+        // console.log(error)
+        console.log("error fetching BCMR for: " + key)
       }
-      
       const info: IdentitySnapshot | undefined = BCMR.getTokenInfo(key);
-      // console.log(info)
+      // const info: IdentitySnapshot | undefined = await store.wallet.getTokenInfo(key)
 
       let detail: TokenDetails = {
         id: key,
@@ -61,23 +74,40 @@ onMounted(async () => {
   } catch (error) { console.log(error) }
 })
 
+function toggleZoom() {
+  zoom.value = !zoom.value
+}
+
 </script>
 
 <template>
   <div class="wrapper">
-    <img v-if="image" :src="image.src" :alt="image.alt" :title="image.title">
+    <img class="qr-img" :class="zoom ? 'big' : 'small'" @click="toggleZoom" v-if="image" :src="image.src" :alt="image.alt" :title="image.title">
     <div v-if="store.wallet">{{ store.wallet.tokenaddr }}</div>
     <ol role="list">
       <li v-for="detail in tokenDetails">
-        <p>{{ detail.BCMR?.name ? detail.BCMR?.name : detail.id  }}</p>
+        <p>{{ detail.BCMR?.name ? detail.BCMR?.name : detail.id }}</p>
         <p class="description">{{ detail.BCMR?.description ? detail.BCMR?.description : "" }}</p>
-        <p>{{ detail.amount / 10 ** (detail.BCMR?.token?.decimals ? detail.BCMR?.token?.decimals : 0) }} {{ detail.BCMR?.token?.symbol ? detail.BCMR?.token?.symbol : "" }}</p>
+        <p class="amount">{{ detail.amount / 10 ** (detail.BCMR?.token?.decimals ? detail.BCMR?.token?.decimals : 0) }} {{
+          detail.BCMR?.token?.symbol ? detail.BCMR?.token?.symbol : "units" }}</p>
       </li>
     </ol>
   </div>
 </template> 
 
 <style scoped>
+
+img.qr-img:hover {
+  cursor: pointer;
+}
+img.small {
+  max-width: 50px;
+  max-height: auto;
+}
+img.big {
+  max-width: 250px;
+  max-height: auto;
+}
 .wrapper {
   display: flex;
   align-items: center;
@@ -93,10 +123,14 @@ p {
   /* word-wrap: break-word; */
 }
 
-.description {
+p.description {
   font-family: monospace;
   font-size: x-small;
   margin-top: 0;
+}
+
+p.amount {
+  font-family: monospace;
 }
 
 ol {
