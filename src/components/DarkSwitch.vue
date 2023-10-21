@@ -2,18 +2,13 @@
 import { ref } from 'vue';
 import { useDark, useToggle } from "@vueuse/core";
 
-// const stateStore = useStateStore();
-const input = ref<null | HTMLElement>(null);
 const isDark = useDark();
 const toggleDark = useToggle(isDark)
-
-
 </script>
 
 <template>
   <div class="f-container">
-    <!-- <input ref="input" v-model="stateStore.darkmode" v-uid type="checkbox" class="d-none" /> -->
-    <input ref="input" id="d-toggle" type="checkbox" class="d-none" />
+    <input id="d-toggle" type="checkbox" class="d-none" />
     <label for="d-toggle" @click="toggleDark()" class="toggle" title="Toggle Dark Mode">
       <svg aria-hidden="true" class="toggle__backdrop" xmlns="http://www.w3.org/2000/svg" fill="none"
         viewBox="0 0 290 228">

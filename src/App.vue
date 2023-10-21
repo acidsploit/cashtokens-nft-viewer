@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { RouterLink, RouterView } from 'vue-router'
-import { useDark, useToggle } from "@vueuse/core";
 
 import { QueryType } from './utils'
 import router from './router'
@@ -10,10 +9,6 @@ import CollectionListView from './views/CollectionListView.vue';
 import SearchBar from './components/SearchBar.vue'
 import FooterView from './views/FooterView.vue';
 import DarkSwitch from './components/DarkSwitch.vue';
-
-const isDark = useDark();
-const toggleDark = useToggle(isDark)
-
 
 function handleLogoClick() {
   router.push('/')
