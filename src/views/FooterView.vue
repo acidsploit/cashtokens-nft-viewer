@@ -2,11 +2,8 @@
 </script>
 
 <template>
-    <h1>Footer</h1>
+    <div class="container">
+        <p>Footer</p>
+    </div>
+    
 </template>
-
-<style scoped>
-h1 {
-    text-align: center;
-}
-</style>

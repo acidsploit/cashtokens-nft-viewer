@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import { RouterLink, RouterView } from 'vue-router'
+import { onMounted, ref } from 'vue';
+
 
 import { QueryType } from './utils'
 import router from './router'
@@ -9,6 +11,9 @@ import CollectionListView from './views/CollectionListView.vue';
 import SearchBar from './components/SearchBar.vue'
 import FooterView from './views/FooterView.vue';
 import DarkSwitch from './components/DarkSwitch.vue';
+
+const cssPrimaryColor = ref(getComputedStyle(document.documentElement).getPropertyValue('--color-primary').slice(1))
+const cssGrey = ref(getComputedStyle(document.documentElement).getPropertyValue('--color-grey').slice(1))
 
 function handleLogoClick() {
   router.push('/')
@@ -29,7 +34,10 @@ function toggleSidebar() {
     <CollectionListView />
   </div>
   <div id="main" class="main">
-    <button id="open-sidebar" @click="toggleSidebar" title="Toggle sidebar"></button>
+    <!-- <button id="open-sidebar" @click="toggleSidebar" title="Toggle sidebar"></button> -->
+    <button type="button" id="open-sidebar" @click="toggleSidebar" class="button clear icon-only">
+      <img :src="`https://icongr.am/feather/menu.svg?size=32&amp;color=${cssGrey}`" alt="icon">
+    </button>
     <div class="header secondary">
       <DarkSwitch />
       <a class="brand">
@@ -37,7 +45,7 @@ function toggleSidebar() {
       </a>
     </div>
 
-    <SearchBar v-show="$route.name !== 'settings'" />
+    <SearchBar v-show="$route.name !== 'settings'" class="secondary" />
 
     <nav class="nav secondary">
       <div class="nav-center">
@@ -57,18 +65,12 @@ function toggleSidebar() {
 
   </div>
 
-  <div class="footer">
+  <div class="footer secondary">
     <FooterView />
   </div>
 </template>
 
 <style scoped>
-.primary{
-  background-color: var(--bg-color);
-}
-.secondary{
-  background-color: var(--bg-secondary-color);
-}
 .logo {
   max-width: 150px;
   margin-top: 15px;

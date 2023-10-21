@@ -1,15 +1,17 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
 import { useDark, useToggle } from "@vueuse/core";
 
-const isDark = useDark();
-const toggleDark = useToggle(isDark)
+const input = ref<null | HTMLElement>(null);
+const _isDark = useDark()
+const toggleDark = useToggle(_isDark);
+const isDark = ref(_isDark.value)
 </script>
 
 <template>
   <div class="f-container">
-    <input id="d-toggle" type="checkbox" class="d-none" />
-    <label for="d-toggle" @click="toggleDark()" class="toggle" title="Toggle Dark Mode">
+    <input ref="input" id="d-toggle"  type="checkbox" v-model="isDark" class="d-none" />
+    <label :for="input?.id" @click="toggleDark()" class="toggle" title="Toggle Dark Mode">
       <svg aria-hidden="true" class="toggle__backdrop" xmlns="http://www.w3.org/2000/svg" fill="none"
         viewBox="0 0 290 228">
         <g class="clouds" clip-path="url(#a)">
