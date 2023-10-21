@@ -5,7 +5,7 @@ import { store } from "../store";
 import type { IdentitySnapshot } from "mainnet-js/dist/module/wallet/bcmr-v2.schema";
 import QrImage from "@/components/QrImage.vue";
 
-type TokenDetails = {
+type TokenDetail = {
   id: string;
   amount: number;
   BCMR: IdentitySnapshot | undefined;
@@ -18,7 +18,7 @@ const props = defineProps({
 const image = ref(null as any)
 const balance = ref(0 as number | undefined)
 const tokens = ref({} as Object)
-const tokenDetails = ref([] as TokenDetails[])
+const tokenDetails = ref([] as TokenDetail[])
 
 onMounted(async () => {
   console.log("props: " + props.address)
@@ -38,7 +38,7 @@ onMounted(async () => {
     console.log(tokens.value)
 
     for (const [key, value] of Object.entries(tokens.value)) {
-      let detail: TokenDetails = {
+      let detail: TokenDetail = {
         id: key,
         amount: value,
         BCMR: undefined
@@ -110,7 +110,6 @@ a.btn {
 .wrapper {
   display: flex;
   align-items: center;
-  justify-content: center;
   flex-direction: column;
 }
 

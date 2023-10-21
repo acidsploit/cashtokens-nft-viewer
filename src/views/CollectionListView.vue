@@ -8,16 +8,21 @@ function toggleSidebar() {
 </script>
 
 <template>
-    <button @click="toggleSidebar" id="close-sidebar" title="Close sidebar"></button>
-    <h1>Collection List</h1>
+    <button @click="toggleSidebar" id="btn-close-sidebar" title="Close sidebar"></button>
+    <h3>Collection List</h3>
 </template>
 
 <style scoped>
-h1 {
+h3 {
     text-align: center;
 }
 
-#close-sidebar {
+#btn-close-sidebar {
   float:right;
+}
+@media only screen and (min-width: 768px) {
+  #btn-close-sidebar {
+    display: none;
+  }
 }
 </style>
