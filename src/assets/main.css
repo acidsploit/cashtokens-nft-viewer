@@ -1,3 +1,23 @@
+/* @import url("../node_modules/chota/dist/chota.css"); */
+
+:root {
+  --color-primary: #da1d50; /* brand color */
+  /* --grid-maxWidth: 108rem; max container width 1080px */
+}
+
+
+* {
+  box-sizing: border-box;
+}
+
+/* Style the body */
+html, body {
+  margin: 0;
+  width: 100%;
+  height: 100%;
+}
+
+
 /* body {
   display: flex;
   place-items: center center;
@@ -23,9 +43,9 @@ a,
   }
 } */
 
-@media only screen and (min-width: 768px) {
+/* @media only screen and (min-width: 768px) {
   html {
     max-width: 40%;
     margin: auto;
   }
-}
+} */

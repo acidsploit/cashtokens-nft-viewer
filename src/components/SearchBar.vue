@@ -41,14 +41,18 @@ async function handleSearchQuery(event: Event) {
 <style scoped>
 .search-box {
   display: flex;
-  align-items: center;
   justify-content: center;
-  flex-direction: column;
 }
 
 .search-query {
   margin-top: 10px;
-  max-width: 100%;
   text-align: center;
+  max-width: 90%;
+}
+
+@media only screen and (min-width: 768px) {
+  .search-query {
+    max-width: 65rem;
+  }
 }
 </style>
