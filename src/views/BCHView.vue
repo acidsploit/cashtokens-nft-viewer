@@ -3,6 +3,7 @@ import { BalanceResponse, Wallet } from "mainnet-js";
 import { defineComponent, ref, onMounted, onUpdated, type Ref } from "vue";
 import { store } from "../store";
 import { QueryType, isTokenID, isValidCashAddress } from "@/utils";
+import QrImage from "@/components/QrImage.vue";
 
 const props = defineProps({
   address: { type: String, required: true },
@@ -10,6 +11,7 @@ const props = defineProps({
 
 const image = ref(null as any)
 const balance = ref(0 as number | undefined)
+const balanceUSD = ref(0 as number | undefined)
 
 async function handleSearchQuery(query: string) {
   let value = query
@@ -42,6 +44,7 @@ onMounted(async () => {
     let balanceResponse = await store.wallet.getBalance()
     if (typeof (balanceResponse) !== "number") {
       balance.value = balanceResponse.bch
+      balanceUSD.value = balanceResponse.usd
     }
   } catch (error) { alert(error) }
 })
@@ -49,10 +52,11 @@ onMounted(async () => {
 
 <template>
   <div class="wrapper">
-    <img v-if="image" :src="image.src" :alt="image.alt" :title="image.title">
+    <!-- <img v-if="image" :src="image.src" :alt="image.alt" :title="image.title"> -->
+    <QrImage v-if="image" :image="image" :default-size="'big'" :allow-zoom="false" />
 
     <div v-if="store.wallet">{{ store.wallet.cashaddr }}</div>
-    <div v-if="store.wallet">BCH: {{ balance }}</div>
+    <div v-if="store.wallet">BCH: {{ balance }} ({{ balanceUSD }} USD)</div>
 
 
   </div>

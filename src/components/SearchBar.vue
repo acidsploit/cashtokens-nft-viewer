@@ -32,7 +32,7 @@ async function handleSearchQuery(event: Event) {
 
 <template>
   <div class="search-box">
-    <input @change="handleSearchQuery" class="search-query" placeholder="search query"
+    <input @change="handleSearchQuery" class="search-query bg-tertiary font-color" placeholder="search query"
       :value="store.query" />
   </div>
 </template>

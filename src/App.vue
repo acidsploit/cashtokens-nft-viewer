@@ -30,7 +30,7 @@ function toggleSidebar() {
 
 <template>
   <!-- <div class="container"> -->
-  <div id="sidebar" class="sidebar">
+  <div id="sidebar" class="sidebar collapsed">
     <CollectionListView />
   </div>
   <div id="main" class="main">
@@ -114,13 +114,20 @@ function toggleSidebar() {
   top: 0;
   z-index: 2;
   background: transparent;
-  width: 30%;
+  width: 90%;
   /* box-shadow: 2px 0 4px rgba(0,0,0,0.5); */
   transition: width .35s;
 }
 
 #sidebar.collapsed {
   width: 0;
+}
+
+
+@media only screen and (min-width: 768px) {
+  #sidebar {
+    width: 30%;
+  }
 }
 
 /* .main {

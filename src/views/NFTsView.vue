@@ -2,6 +2,7 @@
 import { BalanceResponse, Wallet } from "mainnet-js";
 import { defineComponent, ref, onMounted, onUpdated, type Ref } from "vue";
 import { store } from "../store";
+import QrImage from "@/components/QrImage.vue";
 
 const props = defineProps({
   address: { type: String, required: true },
@@ -47,7 +48,7 @@ onMounted(async () => {
 
 <template>
   <div class="wrapper">
-    <img v-if="image" :src="image.src" :alt="image.alt" :title="image.title">
+    <QrImage v-if="image" :image="image" :default-size="'small'" :allow-zoom="true" />
 
     <div v-if="store.wallet">{{ store.wallet.tokenaddr }}</div>
     <div v-if="nfts">NFT ID: {{ nfts }}</div>

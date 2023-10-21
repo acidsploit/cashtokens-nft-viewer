@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import { BCMR, BalanceResponse, Wallet } from "mainnet-js";
-import { defineComponent, ref, onMounted, onUpdated, type Ref, onBeforeUnmount } from "vue";
+import { BCMR, Wallet } from "mainnet-js";
+import { ref, onMounted } from "vue";
 import { store } from "../store";
 import type { IdentitySnapshot } from "mainnet-js/dist/module/wallet/bcmr-v2.schema";
+import QrImage from "@/components/QrImage.vue";
 
 type TokenDetails = {
   id: string;
@@ -18,7 +19,6 @@ const image = ref(null as any)
 const balance = ref(0 as number | undefined)
 const tokens = ref({} as Object)
 const tokenDetails = ref([] as TokenDetails[])
-const zoom = ref(false)
 
 onMounted(async () => {
   console.log("props: " + props.address)
@@ -66,17 +66,11 @@ async function loadBCMRMetaData() {
     detail.BCMR = info
   })
 }
-
-function toggleZoom() {
-  zoom.value = !zoom.value
-}
-
 </script>
 
 <template>
   <div class="wrapper">
-    <img class="qr-img" :class="zoom ? 'big' : 'small'" @click="toggleZoom" v-if="image" :src="image.src" :alt="image.alt"
-      :title="image.title">
+    <QrImage v-if="image" :image="image" :default-size="'small'" :allow-zoom="true" />
     <div v-if="store.wallet">{{ store.wallet.tokenaddr }}</div>
     <!-- <button @click="loadBCMRMetaData">Load BCMR</button> -->
     <fieldset>
@@ -111,23 +105,6 @@ fieldset {
 
 a.btn {
   margin-right: 15px;
-}
-
-img.qr-img {
-  margin-top: 15px;
-}
-img.qr-img:hover {
-  cursor: pointer;
-}
-
-img.small {
-  max-width: 50px;
-  max-height: auto;
-}
-
-img.big {
-  max-width: 250px;
-  max-height: auto;
 }
 
 .wrapper {

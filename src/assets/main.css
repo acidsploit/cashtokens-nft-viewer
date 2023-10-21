@@ -3,6 +3,7 @@
 :root {
   --bg-color: #ffffff;
   --bg-secondary-color: whitesmoke;
+  --bg-tertiary-color: #ffffff;
   --color-primary: #0ac18e;
   --color-lightGrey: #d2d6dd;
   --color-grey: #747681;
@@ -30,17 +31,24 @@ html, body {
 html.dark {
   --bg-color: #0e1621;
   --bg-secondary-color: #182533;
+  --bg-tertiary-color: #1f3d5c;
   --color-primary: #00c3ff;
   --font-color: #f5f5f5;
   --color-grey: #ccc;
   --color-darkGrey: #777;
 }
 
-.primary{
+.primary {
   background-color: var(--bg-color);
 }
-.secondary{
+.secondary {
   background-color: var(--bg-secondary-color);
+}
+.bg-tertiary {
+ background-color: var(--bg-tertiary-color);
+}
+.font-color {
+  color: var(--font-color);
 }
 
 /* body {
