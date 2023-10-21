@@ -16,6 +16,7 @@
   },
   "dependencies": {
     "@bitauth/libauth": "^1.19.1",
+    "@vueuse/core": "^10.5.0",
     "chota": "^0.9.2",
     "mainnet-js": "2.2.4",
     "vue": "^3.2.37",
