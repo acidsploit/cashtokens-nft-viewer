@@ -6,7 +6,7 @@ import QrImage from "@/components/QrImage.vue";
 import type { IdentitySnapshot } from "mainnet-js/dist/module/wallet/bcmr-v2.schema";
 import WalletNav from "@/components/WalletNav.vue";
 
-type NFTDetail = {
+interface NFTDetail {
   id: string;
   amount: number;
   BCMR: IdentitySnapshot | undefined;

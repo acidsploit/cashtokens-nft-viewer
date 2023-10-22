@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { RouterView } from 'vue-router'
-import { useDark } from "@vueuse/core";
+import { RouterView } from "vue-router"
+import { useDark } from "@vueuse/core"
 
 import router from './router'
 import { store } from './stores/store'
@@ -27,29 +27,28 @@ function toggleSidebar() {
 </script>
 
 <template>
-  <header class="bg-secondary">
+  <header class="bg-primary">
     <TopSearchBar />
-
     <button type="button" id="btn-open-sidebar" @click="toggleSidebar" class="button clear icon-only">
       <img :src="`/src/assets/images/menu${isDark ? '-dark' : ''}.svg`" alt="icon">
     </button>
-
     <DarkSwitch />
+      <div class="brand">
+          <img @click="handleLogoClick" class="logo" src="./assets/images/cashtokens-logo.svg">
+          <div class="col-1">
+            <h1>NFT</h1>
+            <h1>Viewer</h1>
+          </div>
+          
+      </div>
 
-    <a class="brand">
-      <img @click="handleLogoClick" class="logo" src="./assets/images/cashtokens-logo.svg">
-    </a>
-
-    <SearchBar v-show="$route.name !== 'settings'" />
-
-    <!-- <WalletNav /> -->
+    <!-- <SearchBar v-show="$route.name !== 'settings'" /> -->
   </header>
 
-  <main>
-    <div id="sidebar" class="sidebar bg-tertiary collapsed">
+  <main class="container">
+    <div id="sidebar" class="sidebar bg-secondary collapsed">
       <CollectionListView />
     </div>
-    <!-- <div class="content bg-primary"> -->
     <div class="content">
       <RouterView />
     </div>
@@ -61,13 +60,47 @@ function toggleSidebar() {
 </template>
 
 <style scoped>
+
+div.content {
+  min-height: 50vmin;
+}
+
+.brand {
+  padding: 10px 0 10px 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.col-1 {
+  text-align: left;
+}
+
+.brand h1 {
+  margin: 0;
+  font-size: 2em;
+  font-weight: 800;
+  line-height: 40px;
+  transform: rotate(-13deg);
+}
+
+@media screen and (max-width: 599px) {
+  .col, [class*="col-"], [class^="col-"] {
+    flex: 0 0 calc((100% / (12/1)) - var(--grid-gutter)) !important;
+  }
+}
+
+
 .logo {
-  max-width: 150px;
-  margin-top: 0px;
+  max-width: 100px;
+  /* margin-top: 15px; */
+}
+
+.brand img {
+  cursor: pointer;
 }
 
 header {
-  padding-bottom: 10px;
   text-align: center;
 }
 
@@ -118,7 +151,11 @@ footer {
     flex: 20%;
     position: inherit;
     height: auto;
-    border-right-style: none;
+    border-style: solid;
+    border-radius: 4px;
+    border-width: 2px;
+    border-color: var(--color-darkGrey);
+    background-color: transparent;
   }
 
   #sidebar.collapsed {
@@ -143,24 +180,4 @@ footer {
     flex: 85%;
   }
 }
-
-/* .sidebar {
-  border-right-color: var(--color-primary);
-  border-right-style: solid;
-  border-right-width: 1px;
-}
-
-#sidebar {
-  height: 100%;
-  overflow: auto;
-}
-
-#sidebar {
-  position: absolute;
-  left: 0;
-  top: 0;
-  z-index: 2;
-  width: 90%;
-  transition: width .35s;
-} */
 </style>
