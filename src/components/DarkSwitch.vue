@@ -115,7 +115,7 @@ const isDark = ref(_isDark.value)
 .f-container {
   position: absolute;
   right: 15px;
-  top: 15px;
+  top: 50px;
   z-index: 1;
 }
 

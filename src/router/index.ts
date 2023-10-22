@@ -10,6 +10,7 @@ import TokensView from '@/views/TokensView.vue'
 import BCHView from '@/views/BCHView.vue'
 import SettingsView from '@/views/SettingsView.vue'
 import HomeView from '@/views/HomeView.vue'
+import NFTCollectionView from '@/views/NFTCollectionView.vue'
 
 
 const router = createRouter({
@@ -25,6 +26,12 @@ const router = createRouter({
       name: 'nfts',
       props: true,
       component: NFTsView
+    },
+    {
+      path: '/collection/:tokenId',
+      name: 'collection',
+      props: true,
+      component: NFTCollectionView
     },
     {
       path: '/tokens/:address',

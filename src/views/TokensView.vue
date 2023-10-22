@@ -80,7 +80,7 @@ async function loadBCMRMetaData() {
       </div>
       <ol role="list">
         <li v-for="detail in tokenDetails">
-          <p>{{ detail.BCMR?.name ? detail.BCMR?.name : detail.id }}</p>
+          <p class="token-id-name">{{ detail.BCMR?.name ? detail.BCMR?.name : detail.id }}</p>
           <p class="description">{{ detail.BCMR?.description ? detail.BCMR?.description : "" }}</p>
           <p class="amount">{{ detail.amount / 10 ** (detail.BCMR?.token?.decimals ? detail.BCMR?.token?.decimals : 0) }}
             {{
@@ -119,6 +119,10 @@ p {
   font-size: 1.5rem;
   color: rgb(70 70 70);
   /* word-wrap: break-word; */
+}
+
+p.token-id-name {
+  word-break: break-all;
 }
 
 p.description {

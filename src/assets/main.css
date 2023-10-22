@@ -18,6 +18,16 @@
   --font-family-mono: monaco, "Consolas", "Lucida Console", monospace;
 }
 
+html.dark {
+  --bg-color: #0e1621;
+  --bg-secondary-color: #182533;
+  --bg-tertiary-color: #1f3d5c;
+  --color-primary: #00c3ff;
+  --font-color: #f5f5f5;
+  --color-grey: #ccc;
+  --color-darkGrey: #777;
+}
+
 * {
   box-sizing: border-box;
 }
@@ -29,14 +39,13 @@ body {
   height: 100%;
 }
 
-html.dark {
-  --bg-color: #0e1621;
-  --bg-secondary-color: #182533;
-  --bg-tertiary-color: #1f3d5c;
-  --color-primary: #00c3ff;
-  --font-color: #f5f5f5;
-  --color-grey: #ccc;
-  --color-darkGrey: #777;
+body {
+  background-color: var(--bg-color);
+  transition: all ease-in-out .3s;
+}
+
+div {
+  transition: all ease-in-out .3s;
 }
 
 .bg-primary {

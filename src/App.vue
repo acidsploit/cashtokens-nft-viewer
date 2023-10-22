@@ -1,19 +1,19 @@
 <script setup lang="ts">
 import { RouterLink, RouterView } from 'vue-router'
 import { onMounted, ref } from 'vue';
-
+import { useDark } from "@vueuse/core";
 
 import { QueryType } from './utils'
 import router from './router'
 import { store } from './store'
 
-import CollectionListView from './views/CollectionListView.vue';
+import CollectionListView from './views/CollectionListView.vue'
 import SearchBar from './components/SearchBar.vue'
-import FooterView from './views/FooterView.vue';
-import DarkSwitch from './components/DarkSwitch.vue';
+import FooterView from './views/FooterView.vue'
+import DarkSwitch from './components/DarkSwitch.vue'
+import TopSearchBar from './components/TopSearchBar.vue'
 
-const cssPrimaryColor = ref(getComputedStyle(document.documentElement).getPropertyValue('--color-primary').slice(1))
-const cssGrey = ref(getComputedStyle(document.documentElement).getPropertyValue('--color-grey').slice(1))
+const isDark = useDark()
 
 function handleLogoClick() {
   router.push('/')
@@ -29,50 +29,48 @@ function toggleSidebar() {
 </script>
 
 <template>
-  <!-- <div class="wrapper"> -->
-  <div class="page">
-    <div class="header bg-secondary">
-      <button type="button" id="btn-open-sidebar" @click="toggleSidebar" class="button clear icon-only">
-        <img :src="`https://icongr.am/feather/menu.svg?size=32&amp;color=${cssGrey}`" alt="icon">
-      </button>
+  <header class="bg-secondary">
+    <TopSearchBar />
 
-      <DarkSwitch />
+    <button type="button" id="btn-open-sidebar" @click="toggleSidebar" class="button clear icon-only">
+      <img :src="`/src/assets/images/menu${isDark ? '-dark' : ''}.svg`" alt="icon">
+    </button>
 
-      <a class="brand">
-        <img @click="handleLogoClick" class="logo" src="./assets/images/cashtokens-logo.svg">
-      </a>
+    <DarkSwitch />
 
-      <SearchBar v-show="$route.name !== 'settings'" />
+    <a class="brand">
+      <img @click="handleLogoClick" class="logo" src="./assets/images/cashtokens-logo.svg">
+    </a>
 
-      <nav class="nav">
-        <div class="nav-center">
-          <div class="tabs">
-            <!-- <RouterLink to="/">HOME</RouterLink> -->
-            <RouterLink v-if="store.query !== ''" :to="`/nfts/${store.query}`">NFTs</RouterLink>
-            <RouterLink v-if="store.query !== ''" :to="`/tokens/${store.query}`">Tokens</RouterLink>
-            <RouterLink v-if="store.validatedQuery.queryType === QueryType.cashaddress && store.query !== ''"
-              :to="`/bch/${store.query}`">Bitcoin Cash</RouterLink>
-            <!-- <RouterLink to="/settings">Settings</RouterLink> -->
-          </div>
+    <SearchBar v-show="$route.name !== 'settings'" />
+
+    <nav class="nav">
+      <div class="nav-center">
+        <div class="tabs">
+          <!-- <RouterLink to="/">HOME</RouterLink> -->
+          <RouterLink v-if="store.query !== ''" :to="`/nfts/${store.query}`">NFTs</RouterLink>
+          <RouterLink v-if="store.query !== ''" :to="`/tokens/${store.query}`">Tokens</RouterLink>
+          <RouterLink v-if="store.validatedQuery.queryType === QueryType.cashaddress && store.query !== ''"
+            :to="`/bch/${store.query}`">Bitcoin Cash</RouterLink>
+          <!-- <RouterLink to="/settings">Settings</RouterLink> -->
         </div>
-      </nav>
-
-    </div>
-
-    <div class="main">
-      <div id="sidebar" class="sidebar bg-tertiary collapsed">
-        <CollectionListView />
       </div>
-      <div class="content bg-primary">
-        <RouterView />
-      </div>
-    </div>
+    </nav>
+  </header>
 
-    <div class="footer bg-secondary">
-      <FooterView />
+  <main>
+    <div id="sidebar" class="sidebar bg-tertiary collapsed">
+      <CollectionListView />
     </div>
+    <!-- <div class="content bg-primary"> -->
+    <div class="content">
+      <RouterView />
+    </div>
+  </main>
 
-  </div>
+  <footer class="bg-secondary">
+    <FooterView />
+  </footer>
 </template>
 
 <style scoped>
@@ -85,23 +83,16 @@ function toggleSidebar() {
   align-items: end;
 }
 
-.header {
-  padding: 10px;
+header {
+  padding-bottom: 10px;
   text-align: center;
-}
-
-.page {
-  display: flex;
-  flex-direction: column;
-  align-items: center stretch;
-  justify-content: center stretch;
 }
 
 .content {
   align-self: center;
 }
 
-.footer {
+footer {
   margin-top: 0px;
   align-self: flex-end stretch;
 }
@@ -129,12 +120,12 @@ function toggleSidebar() {
 #btn-open-sidebar {
   position: absolute;
   left: 0;
-  top: 0;
+  top: 50;
   z-index: 1;
 }
 
 @media only screen and (min-width: 768px) {
-  .main {
+  main {
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
