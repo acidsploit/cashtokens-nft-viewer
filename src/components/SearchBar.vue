@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Wallet } from 'mainnet-js'
-import { store } from '../store'
+import { store } from '../stores/store'
 import {
   isValidCashAddress,
   isTokenID,

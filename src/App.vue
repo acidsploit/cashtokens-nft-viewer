@@ -1,11 +1,9 @@
 <script setup lang="ts">
-import { RouterLink, RouterView } from 'vue-router'
-import { onMounted, ref } from 'vue';
+import { RouterView } from 'vue-router'
 import { useDark } from "@vueuse/core";
 
-import { QueryType } from './utils'
 import router from './router'
-import { store } from './store'
+import { store } from './stores/store'
 
 import CollectionListView from './views/CollectionListView.vue'
 import SearchBar from './components/SearchBar.vue'
@@ -44,18 +42,7 @@ function toggleSidebar() {
 
     <SearchBar v-show="$route.name !== 'settings'" />
 
-    <nav class="nav">
-      <div class="nav-center">
-        <div class="tabs">
-          <!-- <RouterLink to="/">HOME</RouterLink> -->
-          <RouterLink v-if="store.query !== ''" :to="`/nfts/${store.query}`">NFTs</RouterLink>
-          <RouterLink v-if="store.query !== ''" :to="`/tokens/${store.query}`">Tokens</RouterLink>
-          <RouterLink v-if="store.validatedQuery.queryType === QueryType.cashaddress && store.query !== ''"
-            :to="`/bch/${store.query}`">Bitcoin Cash</RouterLink>
-          <!-- <RouterLink to="/settings">Settings</RouterLink> -->
-        </div>
-      </div>
-    </nav>
+    <!-- <WalletNav /> -->
   </header>
 
   <main>
@@ -77,10 +64,6 @@ function toggleSidebar() {
 .logo {
   max-width: 150px;
   margin-top: 0px;
-}
-
-.nav a {
-  align-items: end;
 }
 
 header {

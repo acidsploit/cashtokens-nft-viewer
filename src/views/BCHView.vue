@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import { BalanceResponse, Wallet } from "mainnet-js";
 import { defineComponent, ref, onMounted, onUpdated, type Ref } from "vue";
-import { store } from "../store";
+import { store } from "../stores/store";
 import { QueryType, isTokenID, isValidCashAddress } from "@/utils";
 import QrImage from "@/components/QrImage.vue";
+import WalletNav from "@/components/WalletNav.vue";
 
 const props = defineProps({
   address: { type: String, required: true },
@@ -52,6 +53,7 @@ onMounted(async () => {
 
 <template>
   <div class="wrapper">
+    <WalletNav />
     <!-- <img v-if="image" :src="image.src" :alt="image.alt" :title="image.title"> -->
     <QrImage v-if="image" :image="image" :default-size="'big'" :allow-zoom="false" />
 

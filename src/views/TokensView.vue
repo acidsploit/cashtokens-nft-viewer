@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import { BCMR, Wallet } from "mainnet-js";
 import { ref, onMounted } from "vue";
-import { store } from "../store";
+import { store } from "../stores/store";
 import type { IdentitySnapshot } from "mainnet-js/dist/module/wallet/bcmr-v2.schema";
 import QrImage from "@/components/QrImage.vue";
+import WalletNav from "@/components/WalletNav.vue";
 
 type TokenDetail = {
   id: string;
@@ -70,6 +71,7 @@ async function loadBCMRMetaData() {
 
 <template>
   <div class="wrapper">
+    <WalletNav />
     <QrImage v-if="image" :image="image" :default-size="'small'" :allow-zoom="true" />
     <div v-if="store.wallet">{{ store.wallet.tokenaddr }}</div>
     <!-- <button @click="loadBCMRMetaData">Load BCMR</button> -->

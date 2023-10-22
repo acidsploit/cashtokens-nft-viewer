@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import { BCMR, BalanceResponse, Wallet } from "mainnet-js";
 import { defineComponent, ref, onMounted, onUpdated, type Ref } from "vue";
-import { store } from "../store";
+import { store } from "../stores/store";
 import QrImage from "@/components/QrImage.vue";
 import type { IdentitySnapshot } from "mainnet-js/dist/module/wallet/bcmr-v2.schema";
+import WalletNav from "@/components/WalletNav.vue";
 
 type NFTDetail = {
   id: string;
@@ -76,6 +77,7 @@ async function loadBCMRMetaData() {
 
 <template>
   <div class="wrapper">
+    <WalletNav />
     <QrImage v-if="image" :image="image" :default-size="'small'" :allow-zoom="true" />
     <div v-if="store.wallet">{{ store.wallet.tokenaddr }}</div>
     <fieldset>

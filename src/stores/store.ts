@@ -1,6 +1,6 @@
 import { reactive } from 'vue'
 import type { Wallet } from "mainnet-js";
-import { QueryType } from './utils';
+import { QueryType } from '../utils';
 
 const validatedQuery = {
   query: "",
