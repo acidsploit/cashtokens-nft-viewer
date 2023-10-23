@@ -81,7 +81,7 @@ async function loadBCMRMetaData() {
         <a class="button outline primary" @click="loadBCMRMetaData">Load BCMR Metadata</a>
       </div>
       <ol role="list">
-        <li v-for="detail in tokenDetails">
+        <li v-for="detail in tokenDetails" :key="detail.id">
           <p class="token-id-name">{{ detail.BCMR?.name ? detail.BCMR?.name : detail.id }}</p>
           <p class="description">{{ detail.BCMR?.description ? detail.BCMR?.description : "" }}</p>
           <p class="amount">{{ detail.amount / 10 ** (detail.BCMR?.token?.decimals ? detail.BCMR?.token?.decimals : 0) }}

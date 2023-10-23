@@ -21,7 +21,7 @@ export enum QueryType {
 export function isValidCashAddress(address: string): boolean {
 
     if (address.slice(0, 12) === 'bitcoincash:') {
-        let decodedCashAddress = decodeCashAddress(address);
+        const decodedCashAddress = decodeCashAddress(address);
         if (typeof (decodedCashAddress) === 'string') {
             return false;
         } else {
@@ -34,7 +34,7 @@ export function isValidCashAddress(address: string): boolean {
 
 export function isTokenID(input: string): boolean {
     if(isHex(input)){
-        let uint8arr = hexToBin(input)
+        const uint8arr = hexToBin(input)
         console.log(`uint8arr.length: ${uint8arr.length}`)
         if(uint8arr.length === 32) {
             return true

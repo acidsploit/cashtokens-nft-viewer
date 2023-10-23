@@ -1,11 +1,14 @@
 <script setup lang="ts">
+import WalletNav from "@/components/WalletNav.vue";
+
 </script>
 
 <template>
+    <WalletNav />
     <h1>Search Options</h1>
     <ul>
         <li>
-            Bitcoin Cash Address
+            BitcoinCash Address
         </li>
         <li>
             CashTokens Address

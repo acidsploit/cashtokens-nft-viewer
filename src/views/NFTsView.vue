@@ -1,55 +1,34 @@
 <script setup lang="ts">
 import { BCMR, BalanceResponse, Wallet } from "mainnet-js";
 import { defineComponent, ref, onMounted, onUpdated, type Ref } from "vue";
-import { store } from "../stores/store";
-import QrImage from "@/components/QrImage.vue";
 import type { IdentitySnapshot } from "mainnet-js/dist/module/wallet/bcmr-v2.schema";
 import WalletNav from "@/components/WalletNav.vue";
-
-interface NFTDetail {
-  id: string;
-  amount: number;
-  BCMR: IdentitySnapshot | undefined;
-}
+import { useSearchStore } from "@/stores/search";
+import { storeToRefs } from 'pinia';
+import { useSettingsStore } from "@/stores/settings";
 
 const props = defineProps({
   address: { type: String, required: true },
 })
 
-const image = ref(null as any)
-// const balance = ref<number | BalanceResponse>({})
-const balance = ref(0 as number | undefined)
-const nfts = ref({} as Object)
-const nftDetails = ref([] as NFTDetail[])
+const settings = useSettingsStore()
+
+const searchStore = useSearchStore()
+const {
+  query,
+  validatedQuery,
+  wallet,
+  nftDetails
+} = storeToRefs(searchStore)
 
 onMounted(async () => {
   console.log("props: " + props.address)
-  if (store.query === "") {
-    store.query = props.address
+  console.log("validate query: " + validatedQuery.value.query)
+
+  if (validatedQuery.value.query !== props.address){
+      query.value = props.address
+      await searchStore.search()
   }
-  try {
-    store.wallet = await Wallet.fromCashaddr(props.address)
-    image.value = store.wallet.getTokenDepositQr()
-    let balanceResponse = await store.wallet.getBalance()
-    if (typeof (balanceResponse) !== "number") {
-      balance.value = balanceResponse.bch
-    }
-
-    nfts.value = await store.wallet.getAllNftTokenBalances()
-    // console.log(nfts.value)
-
-    for (const [key, value] of Object.entries(nfts.value)) {
-      let detail: NFTDetail = {
-        id: key,
-        amount: value,
-        BCMR: undefined
-      }
-      nftDetails.value.push(detail)
-    }
-    // console.log(`nftDetails: ${nftDetails.value}`)
-
-
-  } catch (error) { alert(error) }
 })
 
 async function loadBCMRMetaData() {
@@ -57,7 +36,7 @@ async function loadBCMRMetaData() {
     try {
       const authChain = await BCMR.fetchAuthChainFromChaingraph({
         transactionHash: detail.id,
-        chaingraphUrl: store.chaingraphUrl
+        chaingraphUrl: settings.chaingraphUrl
       })
       let httpsUrl = authChain.pop()?.httpsUrl
       if (typeof httpsUrl !== "undefined") {
@@ -78,20 +57,15 @@ async function loadBCMRMetaData() {
 <template>
   <div class="wrapper">
     <WalletNav />
-    <QrImage v-if="image" :image="image" :default-size="'small'" :allow-zoom="true" />
-    <div v-if="store.wallet">{{ store.wallet.tokenaddr }}</div>
+    <div v-if="wallet">{{ wallet.tokenaddr }}</div>
     <fieldset>
       <legend>NFTs</legend>
       <div class="button-box">
         <a class="button outline primary" @click="loadBCMRMetaData">Load BCMR Metadata</a>
       </div>
-      <!-- <div v-if="nfts" class="nft-container">NFT ID: {{ nfts }}</div> -->
-      <!-- <ol role="list">
-        <li class="monospace" v-for="nft in nftDetails">{{ nft.id }}: {{ nft.amount }}</li>
-      </ol> -->
       <ol role="list">
-        <li v-for="detail in nftDetails">
-          <p class="token-id-name">{{ detail.BCMR?.name ? detail.BCMR?.name : detail.id }}</p>
+        <li v-for="detail in nftDetails" :key="detail.id">
+          <p class="token-id-name"> {{ detail.BCMR?.name ? detail.BCMR?.name : detail.id }} </p>
           <p class="description">{{ detail.BCMR?.description ? detail.BCMR?.description : "" }}</p>
           <p class="amount">{{ detail.amount / 10 ** (detail.BCMR?.token?.decimals ? detail.BCMR?.token?.decimals : 0) }}
             {{

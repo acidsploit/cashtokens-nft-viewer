@@ -8,7 +8,7 @@ const validatedQuery = {
 }
 
 let chaingraphUri: string = "https://gql.chaingraph.pat.mn/v1/graphql"
-let storedChaingraphUri: string | null = localStorage.getItem("chaingraphuri")
+const storedChaingraphUri: string | null = localStorage.getItem("chaingraphuri")
 if (typeof storedChaingraphUri === 'string'){
   chaingraphUri = storedChaingraphUri
 }
