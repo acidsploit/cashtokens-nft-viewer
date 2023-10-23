@@ -113,6 +113,7 @@ onMounted(async () => {
 
 .collection-address {
   margin-top: 15px;
+  word-break: break-all;
 }
 
 .container h3 {
