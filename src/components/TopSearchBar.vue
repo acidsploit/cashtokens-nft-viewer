@@ -7,8 +7,10 @@ import {
   isTokenID,
   QueryType
 } from '../utils'
+import { onMounted, onUpdated, ref } from "vue"
 
 const isDark = useDark()
+
 
 async function handleSearchQuery(event: Event) {
   let value = (event.target as HTMLInputElement).value
@@ -32,10 +34,12 @@ async function handleSearchQuery(event: Event) {
 
 <template>
   <div class="search-bar bg-secondary container">
-    <img :src="`/src/assets/images/search${isDark ? '-dark' : ''}.svg`" alt="search">
+    <img v-if="!isDark" src="../assets/images/search.svg" alt="search">
+    <img v-if="isDark" src="../assets/images/search-dark.svg" alt="search">
     <input @change="handleSearchQuery" :value="store.query" class="search-input" placeholder="search by cashaddress or tokenid" />
   </div>
 </template>
+
 
 
 <style scoped>

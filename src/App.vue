@@ -30,7 +30,8 @@ function toggleSidebar() {
   <header class="bg-primary">
     <TopSearchBar />
     <button type="button" id="btn-open-sidebar" @click="toggleSidebar" class="button clear icon-only">
-      <img :src="`/src/assets/images/menu${isDark ? '-dark' : ''}.svg`" alt="icon">
+      <img v-if="!isDark" src="./assets/images/menu.svg" alt="icon">
+      <img v-if="isDark" src="./assets/images/menu-dark.svg" alt="icon">
     </button>
     <DarkSwitch />
       <div class="brand">
