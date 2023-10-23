@@ -102,6 +102,10 @@ main {
   margin-bottom: 50px;
 }
 
+main.container {
+  flex-direction: row;
+}
+
 .content {
   align-self: center;
 }
@@ -146,7 +150,11 @@ footer {
   }
 
   .sidebar {
-    flex: 20%;
+    min-width: 30rem;
+    margin-right: 1rem;
+    /* flex: 20%; */
+    /* flex: 20rem; */
+    flex: 1;
     position: inherit;
     height: auto;
     border-style: solid;
@@ -161,7 +169,8 @@ footer {
   }
 
   .content {
-    flex: 80%;
+    /* flex: 80%; */
+    flex: 5;
   }
 
   #btn-open-sidebar {
@@ -169,7 +178,7 @@ footer {
   }
 }
 
-@media only screen and (min-width: 1200px) {
+/* @media only screen and (min-width: 1200px) {
   .sidebar {
     flex: 15%;
   }
@@ -177,7 +186,7 @@ footer {
   .content {
     flex: 85%;
   }
-}
+} */
 
 @media screen and (max-width: 599px) {
   .col, [class*="col-"], [class^="col-"] {

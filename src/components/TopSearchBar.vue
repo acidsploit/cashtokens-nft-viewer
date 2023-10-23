@@ -88,4 +88,11 @@ button:focus {
   background: transparent;
   color: var(--font-color)
 }
+
+@media only screen and (min-width: 1200px) {
+  .search-form {
+  margin-left: 33rem;
+
+}
+}
 </style>

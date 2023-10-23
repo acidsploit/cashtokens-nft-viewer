@@ -10,8 +10,8 @@ function toggleSidebar() {
 <template>
   <button @click="toggleSidebar" id="btn-close-sidebar" title="Close sidebar"></button>
   <div class="col title">
-    <h3>Collection</h3>
-    <h3>List</h3>
+    <h3>My</h3>
+    <h3>Collections</h3>
   </div>
   <!-- <fieldset>
       <legend>Collection List</legend>
@@ -19,20 +19,19 @@ function toggleSidebar() {
 </template>
 
 <style scoped>
-p {
-  text-align: center;
-}
+
 
 .title {
   padding-top: 15px;
 }
 
 .title h3 {
-  margin: 0;
-  text-align: center;
+  margin-left: 1.7rem;
+  max-width: 5rem;
+  text-align: left;
   font-size: 1.5em;
   font-weight: 800;
-  line-height: 30px;
+  line-height: 1.5rem;
   transform: rotate(-13deg);
 }
 
