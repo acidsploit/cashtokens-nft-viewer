@@ -147,10 +147,12 @@ onMounted(async () => {
   flex-direction: column;
   justify-content: space-between;
   width: 250px;
+  color: var(--color-lightGrey);
   background-color: var(--bg-secondary-color);
   margin: 15px;
   padding: 10px;
   border-radius: 12px;
+  
 }
 
 .nft-card img {

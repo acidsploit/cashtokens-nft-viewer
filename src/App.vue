@@ -85,13 +85,6 @@ div.content {
   transform: rotate(-13deg);
 }
 
-@media screen and (max-width: 599px) {
-  .col, [class*="col-"], [class^="col-"] {
-    flex: 0 0 calc((100% / (12/1)) - var(--grid-gutter)) !important;
-  }
-}
-
-
 .logo {
   max-width: 100px;
   /* margin-top: 15px; */
@@ -103,6 +96,10 @@ div.content {
 
 header {
   text-align: center;
+}
+
+main {
+  margin-bottom: 50px;
 }
 
 .content {
@@ -179,6 +176,12 @@ footer {
 
   .content {
     flex: 85%;
+  }
+}
+
+@media screen and (max-width: 599px) {
+  .col, [class*="col-"], [class^="col-"] {
+    flex: 0 0 calc((100% / (12/1)) - var(--grid-gutter)) !important;
   }
 }
 </style>

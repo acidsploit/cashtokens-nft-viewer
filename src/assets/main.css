@@ -1,8 +1,8 @@
 @import url("../../node_modules/chota/dist/chota.css");
 
 :root {
-  --bg-color: #ffffff;
-  --bg-secondary-color: whitesmoke;
+  --bg-color: #e3e1e0;
+  --bg-secondary-color: #333333;
   --bg-tertiary-color: #ffffff;
   --color-primary: #0ac18e;
   --color-lightGrey: #d2d6dd;
@@ -14,7 +14,7 @@
   --grid-gutter: 2rem;
   --font-size: 1.6rem;
   --font-color: #333333;
-  --font-family-sans: sans-serif;
+  --font-family-sans: 'Poppins';
   --font-family-mono: monaco, "Consolas", "Lucida Console", monospace;
 }
 
