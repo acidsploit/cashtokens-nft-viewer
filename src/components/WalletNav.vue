@@ -15,7 +15,7 @@ const { validatedQuery } = storeToRefs(searchStore)
       <div class="tabs">
         <RouterLink v-if="validatedQuery.query !== ''" :to="`/nfts/${validatedQuery.query}`">NFTs</RouterLink>
         <RouterLink v-if="validatedQuery.query !== ''" :to="`/tokens/${validatedQuery.query}`">Tokens</RouterLink>
-        <RouterLink v-if="validatedQuery.queryType === QueryType.cashaddress && validatedQuery.query !== ''"
+        <RouterLink v-if="false && validatedQuery.queryType === QueryType.cashaddress && validatedQuery.query !== ''"
           :to="`/bch/${validatedQuery.query}`">Bitcoin Cash</RouterLink>
         <!-- <RouterLink :to="`/nfts/${validatedQuery.query}`">NFTs</RouterLink>
         <RouterLink :to="`/tokens/${validatedQuery.query}`">Tokens</RouterLink>

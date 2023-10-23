@@ -1,16 +1,20 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import NFTsView from '@/views/NFTsView.vue'
+import HomeView from '@/views/HomeView.vue'
+
+// import NFTsView from '@/views/NFTsView.vue'
+// import TokensView from '@/views/TokensView.vue'
+// import BCHView from '@/views/BCHView.vue'
+// import SettingsView from '@/views/SettingsView.vue'
+// import NFTCollectionView from '@/views/NFTCollectionView.vue'
+
 // route level code-splitting
 // this generates a separate chunk (About.[hash].js) for this route
 // which is lazy-loaded when the route is visited.
-// const TokensView = () => import('@/views/TokensView.vue')
-// const BCHView = () => import('@/views/BCHView.vue')
-// const SettingsView = () => import('@/views/SettingsView.vue')
-import TokensView from '@/views/TokensView.vue'
-import BCHView from '@/views/BCHView.vue'
-import SettingsView from '@/views/SettingsView.vue'
-import HomeView from '@/views/HomeView.vue'
-import NFTCollectionView from '@/views/NFTCollectionView.vue'
+const TokensView = () => import('@/views/TokensView.vue')
+const NFTsView = () => import('@/views/NFTsView.vue')
+const BCHView = () => import('@/views/BCHView.vue')
+const SettingsView = () => import('@/views/SettingsView.vue')
+const NFTCollectionView = () => import('@/views/NFTCollectionView.vue')
 
 
 const router = createRouter({
@@ -28,7 +32,7 @@ const router = createRouter({
       component: NFTsView
     },
     {
-      path: '/collection/:tokenId',
+      path: '/collection/:address/:tokenId',
       name: 'collection',
       props: true,
       component: NFTCollectionView

@@ -1,22 +1,15 @@
 import { defineStore } from "pinia"
 import { computed, ref } from "vue"
-import { Wallet } from "mainnet-js"
-import type { IdentitySnapshot } from "mainnet-js/dist/module/wallet/bcmr-v2.schema";
+import { BCMR, Wallet } from "mainnet-js"
+import type { IdentitySnapshot, NftType } from "mainnet-js/dist/module/wallet/bcmr-v2.schema";
 
-import  router  from "../router"
+import router from "../router"
 import {
   isValidCashAddress,
   isTokenID,
-  QueryType
+  QueryType,
+  type TokenDetail
 } from '../utils'
-
-
-interface TokenDetail {
-  id: string;
-  amount: number;
-  BCMR: IdentitySnapshot | undefined;
-}
-
 
 
 export const useSearchStore = defineStore('search', () => {
@@ -29,8 +22,6 @@ export const useSearchStore = defineStore('search', () => {
   const wallet = ref(null as Wallet | null)
   const nftDetails = ref([] as TokenDetail[])
   const tokenDetails = ref([] as TokenDetail[])
-  
-
 
   async function search() {
     if (isValidCashAddress(query.value)) {
@@ -38,7 +29,7 @@ export const useSearchStore = defineStore('search', () => {
       validatedQuery.value.queryType = QueryType.cashaddress
       query.value = ""
 
-      router.push("/nfts/" + validatedQuery.value.query)
+      // router.push("/nfts/" + validatedQuery.value.query)
 
       wallet.value = await Wallet.fromCashaddr(validatedQuery.value.query)
 
@@ -52,6 +43,7 @@ export const useSearchStore = defineStore('search', () => {
         }
         nftDetails.value.push(detail)
       }
+      // console.log(JSON.stringify(nftDetails.value))
 
       const tokens = await wallet.value.getAllTokenBalances()
       tokenDetails.value = []
@@ -73,7 +65,53 @@ export const useSearchStore = defineStore('search', () => {
     }
   }
 
-  return { query, validatedQuery, wallet, nftDetails, search }
+  async function loadNftBcmrMetadata(chaingraphUrl: string) {
+    nftDetails.value.forEach(async detail => {
+      try {
+        const authChain = await BCMR.fetchAuthChainFromChaingraph({
+          transactionHash: detail.id,
+          chaingraphUrl: chaingraphUrl,
+          network: 'mainnet'
+        })
+        const httpsUrl = authChain.pop()?.httpsUrl
+        if (typeof httpsUrl !== "undefined") {
+          await BCMR.addMetadataRegistryFromUri(httpsUrl)
+        }
+      } catch (error) {
+        // console.log("error fetching BCMR for: " + detail.id)
+      }
+      const info: IdentitySnapshot | undefined = BCMR.getTokenInfo(detail.id);
+      detail.BCMR = info
+
+      // console.log(`nftinfo: ${JSON.stringify(info, null, 4)}`)
+    })
+  }
+
+  function getNftCollectionById(id: string): TokenDetail | undefined {
+    const result = nftDetails.value.find(detail => {
+      if (detail.id === id) {
+        return true
+      }
+    });
+
+    return result
+  }
+
+  function getNftDetailByCommitment(tokenId: string, commitment: string): NftType | undefined {
+    const collection = getNftCollectionById(tokenId)
+    if (collection?.BCMR?.token?.nfts?.parse) {
+      for (const [type, nftDefinition] of Object.entries(collection.BCMR.token.nfts.parse.types)) {
+        if (type === commitment) {
+          // console.log("nftDetail: " + JSON.stringify(nftDefinition))
+          return nftDefinition
+        }
+      }
+    }
+
+    return undefined
+  }
+
+  return { query, validatedQuery, wallet, nftDetails, tokenDetails, search, loadNftBcmrMetadata, getNftDetailByCommitment, getNftCollectionById }
 
 })
 

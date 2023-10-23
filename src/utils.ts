@@ -10,6 +10,7 @@ import {
     binToHex,
     swapEndianness
 } from '@bitauth/libauth'
+import type { IdentitySnapshot } from 'mainnet-js/dist/module/wallet/bcmr-v2.schema';
 
 export enum QueryType {
     empty = "EMPTY",
@@ -17,6 +18,12 @@ export enum QueryType {
     tokenaddress = "TOKEN-ADDRESS",
     token = "TOKEN",
   }
+
+export interface TokenDetail {
+    id: string;
+    amount: number;
+    BCMR: IdentitySnapshot | undefined;
+}
 
 export function isValidCashAddress(address: string): boolean {
 

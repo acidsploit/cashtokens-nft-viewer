@@ -6,6 +6,8 @@ import WalletNav from "@/components/WalletNav.vue";
 import { useSearchStore } from "@/stores/search";
 import { storeToRefs } from 'pinia';
 import { useSettingsStore } from "@/stores/settings";
+import router from "@/router";
+
 
 const props = defineProps({
   address: { type: String, required: true },
@@ -31,25 +33,14 @@ onMounted(async () => {
   }
 })
 
-async function loadBCMRMetaData() {
-  nftDetails.value.forEach(async detail => {
-    try {
-      const authChain = await BCMR.fetchAuthChainFromChaingraph({
-        transactionHash: detail.id,
-        chaingraphUrl: settings.chaingraphUrl
-      })
-      let httpsUrl = authChain.pop()?.httpsUrl
-      if (typeof httpsUrl !== "undefined") {
-        await BCMR.addMetadataRegistryFromUri(httpsUrl)
-      }
-    } catch (error) {
-      console.log("error fetching BCMR for: " + detail.id)
-    }
-    const info: IdentitySnapshot | undefined = BCMR.getTokenInfo(detail.id);
-    detail.BCMR = info
+function handleCollectionView(id: string){
+  console.log("NFT Collection ID: " + id)
+  router.push("/collection/" + id)
 
-    console.log(`nftinfo: ${JSON.stringify(info, null, 4)}`)
-  })
+}
+
+async function loadBCMRMetaData() {
+  await searchStore.loadNftBcmrMetadata(settings.chaingraphUrl)
 }
 
 </script>
@@ -64,12 +55,13 @@ async function loadBCMRMetaData() {
         <a class="button outline primary" @click="loadBCMRMetaData">Load BCMR Metadata</a>
       </div>
       <ol role="list">
-        <li v-for="detail in nftDetails" :key="detail.id">
+        <li class="nft-collection" v-for="detail in nftDetails" :key="detail.id">
           <p class="token-id-name"> {{ detail.BCMR?.name ? detail.BCMR?.name : detail.id }} </p>
           <p class="description">{{ detail.BCMR?.description ? detail.BCMR?.description : "" }}</p>
           <p class="amount">{{ detail.amount / 10 ** (detail.BCMR?.token?.decimals ? detail.BCMR?.token?.decimals : 0) }}
             {{
               detail.BCMR?.token?.symbol ? detail.BCMR?.token?.symbol : "units" }}</p>
+            <RouterLink :to="`/collection/${wallet?.tokenaddr}/${detail.id}`">View Collection</RouterLink>
         </li>
       </ol>
     </fieldset>
@@ -93,17 +85,9 @@ fieldset {
   justify-content: end;
 }
 
-a.btn {
-  margin-right: 15px;
+li.nft-collection {
+  cursor: pointer;
 }
-
-.nft-container {
-  word-break: break-all;
-}
-
-/* ol {
-  list-style: none;
-} */
 
 p {
   margin: 10px;

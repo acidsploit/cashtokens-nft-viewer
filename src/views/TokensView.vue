@@ -1,52 +1,34 @@
 <script setup lang="ts">
 import { BCMR, Wallet } from "mainnet-js";
 import { ref, onMounted } from "vue";
-import { store } from "../stores/store";
 import type { IdentitySnapshot } from "mainnet-js/dist/module/wallet/bcmr-v2.schema";
-import QrImage from "@/components/QrImage.vue";
 import WalletNav from "@/components/WalletNav.vue";
-
-type TokenDetail = {
-  id: string;
-  amount: number;
-  BCMR: IdentitySnapshot | undefined;
-}
+import { useSearchStore } from "@/stores/search";
+import { storeToRefs } from 'pinia';
+import { useSettingsStore } from "@/stores/settings";
 
 const props = defineProps({
   address: { type: String, required: true },
 })
 
-const image = ref(null as any)
-const balance = ref(0 as number | undefined)
-const tokens = ref({} as Object)
-const tokenDetails = ref([] as TokenDetail[])
+const settings = useSettingsStore()
+
+const searchStore = useSearchStore()
+const {
+  query,
+  validatedQuery,
+  wallet,
+  tokenDetails
+} = storeToRefs(searchStore)
 
 onMounted(async () => {
   console.log("props: " + props.address)
-  if (store.query === "") {
-    store.query = props.address
+  console.log("validate query: " + validatedQuery.value.query)
+
+  if (validatedQuery.value.query !== props.address){
+      query.value = props.address
+      await searchStore.search()
   }
-  try {
-    store.wallet = await Wallet.fromCashaddr(props.address)
-    image.value = store.wallet.getTokenDepositQr()
-    let balanceResponse = await store.wallet.getBalance()
-    if (typeof (balanceResponse) !== "number") {
-      balance.value = balanceResponse.bch
-    }
-
-    tokens.value = await store.wallet.getAllTokenBalances()
-
-    console.log(tokens.value)
-
-    for (const [key, value] of Object.entries(tokens.value)) {
-      let detail: TokenDetail = {
-        id: key,
-        amount: value,
-        BCMR: undefined
-      }
-      tokenDetails.value.push(detail)
-    }
-  } catch (error) { console.log(error) }
 })
 
 async function loadBCMRMetaData() {
@@ -54,7 +36,7 @@ async function loadBCMRMetaData() {
     try {
       const authChain = await BCMR.fetchAuthChainFromChaingraph({
         transactionHash: detail.id,
-        chaingraphUrl: store.chaingraphUrl
+        chaingraphUrl: settings.chaingraphUrl
       })
       let httpsUrl = authChain.pop()?.httpsUrl
       if (typeof httpsUrl !== "undefined") {
@@ -72,9 +54,7 @@ async function loadBCMRMetaData() {
 <template>
   <div class="wrapper">
     <WalletNav />
-    <QrImage v-if="image" :image="image" :default-size="'small'" :allow-zoom="true" />
-    <div v-if="store.wallet">{{ store.wallet.tokenaddr }}</div>
-    <!-- <button @click="loadBCMRMetaData">Load BCMR</button> -->
+    <div v-if="wallet">{{ wallet.tokenaddr }}</div>
     <fieldset>
       <legend>Tokens</legend>
       <div class="button-box">
