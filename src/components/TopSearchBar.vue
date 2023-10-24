@@ -86,7 +86,9 @@ button:focus {
   border: none;
   outline: none;
   background: transparent;
-  color: var(--font-color)
+  /* color: var(--font-color); */
+  color: var(--color-lightGrey);
+
 }
 
 @media only screen and (min-width: 1200px) {

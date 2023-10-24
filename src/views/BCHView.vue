@@ -21,7 +21,9 @@ async function handleSearchQuery(query: string) {
     store.query = value
     store.validatedQuery.query = value
     store.validatedQuery.queryType = QueryType.cashaddress
-    store.wallet = await Wallet.fromCashaddr(value)
+    // store.wallet = await Wallet.fromCashaddr(value)
+    store.wallet = await Wallet.fromTokenaddr(props.address)
+
   } else {
     store.wallet = null
   }
@@ -35,17 +37,18 @@ async function handleSearchQuery(query: string) {
 
 onMounted(async () => {
   console.log("props: " + props.address)
-  if(store.query === ""){
+  if (store.query === "") {
     store.query = props.address
   }
-  handleSearchQuery(props.address)
+  await handleSearchQuery(props.address)
   try {
-    store.wallet = await Wallet.fromCashaddr(props.address)
-    image.value = store.wallet.getDepositQr()
-    let balanceResponse = await store.wallet.getBalance()
+    // store.wallet = await Wallet.fromCashaddr(props.address)
+    // store.wallet = await Wallet.fromTokenaddr(props.address)
+    image.value = store.wallet?.getDepositQr()
+    let balanceResponse = await store.wallet?.getBalance()
     if (typeof (balanceResponse) !== "number") {
-      balance.value = balanceResponse.bch
-      balanceUSD.value = balanceResponse.usd
+      balance.value = balanceResponse?.bch
+      balanceUSD.value = balanceResponse?.usd
     }
   } catch (error) { alert(error) }
 })
@@ -58,6 +61,7 @@ onMounted(async () => {
     <QrImage v-if="image" :image="image" :default-size="'big'" :allow-zoom="false" />
 
     <div v-if="store.wallet">{{ store.wallet.cashaddr }}</div>
+    <div v-if="store.wallet">{{ store.wallet.tokenaddr }}</div>
     <div v-if="store.wallet">BCH: {{ balance }} ({{ balanceUSD }} USD)</div>
 
 

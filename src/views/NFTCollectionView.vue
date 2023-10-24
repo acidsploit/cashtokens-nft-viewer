@@ -3,7 +3,7 @@ import { useSearchStore } from '@/stores/search';
 import type { TokenDetail } from '@/utils';
 import type { UtxoI } from 'mainnet-js/dist/module/interface';
 import type { IdentitySnapshot, NftType } from 'mainnet-js/dist/module/wallet/bcmr-v2.schema';
-import { onMounted, ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import { storeToRefs } from 'pinia';
 import { useSettingsStore } from '@/stores/settings';
 import { BCMR } from 'mainnet-js';
@@ -42,34 +42,34 @@ function getNftDetailByCommitment(tokenId: string, commitment: string): NftType 
 
 onMounted(async () => {
   // if (search.wallet?.tokenaddr !== props.address) {
-    search.query = props.address
-    await search.search()
-    await BCMR.fetchAuthChainFromChaingraph({
-      transactionHash: props.tokenId,
-      chaingraphUrl: settings.chaingraphUrl,
-      network: 'mainnet'
+  search.query = props.address
+  await search.search()
+  await BCMR.fetchAuthChainFromChaingraph({
+    transactionHash: props.tokenId,
+    chaingraphUrl: settings.chaingraphUrl,
+    network: 'mainnet'
+  })
+    .then(async (authChain) => {
+      const httpsUrl = authChain.pop()?.httpsUrl
+      if (typeof httpsUrl !== "undefined") {
+        await BCMR.addMetadataRegistryFromUri(httpsUrl)
+          .then(() => {
+            tokenInfo.value = BCMR.getTokenInfo(props.tokenId);
+          })
+      }
     })
-      .then(async (authChain) => {
-        const httpsUrl = authChain.pop()?.httpsUrl
-        if (typeof httpsUrl !== "undefined") {
-          await BCMR.addMetadataRegistryFromUri(httpsUrl)
-            .then(() => {
-              tokenInfo.value = BCMR.getTokenInfo(props.tokenId);
-            })
-        }
-      })
   // }
 
   nftBalance.value = search.wallet ? await search.wallet.getNftTokenBalance(props.tokenId) : 0
   nftUtxos.value = search.wallet ? await search.wallet.getTokenUtxos(props.tokenId) : []
-  console.log("nftUtxos: " + nftUtxos.value)
+  // console.log("nftUtxos: " + nftUtxos.value)
 
   nftUtxos.value.forEach(nft => {
     if (nft.token?.tokenId && nft.token?.commitment) {
-      console.log("FILTERED NFTS")
+      // console.log("FILTERED NFTS")
       let nftType = getNftDetailByCommitment(nft.token.tokenId, nft.token.commitment)
       if (nftType) {
-        console.log(nftType)
+        // console.log(nftType)
         nftList.value.push({
           id: nft.token.tokenId,
           commitment: nft.token.commitment,
@@ -79,16 +79,23 @@ onMounted(async () => {
     }
   });
 })
+
+const collectionName = computed(() => {
+  console.log(props.tokenId)
+  console.log(`${props.tokenId.slice(0, 4)}...${props.tokenId.slice(-4)}`)
+  return tokenInfo.value ? tokenInfo.value.name : `${props.tokenId.slice(0, 4)}...${props.tokenId.slice(-4)}`
+})
 </script>
 
 <template>
   <div class="container">
     <div class="collection-title">
-      <h3 class="collection-name">{{ tokenInfo ? tokenInfo.name :
-        `${props.tokenId.slice(0, 4)}...${props.tokenId.slice(-4)}` }}</h3>
+      <!-- <h3 class="collection-name">{{ tokenInfo ? tokenInfo.name :
+        `${props.tokenId.slice(0, 4)}...${props.tokenId.slice(-4)}` }}</h3> -->
+        <h3 class="collection-name">{{ collectionName }}</h3>
       <div class="collection-address">
         <div>On address: {{ props.address }}</div>
-        <div>Child NFTs {{ nftBalance }}</div>
+        <div>Child NFTs: {{ nftBalance }}</div>
       </div>
     </div>
 
@@ -153,7 +160,7 @@ onMounted(async () => {
   margin: 15px;
   padding: 10px;
   border-radius: 12px;
-  
+
 }
 
 .nft-card img {

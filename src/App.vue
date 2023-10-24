@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { RouterView } from "vue-router"
 import { useDark } from "@vueuse/core"
+import { ModalsContainer } from 'vue-final-modal'
+
 
 import router from './router'
 import { store } from './stores/store'
@@ -47,7 +49,7 @@ function toggleSidebar() {
   </header>
 
   <main class="container">
-    <div id="sidebar" class="sidebar bg-secondary collapsed">
+    <div id="sidebar" class="sidebar bg-primary collapsed">
       <CollectionListView />
     </div>
     <div class="content">
