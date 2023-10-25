@@ -6,35 +6,55 @@ import WalletNav from "@/components/WalletNav.vue";
 import { useSearchStore } from "@/stores/search";
 import { storeToRefs } from 'pinia';
 import { useSettingsStore } from "@/stores/settings";
+import type { TokenMetadata } from "@/utils";
+
+export interface NFTDetail extends TokenMetadata {
+  // id: string;
+  amount: number;
+  // BCMR: IdentitySnapshot | undefined;
+}
 
 const props = defineProps({
   address: { type: String, required: true },
 })
 
 const settings = useSettingsStore()
-
 const searchStore = useSearchStore()
 const {
   query,
   validatedQuery,
   wallet,
-  nftDetails
+  nftMetadata,
 } = storeToRefs(searchStore)
+
+const nftDetails = ref([] as NFTDetail[])
+
+async function loadNftGroupData() {
+  nftMetadata.value.forEach(async (nft) => {
+    await wallet.value?.getNftTokenBalance(nft.id).then((amount) => {
+      let nftDetail = {
+        id: nft.id,
+        amount: amount,
+        BCMR: nft.BCMR
+      }
+      nftDetails.value.push(nftDetail)
+    })
+  })
+}
 
 onMounted(async () => {
   console.log("props: " + props.address)
   console.log("validate query: " + validatedQuery.value.query)
 
-  if (validatedQuery.value.query !== props.address){
-      query.value = props.address
-      await searchStore.search()
+  if (validatedQuery.value.query !== props.address) {
+    query.value = props.address
+    await searchStore.search().then(async () => {
+      await loadNftGroupData()
+    })
+  } else {
+    await loadNftGroupData()
   }
 })
-
-async function loadBCMRMetaData() {
-  await searchStore.loadNftBcmrMetadata(settings.chaingraphUrl)
-}
-
 </script>
 
 <template>
@@ -44,7 +64,7 @@ async function loadBCMRMetaData() {
     <fieldset>
       <legend>NFTs</legend>
       <div class="button-box">
-        <a class="button outline primary" @click="loadBCMRMetaData">Load BCMR Metadata</a>
+        <!-- <a class="button outline primary" @click="loadBCMRMetaData">Load BCMR Metadata</a> -->
       </div>
       <ol role="list">
         <li class="nft-collection" v-for="detail in nftDetails" :key="detail.id">
@@ -53,7 +73,7 @@ async function loadBCMRMetaData() {
           <p class="amount">{{ detail.amount / 10 ** (detail.BCMR?.token?.decimals ? detail.BCMR?.token?.decimals : 0) }}
             {{
               detail.BCMR?.token?.symbol ? detail.BCMR?.token?.symbol : "units" }}</p>
-            <RouterLink :to="`/collection/${wallet?.tokenaddr}/${detail.id}`">View Collection</RouterLink>
+          <RouterLink :to="`/collection/${wallet?.tokenaddr}/${detail.id}`">View Collection</RouterLink>
         </li>
       </ol>
     </fieldset>

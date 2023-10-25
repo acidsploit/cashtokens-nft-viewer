@@ -21,7 +21,7 @@ export enum QueryType {
     token = "TOKEN",
   }
 
-export interface TokenDetail {
+export interface TokenMetadata {
     id: string;
     BCMR: IdentitySnapshot | undefined;
 }

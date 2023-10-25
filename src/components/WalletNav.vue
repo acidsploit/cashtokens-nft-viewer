@@ -5,7 +5,7 @@ import { QueryType } from '../utils'
 import { storeToRefs } from 'pinia';
 
 const searchStore = useSearchStore()
-const { validatedQuery } = storeToRefs(searchStore)
+const { validatedQuery, nftMetadata, tokenMetadata } = storeToRefs(searchStore)
 
 </script>
 
@@ -13,11 +13,11 @@ const { validatedQuery } = storeToRefs(searchStore)
   <nav class="nav">
     <div class="nav-center">
       <div class="tabs">
-        <RouterLink v-if="validatedQuery.query !== ''" :to="`/nfts/${validatedQuery.query}`">NFTs</RouterLink>
-        <RouterLink v-if="validatedQuery.query !== ''" :to="`/tokens/${validatedQuery.query}`">Tokens</RouterLink>
+        <RouterLink v-if="validatedQuery.query !== '' && nftMetadata.length !== 0" :to="`/nfts/${validatedQuery.query}`">NFTs</RouterLink>
+        <RouterLink v-if="validatedQuery.query !== '' && tokenMetadata.length !== 0" :to="`/tokens/${validatedQuery.query}`">Tokens</RouterLink>
         <!-- <RouterLink v-if="false && validatedQuery.queryType === QueryType.cashaddress && validatedQuery.query !== ''"
           :to="`/bch/${validatedQuery.query}`">Bitcoin Cash</RouterLink> -->
-        <RouterLink v-if="validatedQuery.queryType === QueryType.cashaddress && validatedQuery.query !== ''"
+        <RouterLink v-if="validatedQuery.queryType === QueryType.address && validatedQuery.query !== ''"
           :to="`/bch/${validatedQuery.query}`">Bitcoin Cash</RouterLink>
         <!-- <RouterLink :to="`/nfts/${validatedQuery.query}`">NFTs</RouterLink>
         <RouterLink :to="`/tokens/${validatedQuery.query}`">Tokens</RouterLink>

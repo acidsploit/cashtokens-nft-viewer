@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useSearchStore } from '@/stores/search';
-import type { TokenDetail } from '@/utils';
+import type { TokenMetadata } from '@/utils';
 import type { UtxoI } from 'mainnet-js/dist/module/interface';
 import type { IdentitySnapshot, NftType } from 'mainnet-js/dist/module/wallet/bcmr-v2.schema';
 import { computed, onMounted, ref } from 'vue';
@@ -38,6 +38,10 @@ function getNftDetailByCommitment(tokenId: string, commitment: string): NftType 
   }
 
   return undefined
+}
+
+async function loadNftCardData() {
+  
 }
 
 onMounted(async () => {
