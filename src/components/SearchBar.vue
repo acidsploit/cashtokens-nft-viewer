@@ -6,7 +6,6 @@ import {
   isTokenID,
   QueryType
 } from '../utils'
-import { ref } from 'vue'
 
 async function handleSearchQuery(event: Event) {
   let value = (event.target as HTMLInputElement).value
@@ -26,9 +25,7 @@ async function handleSearchQuery(event: Event) {
     store.validatedQuery.queryType = QueryType.token
   }
 }
-
 </script>
-
 
 <template>
   <div class="search-box">
@@ -36,7 +33,6 @@ async function handleSearchQuery(event: Event) {
       :value="store.query" />
   </div>
 </template>
-
 
 <style scoped>
 .search-box {

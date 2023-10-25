@@ -6,8 +6,6 @@ import WalletNav from "@/components/WalletNav.vue";
 import { useSearchStore } from "@/stores/search";
 import { storeToRefs } from 'pinia';
 import { useSettingsStore } from "@/stores/settings";
-import router from "@/router";
-
 
 const props = defineProps({
   address: { type: String, required: true },
@@ -32,12 +30,6 @@ onMounted(async () => {
       await searchStore.search()
   }
 })
-
-function handleCollectionView(id: string){
-  console.log("NFT Collection ID: " + id)
-  router.push("/collection/" + id)
-
-}
 
 async function loadBCMRMetaData() {
   await searchStore.loadNftBcmrMetadata(settings.chaingraphUrl)

@@ -2,7 +2,6 @@ import { defineStore } from "pinia"
 import { computed, ref } from "vue"
 import { BCMR, Wallet } from "mainnet-js"
 import type { IdentitySnapshot, NftType } from "mainnet-js/dist/module/wallet/bcmr-v2.schema";
-
 import router from "../router"
 import {
   isValidCashAddress,
@@ -11,9 +10,7 @@ import {
   type TokenDetail
 } from '../utils'
 
-
 export const useSearchStore = defineStore('search', () => {
-
   const query = ref("")
   const validatedQuery = ref({
     query: "",
@@ -116,39 +113,3 @@ export const useSearchStore = defineStore('search', () => {
   return { query, validatedQuery, wallet, nftDetails, tokenDetails, search, loadNftBcmrMetadata, getNftDetailByCommitment, getNftCollectionById }
 
 })
-
-
-// async function loadNftBcmrMetadata(chaingraphUrl: string) {
-//   nftDetails.value.forEach(async detail => {
-//     if (detail.BCMR === undefined) {
-//       try {
-//         const authChain = await BCMR.fetchAuthChainFromChaingraph({
-//           transactionHash: detail.id,
-//           chaingraphUrl: chaingraphUrl,
-//           network: 'mainnet'
-//         })
-//         const httpsUrl = authChain.pop()?.httpsUrl
-//         if (typeof httpsUrl !== "undefined") {
-//           await BCMR.addMetadataRegistryFromUri(httpsUrl)
-//         }
-//       } catch (error) {
-//         // console.log("error fetching BCMR for: " + detail.id)
-//       }
-//     }
-    
-//     const info: IdentitySnapshot | undefined = BCMR.getTokenInfo(detail.id);
-//     detail.BCMR = info
-
-//     // console.log(`nftinfo: ${JSON.stringify(info, null, 4)}`)
-//   })
-// }
-
-
-// export const useSearchStore = defineStore('search', () => {
-//   // const count = ref(0)
-//   // const name = ref('Eduardo')
-//   // const doubleCount = computed(() => count.value * 2)
-//   // function increment() {
-//   //   count.value++
-//   // }
-// })

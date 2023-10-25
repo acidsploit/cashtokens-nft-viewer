@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { RouterView } from "vue-router"
 import { useDark } from "@vueuse/core"
-import { ModalsContainer } from 'vue-final-modal'
 
 
 import router from './router'
