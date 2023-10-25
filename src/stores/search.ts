@@ -4,10 +4,11 @@ import { BCMR, Wallet } from "mainnet-js"
 import type { IdentitySnapshot, NftType } from "mainnet-js/dist/module/wallet/bcmr-v2.schema";
 import router from "../router"
 import {
-  isValidCashAddress,
+  isValidAddress,
   isTokenID,
   QueryType,
-  type TokenDetail
+  type TokenDetail,
+formatAddress
 } from '../utils'
 
 export const useSearchStore = defineStore('search', () => {
@@ -21,9 +22,9 @@ export const useSearchStore = defineStore('search', () => {
   const tokenDetails = ref([] as TokenDetail[])
 
   async function search() {
-    if (isValidCashAddress(query.value)) {
-      validatedQuery.value.query = query.value
-      validatedQuery.value.queryType = QueryType.cashaddress
+    if (isValidAddress(query.value)) {
+      validatedQuery.value.query = formatAddress(query.value)
+      validatedQuery.value.queryType = QueryType.address
       query.value = ""
 
       await Wallet.fromCashaddr(validatedQuery.value.query).then(
@@ -56,6 +57,7 @@ export const useSearchStore = defineStore('search', () => {
     } else if (isTokenID(query.value)) {
       validatedQuery.value.query = query.value
       validatedQuery.value.queryType = QueryType.token
+      query.value = ""
     } else {
       wallet.value = null
       alert("invalid search query")

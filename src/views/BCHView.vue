@@ -2,7 +2,7 @@
 import { BalanceResponse, Wallet } from "mainnet-js";
 import { defineComponent, ref, onMounted, onUpdated, type Ref } from "vue";
 import { store } from "../stores/store";
-import { QueryType, isTokenID, isValidCashAddress } from "@/utils";
+import { QueryType, isTokenID, isValidAddress } from "@/utils";
 import QrImage from "@/components/QrImage.vue";
 import WalletNav from "@/components/WalletNav.vue";
 
@@ -16,11 +16,11 @@ const balanceUSD = ref(0 as number | undefined)
 
 async function handleSearchQuery(query: string) {
   let value = query
-  let isValid = isValidCashAddress(value)
+  let isValid = isValidAddress(value)
   if (isValid === true) {
     store.query = value
     store.validatedQuery.query = value
-    store.validatedQuery.queryType = QueryType.cashaddress
+    store.validatedQuery.queryType = QueryType.address
     // store.wallet = await Wallet.fromCashaddr(value)
     store.wallet = await Wallet.fromTokenaddr(props.address)
 
