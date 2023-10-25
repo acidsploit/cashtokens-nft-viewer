@@ -17,9 +17,18 @@ export const useSearchStore = defineStore('search', () => {
     query: "",
     queryType: QueryType.empty,
   })
+
+  interface WalletS {
+    address: string,
+    wallet: Wallet
+  }
+
   const wallet = ref(null as Wallet | null)
+  const wallets = ref([] as WalletS[])
   const nftDetails = ref([] as TokenDetail[])
   const tokenDetails = ref([] as TokenDetail[])
+  const nftMetaData = ref([] as TokenDetail[])
+  const tokenMetaData = ref([] as TokenDetail[])
 
   async function search() {
     if (isValidAddress(query.value)) {
@@ -27,32 +36,38 @@ export const useSearchStore = defineStore('search', () => {
       validatedQuery.value.queryType = QueryType.address
       query.value = ""
 
-      await Wallet.fromCashaddr(validatedQuery.value.query).then(
-        async (wlt) => {
-          wallet.value = wlt
-          await wallet.value.getAllNftTokenBalances().then((nfts) => {
-            nftDetails.value = []
-            for (const [id, amount] of Object.entries(nfts)) {
-              const detail: TokenDetail = {
-                id: id,
-                amount: amount,
-                BCMR: undefined
+      const cashedWallet = wallets.value.find((wallet) => wallet.address === validatedQuery.value.query)
+
+      if(cashedWallet !== undefined) {
+        wallet.value = cashedWallet.wallet
+      } else {
+        await Wallet.fromCashaddr(validatedQuery.value.query).then(
+          async (wlt) => {
+            wallet.value = wlt
+            await wallet.value.getAllNftTokenBalances().then((nfts) => {
+              nftDetails.value = []
+              for (const [id, amount] of Object.entries(nfts)) {
+                  const detail: TokenDetail = {
+                    id: id,
+                    BCMR: undefined
+                  }
+                  nftDetails.value.push(detail)
               }
-              nftDetails.value.push(detail)
-            }
-          })
-          await wallet.value.getAllTokenBalances().then((tokens) => {
-            tokenDetails.value = []
-            for (const [id, amount] of Object.entries(tokens)) {
-              const detail: TokenDetail = {
-                id: id,
-                amount: amount,
-                BCMR: undefined
+            })
+            await wallet.value.getAllTokenBalances().then((tokens) => {
+              tokenDetails.value = []
+              for (const [id, amount] of Object.entries(tokens)) {
+                const detail: TokenDetail = {
+                  id: id,
+                  BCMR: undefined
+                }
+                tokenDetails.value.push(detail)
               }
-              tokenDetails.value.push(detail)
-            }
+            })
           })
-        })
+      }
+
+      
 
     } else if (isTokenID(query.value)) {
       validatedQuery.value.query = query.value
