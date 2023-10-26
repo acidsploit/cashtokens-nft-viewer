@@ -20,50 +20,15 @@ interface NftDetail {
   nftType: NftType
 }
 
-const settings = useSettingsStore()
 const search = useSearchStore()
-
+const { wallet } = storeToRefs(search)
 const nftBalance = ref(0)
 const nftUtxos = ref([] as UtxoI[])
 const nftList = ref([] as NftDetail[])
-const tokenInfo = ref({} as IdentitySnapshot | undefined)
-
-function getNftDetailByCommitment(tokenId: string, commitment: string): NftType | undefined {
-  if (tokenInfo.value?.token?.nfts?.parse) {
-    for (const [comm, nftType] of Object.entries(tokenInfo.value.token.nfts.parse.types)) {
-      if (comm === commitment) {
-        return nftType
-      }
-    }
-  }
-
-  return undefined
-}
+const collectionName = ref("" as string | undefined)
 
 async function loadNftCardData() {
-  
-}
-
-onMounted(async () => {
-  // if (search.wallet?.tokenaddr !== props.address) {
-  search.query = props.address
-  await search.search()
-  await BCMR.fetchAuthChainFromChaingraph({
-    transactionHash: props.tokenId,
-    chaingraphUrl: settings.chaingraphUrl,
-    network: 'mainnet'
-  })
-    .then(async (authChain) => {
-      const httpsUrl = authChain.pop()?.httpsUrl
-      if (typeof httpsUrl !== "undefined") {
-        await BCMR.addMetadataRegistryFromUri(httpsUrl)
-          .then(() => {
-            tokenInfo.value = BCMR.getTokenInfo(props.tokenId);
-          })
-      }
-    })
-  // }
-
+  collectionName.value = search.getNftCollectionNameById(props.tokenId)
   nftBalance.value = search.wallet ? await search.wallet.getNftTokenBalance(props.tokenId) : 0
   nftUtxos.value = search.wallet ? await search.wallet.getTokenUtxos(props.tokenId) : []
   // console.log("nftUtxos: " + nftUtxos.value)
@@ -71,7 +36,7 @@ onMounted(async () => {
   nftUtxos.value.forEach(nft => {
     if (nft.token?.tokenId && nft.token?.commitment) {
       // console.log("FILTERED NFTS")
-      let nftType = getNftDetailByCommitment(nft.token.tokenId, nft.token.commitment)
+      let nftType = search.getNftDetailByCommitment(nft.token.tokenId, nft.token.commitment)
       if (nftType) {
         // console.log(nftType)
         nftList.value.push({
@@ -82,21 +47,33 @@ onMounted(async () => {
       }
     }
   });
+}
+
+onMounted(async () => {
+  if (search.validatedQuery.query === props.address) {
+    await loadNftCardData()
+
+  } else {
+    search.query = props.address
+    await search.search(props.tokenId).then(async () => {
+      await loadNftCardData()
+    })
+  }
 })
 
-const collectionName = computed(() => {
+const collectionNameFormat = computed(() => {
   console.log(props.tokenId)
   console.log(`${props.tokenId.slice(0, 4)}...${props.tokenId.slice(-4)}`)
-  return tokenInfo.value ? tokenInfo.value.name : `${props.tokenId.slice(0, 4)}...${props.tokenId.slice(-4)}`
+  return collectionName.value ? collectionName.value : `${props.tokenId.slice(0, 4)}...${props.tokenId.slice(-4)}`
 })
 </script>
 
 <template>
   <div class="container">
     <div class="collection-title">
-        <h3 class="collection-name">{{ collectionName }}</h3>
+      <h3 class="collection-name">{{ collectionNameFormat }}</h3>
       <div class="collection-address">
-        <div>On address: {{ props.address }}</div>
+        <div>On address: {{ wallet?.tokenaddr }}</div>
         <div>Child NFTs: {{ nftBalance }}</div>
       </div>
     </div>

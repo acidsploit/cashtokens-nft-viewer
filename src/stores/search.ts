@@ -10,8 +10,15 @@ import {
   formatAddress,
   type TokenMetadata
 } from '../utils'
-import { makeDestructurable } from "@vueuse/core";
 import { useSettingsStore } from "./settings";
+
+export interface NFTDetail extends TokenMetadata {
+  amount: number;
+}
+
+export interface TokenDetail extends TokenMetadata {
+  amount: number;
+}
 
 export const useSearchStore = defineStore('search', () => {
   const query = ref("")
@@ -20,124 +27,133 @@ export const useSearchStore = defineStore('search', () => {
     queryType: QueryType.empty,
   })
 
-  interface WalletS {
-    address: string,
-    wallet: Wallet
-  }
-
   const settings = useSettingsStore()
-  const chaingraphUrl = ref("https://gql.chaingraph.pat.mn/v1/graphql")
+  const wallet = ref({} as Wallet)
+  const cachedTokenMetadata = ref([] as TokenMetadata[])
+  const nftDetails = ref([] as NFTDetail[])
+  const tokenDetails = ref([] as TokenDetail[])
 
-  const wallet = ref(null as Wallet | null)
-  const wallets = ref([] as WalletS[])
-  const nftDetails = ref([] as TokenMetadata[])
-  const tokenDetails = ref([] as TokenMetadata[])
-  const nftMetadata = ref([] as TokenMetadata[])
-  const tokenMetadata = ref([] as TokenMetadata[])
-
-  async function search() {
-    
+  async function search(tokenId?: string) {
     if (isValidAddress(query.value)) {
       validatedQuery.value.query = formatAddress(query.value)
       validatedQuery.value.queryType = QueryType.address
       query.value = ""
 
-      const cashedWallet = wallets.value.find((wallet) => wallet.address === validatedQuery.value.query)
-      if (cashedWallet !== undefined) {
-        wallet.value = cashedWallet.wallet
-      } else {
-        await Wallet.fromCashaddr(validatedQuery.value.query).then(async (wlt) => {
-          wallet.value = wlt
+      await Wallet.fromCashaddr(validatedQuery.value.query).then(async (wlt) => {
+        wallet.value = wlt
+        if (tokenId) {
+          await loadTokenMetadata(tokenId).then(async (md) => {
+            await wallet.value.getNftTokenBalance(tokenId).then((amount) => {
+              if (md !== undefined) {
+                const detail = {
+                  id: tokenId,
+                  amount: amount,
+                  BCMR: md.BCMR
+                } as NFTDetail
+                console.log("nftDetails.push")
+                nftDetails.value.push(detail)
+              } else {
+                const detail = {
+                  id: tokenId,
+                  amount: amount,
+                  BCMR: undefined
+                } as NFTDetail
+                console.log("nftDetails.push undefined")
+                nftDetails.value.push(detail)
+              }
+            })
+          })
+        }
+        else {
           await wallet.value.getAllNftTokenBalances().then(async (nfts) => {
-            for (const [id] of Object.entries(nfts)) {
-              if (nftMetadata.value.find((md) => md.id === id) === undefined) {
-                await BCMR.fetchAuthChainFromChaingraph({
-                  transactionHash: id,
-                  chaingraphUrl: settings.chaingraphUrl,
-                  network: 'mainnet'
-                }).then(async (authChain) => {
-                  const httpsUrl = authChain.pop()?.httpsUrl
-                  if (typeof httpsUrl !== "undefined") {
-                    await BCMR.addMetadataRegistryFromUri(httpsUrl)
-                  }
-                }).then(() => {
-                  const info = BCMR.getTokenInfo(id);
-                  const detail: TokenMetadata = {
+            for (const [id, amount] of Object.entries(nfts)) {
+              await loadTokenMetadata(id).then(async (md) => {
+                if (md !== undefined) {
+                  const detail = {
                     id: id,
-                    BCMR: info
-                  }
-                  nftMetadata.value.push(detail)
-                })
-              }
+                    amount: amount,
+                    BCMR: md.BCMR
+                  } as NFTDetail
+
+                  console.log("nftDetails.push all")
+                  nftDetails.value.push(detail)
+                }
+              })
             }
           })
+        }
+
+        if (!tokenId) {
           await wallet.value.getAllTokenBalances().then(async (tokens) => {
-            for (const [id] of Object.entries(tokens)) {
-              if (tokenMetadata.value.find((md) => md.id === id) === undefined) {
-                await BCMR.fetchAuthChainFromChaingraph({
-                  transactionHash: id,
-                  chaingraphUrl: settings.chaingraphUrl,
-                  network: 'mainnet'
-                }).then(async (authChain) => {
-                  const httpsUrl = authChain.pop()?.httpsUrl
-                  if (typeof httpsUrl !== "undefined") {
-                    await BCMR.addMetadataRegistryFromUri(httpsUrl)
-                  }
-                }).then(() => {
-                  const info = BCMR.getTokenInfo(id);
-                  const detail: TokenMetadata = {
-                    id: id,
-                    BCMR: info
-                  }
-                  tokenMetadata.value.push(detail)
-                })
-              }
+            for (const [id, amount] of Object.entries(tokens)) {
+              await loadTokenMetadata(id).then(async (md) => {
+                const detail = {
+                  id: id,
+                  amount: amount,
+                  BCMR: md?.BCMR
+                } as TokenDetail
+                tokenDetails.value.push(detail)
+              })
             }
           })
-        })
-      }
+        }
+      })
+
     } else if (isTokenID(query.value)) {
       validatedQuery.value.query = query.value
       validatedQuery.value.queryType = QueryType.token
       query.value = ""
     } else {
-      wallet.value = null
+      wallet.value = {} as Wallet
       alert("invalid search query")
     }
   }
 
-  async function loadNftBcmrMetadata(chaingraphUrl: string) {
-    nftDetails.value.forEach(async detail => {
-      if (detail.BCMR === undefined) {
-        try {
-          await BCMR.fetchAuthChainFromChaingraph({
-            transactionHash: detail.id,
-            chaingraphUrl: settings.chaingraphUrl,
-            network: 'mainnet'
-          }).then(async (authChain) => {
-            const httpsUrl = authChain.pop()?.httpsUrl
-            if (typeof httpsUrl !== "undefined") {
-              await BCMR.addMetadataRegistryFromUri(httpsUrl)
+  async function loadTokenMetadata(tokenId: string): Promise<TokenMetadata | undefined> {
+    const cache = cachedTokenMetadata.value.find((md) => md.id === tokenId)
+    let result = {} as TokenMetadata
+    if (cache !== undefined) {
+      result = cache
+    } else {
+      await BCMR.fetchAuthChainFromChaingraph({
+        transactionHash: tokenId,
+        chaingraphUrl: settings.chaingraphUrl,
+        network: 'mainnet'
+      }).then(async (authChain) => {
+        const httpsUrl = authChain.pop()?.httpsUrl
+        if (httpsUrl !== undefined) {
+          await BCMR.addMetadataRegistryFromUri(httpsUrl).then(() => {
+            const info = BCMR.getTokenInfo(tokenId);
+            console.log("BCMR: " + JSON.stringify(info))
+            const detail: TokenMetadata = {
+              id: tokenId,
+              BCMR: info
             }
-          }).then(() => {
-            const info: IdentitySnapshot | undefined = BCMR.getTokenInfo(detail.id);
-            detail.BCMR = info
+            console.log("cachedTokenMetadata.push")
+            cachedTokenMetadata.value.push(detail)
+
+            result = detail
           })
-        } catch (error) {
-          // console.log("error fetching BCMR for: " + detail.id)
         }
-      }
-    })
+      })
+    }
+
+    return result
   }
 
   function getNftCollectionById(id: string): TokenMetadata | undefined {
-    const result = nftMetadata.value.find(detail => {
+    const result = nftDetails.value.find(detail => {
       if (detail.id === id) {
         return true
       }
     });
 
     return result
+  }
+
+  function getNftCollectionNameById(id: string): string | undefined {
+    const md = getNftCollectionById(id)
+    return md?.BCMR?.name ? md.BCMR.name : undefined
   }
 
   function getNftDetailByCommitment(tokenId: string, commitment: string): NftType | undefined {
@@ -154,6 +170,17 @@ export const useSearchStore = defineStore('search', () => {
     return undefined
   }
 
-  return { query, validatedQuery, wallet, nftDetails, tokenDetails, nftMetadata, tokenMetadata, search, loadNftBcmrMetadata, getNftDetailByCommitment, getNftCollectionById }
+  return {
+    query,
+    validatedQuery,
+    wallet,
+    cachedTokenMetadata,
+    nftDetails,
+    tokenDetails,
+    search,
+    getNftCollectionById,
+    getNftCollectionNameById,
+    getNftDetailByCommitment,
+  }
 
 })

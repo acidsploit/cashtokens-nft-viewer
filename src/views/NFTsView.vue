@@ -1,86 +1,79 @@
 <script setup lang="ts">
-import { BCMR, BalanceResponse, Wallet } from "mainnet-js";
+// import { BCMR, BalanceResponse, Wallet } from "mainnet-js";
 import { defineComponent, ref, onMounted, onUpdated, type Ref, computed } from "vue";
 import type { IdentitySnapshot } from "mainnet-js/dist/module/wallet/bcmr-v2.schema";
 import WalletNav from "@/components/WalletNav.vue";
 import { useSearchStore } from "@/stores/search";
 import { storeToRefs } from 'pinia';
 import { useSettingsStore } from "@/stores/settings";
-import type { TokenMetadata } from "@/utils";
+// import { useSettingsStore } from "@/stores/settings";
+// import type { TokenMetadata } from "@/utils";
 
-export interface NFTDetail extends TokenMetadata {
-  amount: number;
-}
+// export interface NFTDetail extends TokenMetadata {
+//   amount: number;
+// }
 
 const props = defineProps({
   address: { type: String, required: true },
 })
 
-const searchStore = useSearchStore()
+const settings = useSettingsStore()
+const search = useSearchStore()
 const {
   query,
   validatedQuery,
-  wallet,
-  nftMetadata,
-} = storeToRefs(searchStore)
+} = storeToRefs(search)
 
-const nftDetails = ref([] as NFTDetail[])
-
-async function loadNftGroupData() {
-  nftMetadata.value.forEach(async (nft) => {
-    await wallet.value?.getNftTokenBalance(nft.id).then((amount) => {
-      let nftDetail = {
-        id: nft.id,
-        amount: amount,
-        BCMR: nft.BCMR
-      }
-      nftDetails.value.push(nftDetail)
-    })
-  })
-}
 
 onMounted(async () => {
   console.log("props: " + props.address)
-  console.log("validate query: " + validatedQuery.value.query)
+  console.log("validated query: " + validatedQuery.value.query)
 
   if (validatedQuery.value.query !== props.address) {
     query.value = props.address
-    await searchStore.search().then(async () => {
-      await loadNftGroupData()
-    })
-  } else {
-    await loadNftGroupData()
-  }
+    await search.search()
+  } 
 })
 
-// const collectionName = computed((name: string, id:string): string => {
-//   return name ? name : `${id.slice(0, 4)}...${id.slice(-4)}`
-// })
 
 function collectionName(name: string | undefined, id: string): string {
   return name ? name : `${id.slice(0, 4)}...${id.slice(-4)}`
 }
+
+function formatImgUri(uri: string | undefined): string | undefined {
+  if(uri && uri.slice(0,7) === "ipfs://"){
+    let prefix = settings.ipfsGateway
+    let path = uri.slice(7)
+
+    return prefix + path
+  } else if(uri) {
+    return uri
+  }
+
+  return undefined
+}
+
 </script>
 
 <template>
   <WalletNav />
 
 
-  <div class="wrapper">
+  <div v-if="search.nftDetails.length !== 0" class="wrapper">
     <div class="heading">
       <div class="col title">
         <h3>NFT</h3>
         <h3>Collections</h3>
       </div>
-      <div class="address" v-if="wallet">
-        On address: {{ wallet.tokenaddr }}
+      <div class="address" v-if="search.wallet">
+        On address: {{ search.wallet.tokenaddr }}
       </div>
     </div>
 
     <div class="collection-list container">
-      <div class="nft-collection" v-for="detail in nftDetails" :key="detail.id">
+      <div class="nft-collection" v-for="detail in search.nftDetails" :key="detail.id">
         <div class="collection-name">
-          <img v-if="detail.BCMR?.uris" :src="detail.BCMR?.uris.icon" alt="icon">
+          <img v-if="detail.BCMR?.uris?.icon" :src="formatImgUri(detail.BCMR.uris.icon)" alt="icon">
           <h3>{{ collectionName(detail.BCMR?.name, detail.id) }} </h3>
         </div>
           <p class="description">{{ detail.BCMR?.description ? detail.BCMR?.description : "" }}</p>
@@ -88,9 +81,7 @@ function collectionName(name: string | undefined, id: string): string {
             {{ detail.amount / 10 ** (detail.BCMR?.token?.decimals ? detail.BCMR?.token?.decimals : 0) }}
             {{ detail.BCMR?.token?.symbol ? detail.BCMR?.token?.symbol : "units" }}
           </p>
-          <RouterLink :to="`/collection/${wallet?.tokenaddr}/${detail.id}`">View Collection</RouterLink>
-
-
+          <RouterLink :to="`/collection/${search.wallet?.address}/${detail.id}`">View Collection</RouterLink>
       </div>
     </div>
   </div>

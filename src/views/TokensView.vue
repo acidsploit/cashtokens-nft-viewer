@@ -1,17 +1,19 @@
 <script setup lang="ts">
 import { BCMR, Wallet } from "mainnet-js";
-import { ref, onMounted } from "vue";
+import { ref, onMounted, computed } from "vue";
 import type { IdentitySnapshot } from "mainnet-js/dist/module/wallet/bcmr-v2.schema";
 import WalletNav from "@/components/WalletNav.vue";
 import { useSearchStore } from "@/stores/search";
 import { storeToRefs } from 'pinia';
-import { useSettingsStore } from "@/stores/settings";
+import type { TokenMetadata } from "@/utils";
+
+export interface TokenDetail extends TokenMetadata {
+  amount: number;
+}
 
 const props = defineProps({
   address: { type: String, required: true },
 })
-
-const settings = useSettingsStore()
 
 const searchStore = useSearchStore()
 const {
@@ -25,30 +27,12 @@ onMounted(async () => {
   console.log("props: " + props.address)
   console.log("validate query: " + validatedQuery.value.query)
 
-  if (validatedQuery.value.query !== props.address){
-      query.value = props.address
-      await searchStore.search()
+  if (validatedQuery.value.query !== props.address) {
+    query.value = props.address
+    await searchStore.search()
   }
 })
 
-async function loadBCMRMetaData() {
-  tokenDetails.value.forEach(async detail => {
-    try {
-      const authChain = await BCMR.fetchAuthChainFromChaingraph({
-        transactionHash: detail.id,
-        chaingraphUrl: settings.chaingraphUrl
-      })
-      let httpsUrl = authChain.pop()?.httpsUrl
-      if (typeof httpsUrl !== "undefined") {
-        await BCMR.addMetadataRegistryFromUri(httpsUrl)
-      }
-    } catch (error) {
-      console.log("error fetching BCMR for: " + detail.id)
-    }
-    const info: IdentitySnapshot | undefined = BCMR.getTokenInfo(detail.id);
-    detail.BCMR = info
-  })
-}
 </script>
 
 <template>
@@ -57,16 +41,13 @@ async function loadBCMRMetaData() {
     <div v-if="wallet">{{ wallet.tokenaddr }}</div>
     <fieldset>
       <legend>Tokens</legend>
-      <div class="button-box">
-        <a class="button outline primary" @click="loadBCMRMetaData">Load BCMR Metadata</a>
-      </div>
       <ol role="list">
-        <li v-for="detail in tokenDetails" :key="detail.id">
-          <p class="token-id-name">{{ detail.BCMR?.name ? detail.BCMR?.name : detail.id }}</p>
-          <p class="description">{{ detail.BCMR?.description ? detail.BCMR?.description : "" }}</p>
-          <p class="amount">{{ detail.amount / 10 ** (detail.BCMR?.token?.decimals ? detail.BCMR?.token?.decimals : 0) }}
+        <li v-for="token in tokenDetails" :key="token.id">
+          <p class="token-id-name">{{ token.BCMR?.name ? token.BCMR?.name : token.id }}</p>
+          <p class="description">{{ token.BCMR?.description ? token.BCMR?.description : "" }}</p>
+          <p class="amount">{{ token.amount / 10 ** (token.BCMR?.token?.decimals ? token.BCMR?.token?.decimals : 0) }}
             {{
-              detail.BCMR?.token?.symbol ? detail.BCMR?.token?.symbol : "units" }}</p>
+              token.BCMR?.token?.symbol ? token.BCMR?.token?.symbol : "units" }}</p>
         </li>
       </ol>
     </fieldset>
@@ -79,11 +60,7 @@ fieldset {
   margin: 15px;
 }
 
-.button-box {
-  display: flex;
-  flex-direction: row;
-  justify-content: end;
-}
+
 
 a.btn {
   margin-right: 15px;
