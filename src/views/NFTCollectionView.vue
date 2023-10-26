@@ -1,13 +1,10 @@
 <script setup lang="ts">
 import { useSearchStore } from '@/stores/search';
-import type { TokenMetadata } from '@/utils';
 import type { UtxoI } from 'mainnet-js/dist/module/interface';
-import type { IdentitySnapshot, NftType } from 'mainnet-js/dist/module/wallet/bcmr-v2.schema';
+import type { NftType } from 'mainnet-js/dist/module/wallet/bcmr-v2.schema';
 import { computed, onMounted, ref } from 'vue';
 import { storeToRefs } from 'pinia';
 import { useSettingsStore } from '@/stores/settings';
-import { BCMR } from 'mainnet-js';
-
 
 const props = defineProps({
   address: { type: String, required: true },
@@ -20,6 +17,7 @@ interface NftDetail {
   nftType: NftType
 }
 
+const settings = useSettingsStore()
 const search = useSearchStore()
 const { wallet } = storeToRefs(search)
 const nftBalance = ref(0)
@@ -47,6 +45,19 @@ async function loadNftCardData() {
       }
     }
   });
+}
+
+function formatImgUri(uri: string | undefined): string | undefined {
+  if(uri && uri.slice(0,7) === "ipfs://"){
+    let prefix = settings.ipfsGateway
+    let path = uri.slice(7)
+
+    return prefix + path
+  } else if(uri) {
+    return uri
+  }
+
+  return undefined
 }
 
 onMounted(async () => {
@@ -81,7 +92,7 @@ const collectionNameFormat = computed(() => {
 
     <div class="nft-container">
       <div class="nft-card" v-for="nft in nftList" v-bind:key="nft.commitment">
-        <img :src="nft.nftType.uris?.icon" />
+        <img v-if="nft.nftType.uris?.icon" :src="formatImgUri(nft.nftType.uris.icon)" />
         <p>{{ nft.nftType.name }}</p>
         <p class="commitment">Commitment: {{ nft.commitment }}</p>
       </div>

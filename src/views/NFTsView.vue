@@ -1,17 +1,10 @@
 <script setup lang="ts">
-// import { BCMR, BalanceResponse, Wallet } from "mainnet-js";
-import { defineComponent, ref, onMounted, onUpdated, type Ref, computed } from "vue";
-import type { IdentitySnapshot } from "mainnet-js/dist/module/wallet/bcmr-v2.schema";
+import { onMounted } from "vue";
 import WalletNav from "@/components/WalletNav.vue";
 import { useSearchStore } from "@/stores/search";
 import { storeToRefs } from 'pinia';
 import { useSettingsStore } from "@/stores/settings";
-// import { useSettingsStore } from "@/stores/settings";
-// import type { TokenMetadata } from "@/utils";
 
-// export interface NFTDetail extends TokenMetadata {
-//   amount: number;
-// }
 
 const props = defineProps({
   address: { type: String, required: true },

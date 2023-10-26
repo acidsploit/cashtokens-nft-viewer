@@ -1,8 +1,7 @@
 import { defineStore } from "pinia"
-import { computed, ref } from "vue"
+import { ref } from "vue"
 import { BCMR, Wallet } from "mainnet-js"
-import type { IdentitySnapshot, NftType } from "mainnet-js/dist/module/wallet/bcmr-v2.schema";
-import router from "../router"
+import type { NftType } from "mainnet-js/dist/module/wallet/bcmr-v2.schema";
 import {
   isValidAddress,
   isTokenID,
@@ -34,10 +33,13 @@ export const useSearchStore = defineStore('search', () => {
   const tokenDetails = ref([] as TokenDetail[])
 
   async function search(tokenId?: string) {
-    if (isValidAddress(query.value)) {
+    if (isValidAddress(query.value) && formatAddress(query.value) !== wallet.value.cashaddr) {
+
       validatedQuery.value.query = formatAddress(query.value)
       validatedQuery.value.queryType = QueryType.address
       query.value = ""
+      nftDetails.value = []
+      tokenDetails.value = []
 
       await Wallet.fromCashaddr(validatedQuery.value.query).then(async (wlt) => {
         wallet.value = wlt

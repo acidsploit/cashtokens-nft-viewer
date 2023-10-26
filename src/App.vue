@@ -4,10 +4,8 @@ import { useDark } from "@vueuse/core"
 
 
 import router from './router'
-import { store } from './stores/store'
 
 import CollectionListView from './views/CollectionListView.vue'
-import SearchBar from './components/SearchBar.vue'
 import FooterView from './views/FooterView.vue'
 import DarkSwitch from './components/DarkSwitch.vue'
 import TopSearchBar from './components/TopSearchBar.vue'
@@ -16,7 +14,6 @@ const isDark = useDark()
 
 function handleLogoClick() {
   router.push('/')
-  store.query = ""
 }
 
 function toggleSidebar() {

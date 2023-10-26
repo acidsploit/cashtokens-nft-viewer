@@ -1,7 +1,5 @@
 <script setup lang="ts">
-import { BCMR, Wallet } from "mainnet-js";
-import { ref, onMounted, computed } from "vue";
-import type { IdentitySnapshot } from "mainnet-js/dist/module/wallet/bcmr-v2.schema";
+import { onMounted } from "vue";
 import WalletNav from "@/components/WalletNav.vue";
 import { useSearchStore } from "@/stores/search";
 import { storeToRefs } from 'pinia';

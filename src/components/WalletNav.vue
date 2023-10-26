@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { store } from '../stores/store'
 import { useSearchStore } from '@/stores/search';
 import { QueryType } from '../utils'
 import { storeToRefs } from 'pinia';
