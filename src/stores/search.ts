@@ -45,8 +45,6 @@ export const useSearchStore = defineStore('search', () => {
       nftDetails.value = []
       tokenDetails.value = []
 
-      console.log("router.currentRoute" + JSON.stringify(router.currentRoute, null, 4))
-
       if (type.value === "query") {
         router.push(`/nfts/${validatedQuery.value.query}`)
         type.value = ""
