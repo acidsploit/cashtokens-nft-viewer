@@ -94,8 +94,6 @@ const collectionName = computed(() => {
 <template>
   <div class="container">
     <div class="collection-title">
-      <!-- <h3 class="collection-name">{{ tokenInfo ? tokenInfo.name :
-        `${props.tokenId.slice(0, 4)}...${props.tokenId.slice(-4)}` }}</h3> -->
         <h3 class="collection-name">{{ collectionName }}</h3>
       <div class="collection-address">
         <div>On address: {{ props.address }}</div>

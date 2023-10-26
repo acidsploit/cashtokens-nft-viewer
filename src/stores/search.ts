@@ -11,6 +11,7 @@ import {
   type TokenMetadata
 } from '../utils'
 import { makeDestructurable } from "@vueuse/core";
+import { useSettingsStore } from "./settings";
 
 export const useSearchStore = defineStore('search', () => {
   const query = ref("")
@@ -24,6 +25,7 @@ export const useSearchStore = defineStore('search', () => {
     wallet: Wallet
   }
 
+  const settings = useSettingsStore()
   const chaingraphUrl = ref("https://gql.chaingraph.pat.mn/v1/graphql")
 
   const wallet = ref(null as Wallet | null)
@@ -34,6 +36,7 @@ export const useSearchStore = defineStore('search', () => {
   const tokenMetadata = ref([] as TokenMetadata[])
 
   async function search() {
+    
     if (isValidAddress(query.value)) {
       validatedQuery.value.query = formatAddress(query.value)
       validatedQuery.value.queryType = QueryType.address
@@ -50,7 +53,7 @@ export const useSearchStore = defineStore('search', () => {
               if (nftMetadata.value.find((md) => md.id === id) === undefined) {
                 await BCMR.fetchAuthChainFromChaingraph({
                   transactionHash: id,
-                  chaingraphUrl: chaingraphUrl.value,
+                  chaingraphUrl: settings.chaingraphUrl,
                   network: 'mainnet'
                 }).then(async (authChain) => {
                   const httpsUrl = authChain.pop()?.httpsUrl
@@ -73,7 +76,7 @@ export const useSearchStore = defineStore('search', () => {
               if (tokenMetadata.value.find((md) => md.id === id) === undefined) {
                 await BCMR.fetchAuthChainFromChaingraph({
                   transactionHash: id,
-                  chaingraphUrl: chaingraphUrl.value,
+                  chaingraphUrl: settings.chaingraphUrl,
                   network: 'mainnet'
                 }).then(async (authChain) => {
                   const httpsUrl = authChain.pop()?.httpsUrl
@@ -109,7 +112,7 @@ export const useSearchStore = defineStore('search', () => {
         try {
           await BCMR.fetchAuthChainFromChaingraph({
             transactionHash: detail.id,
-            chaingraphUrl: chaingraphUrl,
+            chaingraphUrl: settings.chaingraphUrl,
             network: 'mainnet'
           }).then(async (authChain) => {
             const httpsUrl = authChain.pop()?.httpsUrl
