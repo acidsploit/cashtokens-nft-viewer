@@ -4,6 +4,7 @@ import WalletNav from "@/components/WalletNav.vue";
 import { useSearchStore } from "@/stores/search";
 import { storeToRefs } from 'pinia';
 import { useSettingsStore } from "@/stores/settings";
+import { useFavorites } from "@/stores/favorites"
 
 
 const props = defineProps({
@@ -12,6 +13,7 @@ const props = defineProps({
 
 const settings = useSettingsStore()
 const search = useSearchStore()
+const favorites = useFavorites()
 
 
 onMounted(async () => {
@@ -22,7 +24,7 @@ onMounted(async () => {
     search.query = props.address
     search.type = "path"
     await search.search()
-  } 
+  }
 })
 
 
@@ -31,24 +33,28 @@ function collectionName(name: string | undefined, id: string): string {
 }
 
 function formatImgUri(uri: string | undefined): string | undefined {
-  if(uri && uri.slice(0,7) === "ipfs://"){
+  if (uri && uri.slice(0, 7) === "ipfs://") {
     let prefix = settings.ipfsGateway
     let path = uri.slice(7)
 
     return prefix + path
-  } else if(uri) {
+  } else if (uri) {
     return uri
   }
 
   return undefined
 }
 
+function handleFavorite(title: string, addr: string | undefined, id: string) {
+  let favId = `${addr}/${id}`
+  favorites.add(favId, title)
+}
 </script>
 
 <template>
   <!-- <WalletNav /> -->
 
-  <div v-if="search.nftDetails.length !== 0" class="wrapper">
+  <div v-if="search.nftDetails.length !== 0" class="wrapper container">
     <div class="heading">
       <div class="col title">
         <h3>NFT</h3>
@@ -64,13 +70,17 @@ function formatImgUri(uri: string | undefined): string | undefined {
         <div class="collection-name">
           <img v-if="detail.BCMR?.uris?.icon" :src="formatImgUri(detail.BCMR.uris.icon)" alt="icon">
           <h3>{{ collectionName(detail.BCMR?.name, detail.id) }} </h3>
+          <span class="favorite material-symbols-outlined" @click="handleFavorite(collectionName(detail.BCMR?.name, detail.id), search.wallet?.cashaddr, detail.id)">
+            favorite
+          </span>
         </div>
-          <p class="description">{{ detail.BCMR?.description ? detail.BCMR?.description : "" }}</p>
-          <p class="amount">
-            {{ detail.amount / 10 ** (detail.BCMR?.token?.decimals ? detail.BCMR?.token?.decimals : 0) }}
-            {{ detail.BCMR?.token?.symbol ? detail.BCMR?.token?.symbol : "units" }}
-          </p>
-          <RouterLink :to="`/collection/${search.wallet?.address}/${detail.id}`">View Collection</RouterLink>
+
+        <p class="description">{{ detail.BCMR?.description ? detail.BCMR?.description : "" }}</p>
+        <p class="amount">
+          {{ detail.amount / 10 ** (detail.BCMR?.token?.decimals ? detail.BCMR?.token?.decimals : 0) }}
+          {{ detail.BCMR?.token?.symbol ? detail.BCMR?.token?.symbol : "units" }}
+        </p>
+        <RouterLink :to="`/collection/${search.wallet?.address}/${detail.id}`">View Collection</RouterLink>
       </div>
     </div>
   </div>
@@ -89,7 +99,7 @@ function formatImgUri(uri: string | undefined): string | undefined {
   display: flex;
   flex-direction: row;
   align-items: center;
-  justify-content: flex-start;
+  justify-content: space-between;
   margin-bottom: 2rem;
 }
 
@@ -97,11 +107,24 @@ function formatImgUri(uri: string | undefined): string | undefined {
   font-size: 3rem;
   font-weight: 800;
   margin: 1rem 0 1rem 2rem;
+  flex-grow: 5;
 }
 
 .collection-name img {
   max-width: 7rem;
   border-radius: 50%;
+  flex-grow: 1;
+}
+
+.favorite {
+  text-align: right;
+  align-self: flex-start;
+  flex-grow: 1;
+  max-width: fit-content;
+}
+
+.favorite:hover {
+  cursor: pointer;
 }
 
 p.amount {
@@ -145,5 +168,13 @@ p.amount {
   margin-top: 7rem;
   margin-left: 3rem;
   word-break: break-all;
+}
+
+.material-symbols-outlined {
+  font-variation-settings:
+    'FILL' 0,
+    'wght' 400,
+    'GRAD' 0,
+    'opsz' 24
 }
 </style>

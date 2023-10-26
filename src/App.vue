@@ -38,7 +38,6 @@ function toggleSidebar() {
             <h1>NFT</h1>
             <h1>Viewer</h1>
           </div>
-          
       </div>
 
     <!-- <SearchBar v-show="$route.name !== 'settings'" /> -->
@@ -60,12 +59,11 @@ function toggleSidebar() {
 
 <style scoped>
 
-div.content {
-  min-height: 50vmin;
-}
+
 
 .brand {
-  padding: 10px 0 10px 0;
+  /* padding: 1rem 0 1rem 0; */
+  margin: 2rem 0 1rem 0;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -73,6 +71,8 @@ div.content {
 
 .col-1 {
   text-align: left;
+  min-width: fit-content;
+  padding-bottom: 4rem;
 }
 
 .brand h1 {

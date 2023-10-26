@@ -2,9 +2,10 @@
 import { useSearchStore } from '@/stores/search';
 import type { UtxoI } from 'mainnet-js/dist/module/interface';
 import type { NftType } from 'mainnet-js/dist/module/wallet/bcmr-v2.schema';
-import { computed, onMounted, ref } from 'vue';
+import { computed, onMounted, ref, watchEffect } from 'vue';
 import { storeToRefs } from 'pinia';
 import { useSettingsStore } from '@/stores/settings';
+import { useFavorites } from '@/stores/favorites';
 
 const props = defineProps({
   address: { type: String, required: true },
@@ -19,13 +20,37 @@ interface NftDetail {
 
 const settings = useSettingsStore()
 const search = useSearchStore()
+const favorites = useFavorites()
+
 const { wallet } = storeToRefs(search)
 const nftBalance = ref(0)
 const nftUtxos = ref([] as UtxoI[])
 const nftList = ref([] as NftDetail[])
 const collectionName = ref("" as string | undefined)
 
+onMounted(async () => {
+  if (search.validatedQuery.query === props.address) {
+    await loadNftCardData()
+
+  } else {
+    search.query = props.address
+    search.type = "path"
+    await search.search(props.tokenId).then(async () => {
+      await loadNftCardData()
+    })
+  }
+})
+
+watchEffect(async () => {
+  search.query = props.address
+  search.type = "path"
+  await search.search(props.tokenId).then(async () => {
+    await loadNftCardData()
+  })
+})
+
 async function loadNftCardData() {
+  nftList.value = [] as NftDetail[]
   collectionName.value = search.getNftCollectionNameById(props.tokenId)
   nftBalance.value = search.wallet ? await search.wallet.getNftTokenBalance(props.tokenId) : 0
   nftUtxos.value = search.wallet ? await search.wallet.getTokenUtxos(props.tokenId) : []
@@ -47,37 +72,29 @@ async function loadNftCardData() {
   });
 }
 
+const collectionNameFormat = computed(() => {
+  console.log(props.tokenId)
+  console.log(`${props.tokenId.slice(0, 4)}...${props.tokenId.slice(-4)}`)
+  return collectionName.value ? collectionName.value : `${props.tokenId.slice(0, 4)}...${props.tokenId.slice(-4)}`
+})
+
 function formatImgUri(uri: string | undefined): string | undefined {
-  if(uri && uri.slice(0,7) === "ipfs://"){
+  if (uri && uri.slice(0, 7) === "ipfs://") {
     let prefix = settings.ipfsGateway
     let path = uri.slice(7)
 
     return prefix + path
-  } else if(uri) {
+  } else if (uri) {
     return uri
   }
 
   return undefined
 }
 
-onMounted(async () => {
-  if (search.validatedQuery.query === props.address) {
-    await loadNftCardData()
-
-  } else {
-    search.query = props.address
-    search.type = "path"
-    await search.search(props.tokenId).then(async () => {
-      await loadNftCardData()
-    })
-  }
-})
-
-const collectionNameFormat = computed(() => {
-  console.log(props.tokenId)
-  console.log(`${props.tokenId.slice(0, 4)}...${props.tokenId.slice(-4)}`)
-  return collectionName.value ? collectionName.value : `${props.tokenId.slice(0, 4)}...${props.tokenId.slice(-4)}`
-})
+function handleFavorite(title: string, addr: string | undefined, id: string) {
+  let favId = `${addr}/${id}`
+  favorites.add(favId, title)
+}
 </script>
 
 <template>
@@ -88,6 +105,10 @@ const collectionNameFormat = computed(() => {
         <div>On address: {{ wallet?.tokenaddr }}</div>
         <div>Child NFTs: {{ nftBalance }}</div>
       </div>
+      <span class="favorite material-symbols-outlined"
+        @click="handleFavorite(collectionNameFormat, search.wallet?.cashaddr, props.tokenId)">
+        favorite
+      </span>
     </div>
 
 
@@ -112,6 +133,19 @@ const collectionNameFormat = computed(() => {
 .collection-address {
   margin-top: 15px;
   word-break: break-all;
+  flex-grow: 5;
+}
+
+.favorite {
+  text-align: right;
+  align-self: flex-start;
+  flex-grow: 1;
+  max-width: fit-content;
+  cursor: pointer;
+}
+
+.collection-name {
+  flex-grow: 1;
 }
 
 .container h3 {
