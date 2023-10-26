@@ -1,68 +1,33 @@
 <script setup lang="ts">
-import { BalanceResponse, Wallet } from "mainnet-js";
-import { defineComponent, ref, onMounted, onUpdated, type Ref } from "vue";
-import { store } from "../stores/store";
-import { QueryType, isTokenID, isValidAddress } from "@/utils";
+import { onMounted } from "vue";
 import QrImage from "@/components/QrImage.vue";
 import WalletNav from "@/components/WalletNav.vue";
+import { useSearchStore } from "@/stores/search";
 
 const props = defineProps({
   address: { type: String, required: true },
 })
 
-const image = ref(null as any)
-const balance = ref(0 as number | undefined)
-const balanceUSD = ref(0 as number | undefined)
 
-async function handleSearchQuery(query: string) {
-  let value = query
-  let isValid = isValidAddress(value)
-  if (isValid === true) {
-    store.query = value
-    store.validatedQuery.query = value
-    store.validatedQuery.queryType = QueryType.address
-    // store.wallet = await Wallet.fromCashaddr(value)
-    store.wallet = await Wallet.fromTokenaddr(props.address)
-
-  } else {
-    store.wallet = null
-  }
-
-  if (isTokenID(value)) {
-    store.query = value
-    store.validatedQuery.query = value
-    store.validatedQuery.queryType = QueryType.token
-  }
-}
+const search = useSearchStore()
 
 onMounted(async () => {
-  console.log("props: " + props.address)
-  if (store.query === "") {
-    store.query = props.address
+  if (search.validatedQuery.query !== props.address) {
+    search.query = props.address
+    await search.search()
   }
-  await handleSearchQuery(props.address)
-  try {
-    // store.wallet = await Wallet.fromCashaddr(props.address)
-    // store.wallet = await Wallet.fromTokenaddr(props.address)
-    image.value = store.wallet?.getDepositQr()
-    let balanceResponse = await store.wallet?.getBalance()
-    if (typeof (balanceResponse) !== "number") {
-      balance.value = balanceResponse?.bch
-      balanceUSD.value = balanceResponse?.usd
-    }
-  } catch (error) { alert(error) }
 })
+
+
 </script>
 
 <template>
   <div class="wrapper">
     <WalletNav />
-    <!-- <img v-if="image" :src="image.src" :alt="image.alt" :title="image.title"> -->
-    <QrImage v-if="image" :image="image" :default-size="'big'" :allow-zoom="false" />
+    <QrImage v-if="search.wallet" :image="search.wallet.getDepositQr()" :default-size="'big'" :allow-zoom="false" />
 
-    <div v-if="store.wallet">{{ store.wallet.cashaddr }}</div>
-    <div v-if="store.wallet">{{ store.wallet.tokenaddr }}</div>
-    <div v-if="store.wallet">BCH: {{ balance }} ({{ balanceUSD }} USD)</div>
+    <div v-if="search.wallet">{{ search.wallet.cashaddr }}</div>
+    <div v-if="search.wallet">{{ search.wallet.tokenaddr }}</div>
 
 
   </div>
@@ -75,43 +40,3 @@ onMounted(async () => {
   flex-direction: column;
 }
 </style>
-
-<!-- <script lang="ts">
-import { Wallet } from "mainnet-js";
-import { defineComponent } from "vue";
-import { store } from "../store";
-
-export default defineComponent({
-  name: "TokensView",
-
-  data(_props) {
-    return {
-      wallet: null as Wallet | null,
-      image: null as any
-    };
-  },
-
-  async mounted() {
-    if (store.wallet === null) {
-      store.wallet = await Wallet.newRandom();
-      this.image = store.wallet.getDepositQr();
-
-    } else{
-      this.image = store.wallet.getDepositQr();
-    }
-
-    this.wallet = store.wallet;
-    // this.image = this.wallet.getDepositQr();
-  },
-});
-</script>
-
-<template>
-    <div class="wrapper">
-      <img v-if="image" :src="image.src" :alt="image.alt" :title="image.title">
-
-      <div v-if="wallet">{{ wallet.cashaddr }}</div>
-      <div v-if="wallet">{{ wallet.tokenaddr }}</div>
-
-    </div>
-</template>  -->

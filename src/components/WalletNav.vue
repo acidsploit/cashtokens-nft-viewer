@@ -3,8 +3,8 @@ import { useSearchStore } from '@/stores/search';
 import { QueryType } from '../utils'
 import { storeToRefs } from 'pinia';
 
-const searchStore = useSearchStore()
-const { validatedQuery, nftDetails, tokenDetails } = storeToRefs(searchStore)
+const search = useSearchStore()
+const { validatedQuery, nftDetails, tokenDetails, wallet } = storeToRefs(search)
 
 </script>
 
@@ -12,12 +12,12 @@ const { validatedQuery, nftDetails, tokenDetails } = storeToRefs(searchStore)
   <nav class="nav">
     <div class="nav-center">
       <div class="tabs">
-        <RouterLink v-if="validatedQuery.query !== '' && nftDetails.length !== 0" :to="`/nfts/${validatedQuery.query}`">NFTs</RouterLink>
-        <RouterLink v-if="validatedQuery.query !== '' && tokenDetails.length !== 0" :to="`/tokens/${validatedQuery.query}`">Tokens</RouterLink>
+        <RouterLink v-if="wallet?.cashaddr && nftDetails.length !== 0" :to="`/nfts/${wallet.cashaddr}`">NFTs</RouterLink>
+        <!-- <RouterLink v-if="wallet?.cashaddr && tokenDetails.length !== 0" :to="`/tokens/${wallet.cashaddr}`">Tokens</RouterLink> -->
         <!-- <RouterLink v-if="false && validatedQuery.queryType === QueryType.cashaddress && validatedQuery.query !== ''"
           :to="`/bch/${validatedQuery.query}`">Bitcoin Cash</RouterLink> -->
-        <RouterLink v-if="validatedQuery.queryType === QueryType.address && validatedQuery.query !== ''"
-          :to="`/bch/${validatedQuery.query}`">Bitcoin Cash</RouterLink>
+        <RouterLink v-if="validatedQuery.queryType === QueryType.address && wallet?.cashaddr"
+          :to="`/bch/${wallet.cashaddr}`">Bitcoin Cash</RouterLink>
         <!-- <RouterLink :to="`/nfts/${validatedQuery.query}`">NFTs</RouterLink>
         <RouterLink :to="`/tokens/${validatedQuery.query}`">Tokens</RouterLink>
         <RouterLink :to="`/bch/${validatedQuery.query}`">Bitcoin Cash</RouterLink> -->
@@ -29,6 +29,9 @@ const { validatedQuery, nftDetails, tokenDetails } = storeToRefs(searchStore)
 
 
 <style scoped>
+.nav {
+  margin-bottom: 2rem;
+}
 .nav a {
   align-items: end;
 }

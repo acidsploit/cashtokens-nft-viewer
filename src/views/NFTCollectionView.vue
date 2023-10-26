@@ -66,6 +66,7 @@ onMounted(async () => {
 
   } else {
     search.query = props.address
+    search.type = "path"
     await search.search(props.tokenId).then(async () => {
       await loadNftCardData()
     })

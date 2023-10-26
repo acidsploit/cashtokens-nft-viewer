@@ -12,18 +12,15 @@ const props = defineProps({
 
 const settings = useSettingsStore()
 const search = useSearchStore()
-const {
-  query,
-  validatedQuery,
-} = storeToRefs(search)
 
 
 onMounted(async () => {
   console.log("props: " + props.address)
-  console.log("validated query: " + validatedQuery.value.query)
+  console.log("validated query: " + search.validatedQuery.query)
 
-  if (validatedQuery.value.query !== props.address) {
-    query.value = props.address
+  if (search.validatedQuery.query !== props.address) {
+    search.query = props.address
+    search.type = "path"
     await search.search()
   } 
 })
@@ -49,8 +46,7 @@ function formatImgUri(uri: string | undefined): string | undefined {
 </script>
 
 <template>
-  <WalletNav />
-
+  <!-- <WalletNav /> -->
 
   <div v-if="search.nftDetails.length !== 0" class="wrapper">
     <div class="heading">
@@ -98,7 +94,6 @@ function formatImgUri(uri: string | undefined): string | undefined {
 }
 
 .collection-name h3 {
-  /* font-family: "Poppins"; */
   font-size: 3rem;
   font-weight: 800;
   margin: 1rem 0 1rem 2rem;
