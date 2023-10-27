@@ -1,139 +1,180 @@
 <script setup lang="ts">
-import { BCMR, BalanceResponse, Wallet } from "mainnet-js";
-import { defineComponent, ref, onMounted, onUpdated, type Ref } from "vue";
-import type { IdentitySnapshot } from "mainnet-js/dist/module/wallet/bcmr-v2.schema";
+import { onMounted } from "vue";
 import WalletNav from "@/components/WalletNav.vue";
 import { useSearchStore } from "@/stores/search";
 import { storeToRefs } from 'pinia';
 import { useSettingsStore } from "@/stores/settings";
+import { useFavorites } from "@/stores/favorites"
+
 
 const props = defineProps({
   address: { type: String, required: true },
 })
 
 const settings = useSettingsStore()
+const search = useSearchStore()
+const favorites = useFavorites()
 
-const searchStore = useSearchStore()
-const {
-  query,
-  validatedQuery,
-  wallet,
-  nftDetails
-} = storeToRefs(searchStore)
 
 onMounted(async () => {
   console.log("props: " + props.address)
-  console.log("validate query: " + validatedQuery.value.query)
+  console.log("validated query: " + search.validatedQuery.query)
 
-  if (validatedQuery.value.query !== props.address){
-      query.value = props.address
-      await searchStore.search()
+  if (search.validatedQuery.query !== props.address) {
+    search.query = props.address
+    search.type = "path"
+    await search.search()
   }
 })
 
-async function loadBCMRMetaData() {
-  await searchStore.loadNftBcmrMetadata(settings.chaingraphUrl)
+
+function collectionName(name: string | undefined, id: string): string {
+  return name ? name : `${id.slice(0, 4)}...${id.slice(-4)}`
 }
 
+function formatImgUri(uri: string | undefined): string | undefined {
+  if (uri && uri.slice(0, 7) === "ipfs://") {
+    let prefix = settings.ipfsGateway
+    let path = uri.slice(7)
+
+    return prefix + path
+  } else if (uri) {
+    return uri
+  }
+
+  return undefined
+}
+
+function handleFavorite(title: string, addr: string | undefined, id: string) {
+  let favId = `${addr}/${id}`
+  favorites.add(favId, title)
+}
 </script>
 
 <template>
-  <div class="wrapper">
-    <WalletNav />
-    <div v-if="wallet">{{ wallet.tokenaddr }}</div>
-    <fieldset>
-      <legend>NFTs</legend>
-      <div class="button-box">
-        <a class="button outline primary" @click="loadBCMRMetaData">Load BCMR Metadata</a>
+  <!-- <WalletNav /> -->
+
+  <div v-if="search.nftDetails.length !== 0" class="wrapper container">
+    <div class="heading">
+      <div class="col title">
+        <h3>NFT</h3>
+        <h3>Collections</h3>
       </div>
-      <ol role="list">
-        <li class="nft-collection" v-for="detail in nftDetails" :key="detail.id">
-          <p class="token-id-name"> {{ detail.BCMR?.name ? detail.BCMR?.name : detail.id }} </p>
-          <p class="description">{{ detail.BCMR?.description ? detail.BCMR?.description : "" }}</p>
-          <p class="amount">{{ detail.amount / 10 ** (detail.BCMR?.token?.decimals ? detail.BCMR?.token?.decimals : 0) }}
-            {{
-              detail.BCMR?.token?.symbol ? detail.BCMR?.token?.symbol : "units" }}</p>
-            <RouterLink :to="`/collection/${wallet?.tokenaddr}/${detail.id}`">View Collection</RouterLink>
-        </li>
-      </ol>
-    </fieldset>
+      <div class="address" v-if="search.wallet">
+        On address: {{ search.wallet.tokenaddr }}
+      </div>
+    </div>
+
+    <div class="collection-list container">
+      <div class="nft-collection" v-for="detail in search.nftDetails" :key="detail.id">
+        <div class="collection-name">
+          <img v-if="detail.BCMR?.uris?.icon" :src="formatImgUri(detail.BCMR.uris.icon)" alt="icon">
+          <h3>{{ collectionName(detail.BCMR?.name, detail.id) }} </h3>
+          <span class="favorite material-symbols-outlined" @click="handleFavorite(collectionName(detail.BCMR?.name, detail.id), search.wallet?.cashaddr, detail.id)">
+            favorite
+          </span>
+        </div>
+
+        <p class="description">{{ detail.BCMR?.description ? detail.BCMR?.description : "" }}</p>
+        <p class="amount">
+          {{ detail.amount / 10 ** (detail.BCMR?.token?.decimals ? detail.BCMR?.token?.decimals : 0) }}
+          {{ detail.BCMR?.token?.symbol ? detail.BCMR?.token?.symbol : "units" }}
+        </p>
+        <RouterLink :to="`/collection/${search.wallet?.address}/${detail.id}`">View Collection</RouterLink>
+      </div>
+    </div>
   </div>
 </template> 
 
 <style scoped>
-.wrapper {
-  display: flex;
-  align-items: center;
-  flex-direction: column;
+.nft-collection {
+  margin: 2rem;
+  padding: 3rem;
+  color: var(--color-lightGrey);
+  background-color: var(--bg-secondary-color);
+  border-radius: 12px;
 }
 
-fieldset {
-  margin: 15px;
-}
-
-.button-box {
+.collection-name {
   display: flex;
   flex-direction: row;
-  justify-content: end;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 2rem;
 }
 
-li.nft-collection {
+.collection-name h3 {
+  font-size: 3rem;
+  font-weight: 800;
+  margin: 1rem 0 1rem 2rem;
+  flex-grow: 5;
+}
+
+.collection-name img {
+  max-width: 7rem;
+  border-radius: 50%;
+  flex-grow: 1;
+}
+
+.favorite {
+  text-align: right;
+  align-self: flex-start;
+  flex-grow: 1;
+  max-width: fit-content;
+}
+
+.favorite:hover {
   cursor: pointer;
-}
-
-p {
-  margin: 10px;
-  line-height: 1.6;
-  font-size: 1.5rem;
-  color: rgb(70 70 70);
-  /* word-wrap: break-word; */
-}
-
-p.token-id-name {
-  word-break: break-all;
-}
-
-p.description {
-  font-family: monospace;
-  font-size: x-small;
-  margin-top: 0;
 }
 
 p.amount {
   font-family: monospace;
 }
 
-ol {
-  list-style: none;
-  /* counter-reset: list; */
-  padding: 0 1rem;
+.wrapper {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  border-style: solid;
+  border-radius: 4px;
+  border-width: 2px;
+  border-color: var(--color-darkGrey);
 }
 
-li {
-  position: relative;
-  counter-increment: list;
-  max-width: auto;
-  margin: 2rem auto;
-  padding: 1rem 1rem 1rem;
-  box-shadow: 0.1rem 0.1rem 1.5rem rgba(0, 0, 0, 0.3);
-  border-radius: 0.25rem;
-  overflow: hidden;
-  background-color: whitesmoke;
-  /* word-wrap: break-word; */
+.heading {
+  display: flex;
+  flex-direction: row;
+  align-self: flex-start;
+  margin-bottom: 3rem;
+  /* justify-content: space-between; */
+  /* margin: 25px; */
 }
 
-li:hover {
-  background-color: white;
+.title {
+  padding-top: 15px;
 }
 
-li::before {
-  content: '';
-  display: block;
-  width: 90%;
-  height: 1rem;
-  position: absolute;
-  top: 0;
-  left: 0;
-  background: linear-gradient(to right, var(--c1) var(--stop), var(--c2) var(--stop));
+.title h3 {
+  margin-left: 1.7rem;
+  max-width: 7rem;
+  text-align: left;
+  font-size: 1.5em;
+  font-weight: 800;
+  line-height: 1.5rem;
+  transform: rotate(-13deg);
+}
+
+.address {
+  margin-top: 7rem;
+  margin-left: 3rem;
+  word-break: break-all;
+}
+
+.material-symbols-outlined {
+  font-variation-settings:
+    'FILL' 0,
+    'wght' 400,
+    'GRAD' 0,
+    'opsz' 24
 }
 </style>

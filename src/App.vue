@@ -4,10 +4,8 @@ import { useDark } from "@vueuse/core"
 
 
 import router from './router'
-import { store } from './stores/store'
 
 import CollectionListView from './views/CollectionListView.vue'
-import SearchBar from './components/SearchBar.vue'
 import FooterView from './views/FooterView.vue'
 import DarkSwitch from './components/DarkSwitch.vue'
 import TopSearchBar from './components/TopSearchBar.vue'
@@ -16,7 +14,6 @@ const isDark = useDark()
 
 function handleLogoClick() {
   router.push('/')
-  store.query = ""
 }
 
 function toggleSidebar() {
@@ -41,7 +38,6 @@ function toggleSidebar() {
             <h1>NFT</h1>
             <h1>Viewer</h1>
           </div>
-          
       </div>
 
     <!-- <SearchBar v-show="$route.name !== 'settings'" /> -->
@@ -63,12 +59,11 @@ function toggleSidebar() {
 
 <style scoped>
 
-div.content {
-  min-height: 50vmin;
-}
+
 
 .brand {
-  padding: 10px 0 10px 0;
+  /* padding: 1rem 0 1rem 0; */
+  margin: 2rem 0 1rem 0;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -76,6 +71,8 @@ div.content {
 
 .col-1 {
   text-align: left;
+  min-width: fit-content;
+  padding-bottom: 4rem;
 }
 
 .brand h1 {
@@ -108,7 +105,7 @@ main.container {
 }
 
 .content {
-  align-self: center;
+  align-self: flex-start;
 }
 
 footer {

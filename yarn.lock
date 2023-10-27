@@ -3095,7 +3095,7 @@ magic-string@^0.30.5:
   dependencies:
     "@jridgewell/sourcemap-codec" "^1.4.15"
 
-mainnet-js@^2.2.5:
+mainnet-js@2.2.5:
   version "2.2.5"
   resolved "https://registry.yarnpkg.com/mainnet-js/-/mainnet-js-2.2.5.tgz#7b10a1ac2f5473c791f4a7e2835a06e5a157ba98"
   integrity sha512-PQRenDeba0YBL4LHkoYK7kQ8ww3iMYf2UFZomjpL3g53/81mdC4x0wXa8htrFTFc510pcGhvG0VJB4TItcPhVg==

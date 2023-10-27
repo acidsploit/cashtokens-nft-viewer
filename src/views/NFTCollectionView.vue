@@ -1,13 +1,11 @@
 <script setup lang="ts">
 import { useSearchStore } from '@/stores/search';
-import type { TokenDetail } from '@/utils';
 import type { UtxoI } from 'mainnet-js/dist/module/interface';
-import type { IdentitySnapshot, NftType } from 'mainnet-js/dist/module/wallet/bcmr-v2.schema';
-import { computed, onMounted, ref } from 'vue';
+import type { NftType } from 'mainnet-js/dist/module/wallet/bcmr-v2.schema';
+import { computed, onMounted, ref, watchEffect } from 'vue';
 import { storeToRefs } from 'pinia';
 import { useSettingsStore } from '@/stores/settings';
-import { BCMR } from 'mainnet-js';
-
+import { useFavorites } from '@/stores/favorites';
 
 const props = defineProps({
   address: { type: String, required: true },
@@ -22,44 +20,38 @@ interface NftDetail {
 
 const settings = useSettingsStore()
 const search = useSearchStore()
+const favorites = useFavorites()
 
+const { wallet } = storeToRefs(search)
 const nftBalance = ref(0)
 const nftUtxos = ref([] as UtxoI[])
 const nftList = ref([] as NftDetail[])
-const tokenInfo = ref({} as IdentitySnapshot | undefined)
-
-function getNftDetailByCommitment(tokenId: string, commitment: string): NftType | undefined {
-  if (tokenInfo.value?.token?.nfts?.parse) {
-    for (const [comm, nftType] of Object.entries(tokenInfo.value.token.nfts.parse.types)) {
-      if (comm === commitment) {
-        return nftType
-      }
-    }
-  }
-
-  return undefined
-}
+const collectionName = ref("" as string | undefined)
 
 onMounted(async () => {
-  // if (search.wallet?.tokenaddr !== props.address) {
-  search.query = props.address
-  await search.search()
-  await BCMR.fetchAuthChainFromChaingraph({
-    transactionHash: props.tokenId,
-    chaingraphUrl: settings.chaingraphUrl,
-    network: 'mainnet'
-  })
-    .then(async (authChain) => {
-      const httpsUrl = authChain.pop()?.httpsUrl
-      if (typeof httpsUrl !== "undefined") {
-        await BCMR.addMetadataRegistryFromUri(httpsUrl)
-          .then(() => {
-            tokenInfo.value = BCMR.getTokenInfo(props.tokenId);
-          })
-      }
-    })
-  // }
+  if (search.validatedQuery.query === props.address) {
+    await loadNftCardData()
 
+  } else {
+    search.query = props.address
+    search.type = "path"
+    await search.search(props.tokenId).then(async () => {
+      await loadNftCardData()
+    })
+  }
+})
+
+watchEffect(async () => {
+  search.query = props.address
+  search.type = "path"
+  await search.search(props.tokenId).then(async () => {
+    await loadNftCardData()
+  })
+})
+
+async function loadNftCardData() {
+  nftList.value = [] as NftDetail[]
+  collectionName.value = search.getNftCollectionNameById(props.tokenId)
   nftBalance.value = search.wallet ? await search.wallet.getNftTokenBalance(props.tokenId) : 0
   nftUtxos.value = search.wallet ? await search.wallet.getTokenUtxos(props.tokenId) : []
   // console.log("nftUtxos: " + nftUtxos.value)
@@ -67,7 +59,7 @@ onMounted(async () => {
   nftUtxos.value.forEach(nft => {
     if (nft.token?.tokenId && nft.token?.commitment) {
       // console.log("FILTERED NFTS")
-      let nftType = getNftDetailByCommitment(nft.token.tokenId, nft.token.commitment)
+      let nftType = search.getNftDetailByCommitment(nft.token.tokenId, nft.token.commitment)
       if (nftType) {
         // console.log(nftType)
         nftList.value.push({
@@ -78,31 +70,51 @@ onMounted(async () => {
       }
     }
   });
-})
+}
 
-const collectionName = computed(() => {
+const collectionNameFormat = computed(() => {
   console.log(props.tokenId)
   console.log(`${props.tokenId.slice(0, 4)}...${props.tokenId.slice(-4)}`)
-  return tokenInfo.value ? tokenInfo.value.name : `${props.tokenId.slice(0, 4)}...${props.tokenId.slice(-4)}`
+  return collectionName.value ? collectionName.value : `${props.tokenId.slice(0, 4)}...${props.tokenId.slice(-4)}`
 })
+
+function formatImgUri(uri: string | undefined): string | undefined {
+  if (uri && uri.slice(0, 7) === "ipfs://") {
+    let prefix = settings.ipfsGateway
+    let path = uri.slice(7)
+
+    return prefix + path
+  } else if (uri) {
+    return uri
+  }
+
+  return undefined
+}
+
+function handleFavorite(title: string, addr: string | undefined, id: string) {
+  let favId = `${addr}/${id}`
+  favorites.add(favId, title)
+}
 </script>
 
 <template>
   <div class="container">
     <div class="collection-title">
-      <!-- <h3 class="collection-name">{{ tokenInfo ? tokenInfo.name :
-        `${props.tokenId.slice(0, 4)}...${props.tokenId.slice(-4)}` }}</h3> -->
-        <h3 class="collection-name">{{ collectionName }}</h3>
+      <h3 class="collection-name">{{ collectionNameFormat }}</h3>
       <div class="collection-address">
-        <div>On address: {{ props.address }}</div>
+        <div>On address: {{ wallet?.tokenaddr }}</div>
         <div>Child NFTs: {{ nftBalance }}</div>
       </div>
+      <span class="favorite material-symbols-outlined"
+        @click="handleFavorite(collectionNameFormat, search.wallet?.cashaddr, props.tokenId)">
+        favorite
+      </span>
     </div>
 
 
     <div class="nft-container">
       <div class="nft-card" v-for="nft in nftList" v-bind:key="nft.commitment">
-        <img :src="nft.nftType.uris?.icon" />
+        <img v-if="nft.nftType.uris?.icon" :src="formatImgUri(nft.nftType.uris.icon)" />
         <p>{{ nft.nftType.name }}</p>
         <p class="commitment">Commitment: {{ nft.commitment }}</p>
       </div>
@@ -121,6 +133,19 @@ const collectionName = computed(() => {
 .collection-address {
   margin-top: 15px;
   word-break: break-all;
+  flex-grow: 5;
+}
+
+.favorite {
+  text-align: right;
+  align-self: flex-start;
+  flex-grow: 1;
+  max-width: fit-content;
+  cursor: pointer;
+}
+
+.collection-name {
+  flex-grow: 1;
 }
 
 .container h3 {

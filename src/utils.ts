@@ -8,35 +8,76 @@ import {
     isHex,
     hexToBin,
     binToHex,
-    swapEndianness
+    swapEndianness,
+CashAddressNetworkPrefix,
+cashAddressTypeBitsToType,
+decodeCashAddressVersionByte
 } from '@bitauth/libauth'
 import type { IdentitySnapshot } from 'mainnet-js/dist/module/wallet/bcmr-v2.schema';
 
 export enum QueryType {
     empty = "EMPTY",
-    cashaddress = "CASH-ADDRESS",
-    tokenaddress = "TOKEN-ADDRESS",
+    address = "ADDRESS",
     token = "TOKEN",
   }
 
-export interface TokenDetail {
+export interface TokenMetadata {
     id: string;
-    amount: number;
     BCMR: IdentitySnapshot | undefined;
 }
 
-export function isValidCashAddress(address: string): boolean {
+export function isValidAddress(addr: string): boolean {
+  if (addr.includes(":")) {
+    const result = decodeCashAddress(addr);
+    if (typeof result === "string") {
+      return false;
+    }
+  } else {
+    const decodedCashAddress = decodeCashAddressFormatWithoutPrefix(addr);
+    if (typeof decodedCashAddress === "string") {
+      return false;
+    }
+  }
+  
+  return true;
+}
 
-    if (address.slice(0, 12) === 'bitcoincash:') {
-        const decodedCashAddress = decodeCashAddress(address);
-        if (typeof (decodedCashAddress) === 'string') {
-            return false;
+export function formatAddress(addr: string): string {
+    let encodedCashAddress;
+    if (addr.includes(":")) {
+        const decodedCashAddress = decodeCashAddress(addr);
+        if (typeof decodedCashAddress  === "string" ) {
+            throw new Error(decodedCashAddress);
         } else {
-            return true
+            encodedCashAddress = encodeCashAddress(
+                decodedCashAddress.prefix as CashAddressNetworkPrefix, 
+                decodedCashAddress.type, 
+                decodedCashAddress.payload
+                );
+        }
+        
+    } else {
+        const decodedCashAddress = decodeCashAddressFormatWithoutPrefix(addr);
+        if (typeof decodedCashAddress === "string") {
+            throw new Error(decodedCashAddress);
+        } else {
+            const info = decodeCashAddressVersionByte(decodedCashAddress.version);
+            if (typeof info === "string") throw new Error(info);
+            const type = cashAddressTypeBitsToType[
+                info.typeBits as keyof typeof cashAddressTypeBitsToType
+              ] as CashAddressType | undefined;
+            if (type === undefined) {
+              throw Error("Wrong cashaddress type");
+            }
+            encodedCashAddress = encodeCashAddress(
+                decodedCashAddress.prefix as CashAddressNetworkPrefix, 
+                type, 
+                decodedCashAddress.payload
+                );
         }
     }
 
-    return false
+    return encodedCashAddress;
 }
 
 export function isTokenID(input: string): boolean {

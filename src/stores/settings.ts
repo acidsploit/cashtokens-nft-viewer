@@ -1,11 +1,16 @@
 import { defineStore } from "pinia"
-import { computed, ref } from "vue"
+import { ref } from "vue"
 
-const storedChaingraphUri: string | null = localStorage.getItem("chaingraphuri")
-const chaingraphUri = storedChaingraphUri ? storedChaingraphUri : "https://gql.chaingraph.pat.mn/v1/graphql"
+
+const storedChaingraphuri: string | null = localStorage.getItem("chaingraphuri")
+const chaingraphuri = storedChaingraphuri ? storedChaingraphuri : "https://gql.chaingraph.pat.mn/v1/graphql"
+
+const storedIpfsGateway:  string | null = localStorage.getItem("ipfsgateway")
+const ipfsgateway = storedIpfsGateway ? storedIpfsGateway : "https://ipfs.io/ipfs/"
 
 export const useSettingsStore = defineStore('settings', () => {
-  const chaingraphUrl = ref(chaingraphUri)
+  const chaingraphUrl = ref(chaingraphuri)
+  const ipfsGateway = ref(ipfsgateway)
 
-  return { chaingraphUrl }
+  return { chaingraphUrl, ipfsGateway }
 })
