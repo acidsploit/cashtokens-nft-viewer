@@ -59,7 +59,7 @@ function removeFav(addr: string | undefined, id: string) {
 <template>
   <!-- <WalletNav /> -->
 
-  <div v-if="search.nftDetails.length !== 0 && search.wallet" class="wrapper container">
+  <div v-if="search.nftDetails.length !== 0" class="wrapper container">
     <div class="heading">
       <div class="col title">
         <h3>NFT</h3>
@@ -75,14 +75,14 @@ function removeFav(addr: string | undefined, id: string) {
         <div class="collection-name">
           <img v-if="detail.BCMR?.uris?.icon" :src="formatImgUri(detail.BCMR.uris.icon)" alt="icon">
           <h3>{{ collectionName(detail.BCMR?.name, detail.id) }} </h3>
-          <span v-if="!favorites.isFav(`${search.wallet.cashaddr}/${detail.id}`)"
+          <span v-if="!favorites.isFav(`${search.wallet?.cashaddr}/${detail.id}`)"
             class="favorite material-symbols-outlined"
-            @click="addFav(collectionName(detail.BCMR?.name, detail.id), search.wallet.cashaddr, detail.id)">
+            @click="addFav(collectionName(detail.BCMR?.name, detail.id), search.wallet?.cashaddr, detail.id)">
             favorite
           </span>
-          <span v-if="favorites.isFav(`${search.wallet.cashaddr}/${detail.id}`)"
+          <span v-if="favorites.isFav(`${search.wallet?.cashaddr}/${detail.id}`)"
             class="favorite material-symbols-outlined red"
-            @click="removeFav(search.wallet.cashaddr, detail.id)">
+            @click="removeFav(search.wallet?.cashaddr, detail.id)">
             favorite
           </span>
         </div>
