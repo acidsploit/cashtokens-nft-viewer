@@ -1,4 +1,6 @@
 import './assets/main.css'
+import 'vue-toast-notification/dist/theme-sugar.css';
+
 // import '../node_modules/chota/dist/chota.css'
 
 

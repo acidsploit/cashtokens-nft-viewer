@@ -1,10 +1,13 @@
 <script setup lang="ts">
 import { onMounted } from "vue";
+import {useToast} from 'vue-toast-notification';
+
 // import WalletNav from "@/components/WalletNav.vue";
 import PageLoading from "@/components/PageLoading.vue";
 import { useSearchStore } from "@/stores/search";
 import { useSettingsStore } from "@/stores/settings";
 import { useFavorites } from "@/stores/favorites"
+import router from "@/router";
 
 
 const props = defineProps({
@@ -55,6 +58,20 @@ function removeFav(addr: string | undefined, id: string) {
   favorites.remove(favId)
 }
 
+async function share(address: string | undefined, tokenId: string) {
+  const origin = window.location.origin
+  const $toast = useToast();
+
+  await navigator.clipboard.writeText(`${origin}/collection/${address}/${tokenId}`).then(() => {
+    let instance = $toast.open({
+    message: "Link copied to clipboard",
+    type: "success",
+    position: "top-right",
+    duration: 5000
+  })
+  }) 
+}
+
 </script>
 
 <template>
@@ -79,14 +96,16 @@ function removeFav(addr: string | undefined, id: string) {
         <div class="collection-name">
           <img v-if="detail.BCMR?.uris?.icon" :src="formatImgUri(detail.BCMR.uris.icon)" alt="icon">
           <h3>{{ collectionName(detail.BCMR?.name, detail.id) }} </h3>
+          <span class="share material-symbols-outlined" @click="share(search.wallet?.cashaddr, detail.id)">
+            share
+          </span>
           <span v-if="!favorites.isFav(`${search.wallet?.cashaddr}/${detail.id}`)"
             class="favorite material-symbols-outlined"
             @click="addFav(collectionName(detail.BCMR?.name, detail.id), search.wallet?.cashaddr, detail.id)">
             favorite
           </span>
           <span v-if="favorites.isFav(`${search.wallet?.cashaddr}/${detail.id}`)"
-            class="favorite material-symbols-outlined red"
-            @click="removeFav(search.wallet?.cashaddr, detail.id)">
+            class="favorite material-symbols-outlined red" @click="removeFav(search.wallet?.cashaddr, detail.id)">
             favorite
           </span>
         </div>
@@ -98,7 +117,8 @@ function removeFav(addr: string | undefined, id: string) {
             {{ detail.amount / 10 ** (detail.BCMR?.token?.decimals ? detail.BCMR?.token?.decimals : 0) }}
             {{ detail.BCMR?.token?.symbol ? detail.BCMR?.token?.symbol : "units" }}
           </p>
-          <RouterLink class="btn-view-collection" :to="`/collection/${search.wallet?.address}/${detail.id}`">View Collection
+          <RouterLink class="btn-view-collection" :to="`/collection/${search.wallet?.address}/${detail.id}`">View
+            Collection
           </RouterLink>
         </div>
       </div>
@@ -175,6 +195,9 @@ function removeFav(addr: string | undefined, id: string) {
   flex-grow: 1;
 }
 
+.favorite:hover {
+  cursor: pointer;
+}
 .favorite {
   text-align: right;
   align-self: flex-start;
@@ -183,8 +206,17 @@ function removeFav(addr: string | undefined, id: string) {
   font-size: 4rem;
 }
 
-.favorite:hover {
+.share:hover {
   cursor: pointer;
+}
+
+.share {
+  text-align: right;
+  align-self: flex-start;
+  flex-grow: 1;
+  max-width: fit-content;
+  font-size: 4rem;
+  margin: 0 1rem 0 0;
 }
 
 .bottom-row {

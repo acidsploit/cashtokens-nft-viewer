@@ -31,13 +31,13 @@ function toggleSidebar() {
       <img v-if="isDark" src="./assets/images/menu-dark.svg" alt="icon">
     </button>
     <DarkSwitch />
-      <div class="brand">
-          <img @click="handleLogoClick" class="logo" src="./assets/images/cashtokens-logo.svg">
-          <div @click="handleLogoClick" class="title col-1">
-            <h1>NFT</h1>
-            <h1>Viewer</h1>
-          </div>
+    <div class="brand">
+      <img @click="handleLogoClick" class="logo" src="./assets/images/cashtokens-logo.svg">
+      <div @click="handleLogoClick" class="title col-1">
+        <h1>NFT</h1>
+        <h1>Viewer</h1>
       </div>
+    </div>
 
     <!-- <SearchBar v-show="$route.name !== 'settings'" /> -->
   </header>
@@ -57,11 +57,6 @@ function toggleSidebar() {
 </template>
 
 <style scoped>
-
-footer {
-    box-shadow: 0 50vh 0 50vh var(--bg-secondary-color);
-}
-
 .brand {
   margin: 2rem 0 1rem 0;
   display: flex;
@@ -93,10 +88,6 @@ footer {
 
 }
 
-/* .brand img {
-  cursor: pointer;
-} */
-
 header {
   text-align: center;
 }
@@ -112,11 +103,6 @@ main.container {
 .content {
   align-self: flex-start;
   min-height: 60vh;
-}
-
-footer {
-  margin-top: 0px;
-  align-self: flex-end stretch;
 }
 
 .sidebar {
@@ -144,6 +130,11 @@ footer {
   left: 0;
   top: 50;
   z-index: 1;
+}
+
+footer {
+  /* align-self: center stretch; */
+  box-shadow: 0 50vh 0 50vh var(--bg-secondary-color);
 }
 
 @media only screen and (min-width: 768px) {
@@ -180,7 +171,10 @@ footer {
 }
 
 @media screen and (max-width: 599px) {
-  .col, [class*="col-"], [class^="col-"] {
+
+  .col,
+  [class*="col-"],
+  [class^="col-"] {
     flex: 0 0 calc((100% / (12/1)) - var(--grid-gutter)) !important;
   }
 }

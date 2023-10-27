@@ -34,7 +34,6 @@ export const useSearchStore = defineStore('search', () => {
   const tokenDetails = ref([] as TokenDetail[])
 
   async function search(tokenId?: string) {
-    // if (isValidAddress(query.value) && formatAddress(query.value) !== wallet.value?.cashaddr) {
     if (query.value !== "" && isValidAddress(query.value)) {
 
       validatedQuery.value.query = formatAddress(query.value)

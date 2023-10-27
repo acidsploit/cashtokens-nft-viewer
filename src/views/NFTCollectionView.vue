@@ -2,6 +2,8 @@
 import { computed, onMounted, ref, watch } from 'vue';
 import type { UtxoI } from 'mainnet-js/dist/module/interface';
 import type { NftType } from 'mainnet-js/dist/module/wallet/bcmr-v2.schema';
+import {useToast} from 'vue-toast-notification';
+
 import { useSearchStore } from '@/stores/search';
 import PageLoading from "@/components/PageLoading.vue";
 import { useSettingsStore } from '@/stores/settings';
@@ -99,6 +101,20 @@ function removeFav(addr: string | undefined, id: string) {
   let favId = `${addr}/${id}`
   favorites.remove(favId)
 }
+
+async function share(address: string | undefined, tokenId: string) {
+  const origin = window.location.origin
+  const $toast = useToast();
+
+  await navigator.clipboard.writeText(`${origin}/collection/${address}/${tokenId}`).then(() => {
+    let instance = $toast.open({
+    message: "Link copied to clipboard",
+    type: "success",
+    position: "top-right",
+    duration: 5000
+  })
+  }) 
+}
 </script>
 
 <template>
@@ -113,14 +129,16 @@ function removeFav(addr: string | undefined, id: string) {
         <div>On address: {{ search.wallet?.tokenaddr }}</div>
         <div>Child NFTs: {{ nftBalance }}</div>
       </div>
+      <span class="share material-symbols-outlined" @click="share(search.wallet?.cashaddr, props.tokenId)">
+        share
+      </span>
       <span v-if="!favorites.isFav(`${search.wallet?.cashaddr}/${props.tokenId}`)"
         class="favorite material-symbols-outlined"
         @click="addFav(collectionNameFormat, search.wallet?.cashaddr, props.tokenId)">
         favorite
       </span>
       <span v-if="favorites.isFav(`${search.wallet?.cashaddr}/${props.tokenId}`)"
-        class="favorite material-symbols-outlined red"
-        @click="removeFav(search.wallet?.cashaddr, props.tokenId)">
+        class="favorite material-symbols-outlined red" @click="removeFav(search.wallet?.cashaddr, props.tokenId)">
         favorite
       </span>
     </div>
@@ -149,17 +167,32 @@ function removeFav(addr: string | undefined, id: string) {
   flex-grow: 5;
 }
 
+.collection-name {
+  flex-grow: 1;
+}
+
+.favorite:hover {
+  cursor: pointer;
+}
 .favorite {
   text-align: right;
   align-self: flex-start;
   flex-grow: 1;
   max-width: fit-content;
-  cursor: pointer;
   font-size: 4rem;
 }
 
-.collection-name {
+.share:hover {
+  cursor: pointer;
+}
+
+.share {
+  text-align: right;
+  align-self: flex-start;
   flex-grow: 1;
+  max-width: fit-content;
+  font-size: 4rem;
+  margin: 0 1rem 0 0;
 }
 
 .container h3 {
