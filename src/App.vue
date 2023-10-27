@@ -33,7 +33,7 @@ function toggleSidebar() {
     <DarkSwitch />
       <div class="brand">
           <img @click="handleLogoClick" class="logo" src="./assets/images/cashtokens-logo.svg">
-          <div class="col-1">
+          <div @click="handleLogoClick" class="title col-1">
             <h1>NFT</h1>
             <h1>Viewer</h1>
           </div>
@@ -58,7 +58,9 @@ function toggleSidebar() {
 
 <style scoped>
 
-
+footer {
+    box-shadow: 0 50vh 0 50vh var(--bg-secondary-color);
+}
 
 .brand {
   margin: 2rem 0 1rem 0;
@@ -83,11 +85,17 @@ function toggleSidebar() {
 
 .logo {
   max-width: 100px;
-}
-
-.brand img {
   cursor: pointer;
 }
+
+.title {
+  cursor: pointer;
+
+}
+
+/* .brand img {
+  cursor: pointer;
+} */
 
 header {
   text-align: center;
@@ -103,6 +111,7 @@ main.container {
 
 .content {
   align-self: flex-start;
+  min-height: 60vh;
 }
 
 footer {

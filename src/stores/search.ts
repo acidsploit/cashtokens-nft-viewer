@@ -35,7 +35,7 @@ export const useSearchStore = defineStore('search', () => {
 
   async function search(tokenId?: string) {
     // if (isValidAddress(query.value) && formatAddress(query.value) !== wallet.value?.cashaddr) {
-    if (isValidAddress(query.value)) {
+    if (query.value !== "" && isValidAddress(query.value)) {
 
       validatedQuery.value.query = formatAddress(query.value)
       validatedQuery.value.queryType = QueryType.address
@@ -104,8 +104,11 @@ export const useSearchStore = defineStore('search', () => {
     //   query.value = ""
     // }
     else {
-      wallet.value = null
-      alert("invalid search query")
+      if (query.value !== "") {
+        wallet.value = null
+        alert("invalid search query")
+      }
+      
     }
   }
 

@@ -8,7 +8,7 @@ import HomeSearchBar from '@/components/HomeSearchBar.vue';
 <template>
     <!-- <WalletNav /> -->
     <div class="container wrapper">
-        <h1>Browse NFT Collections</h1>
+        <h1>Browse CashTokens NFT Collections</h1>
         <p>By searching a Bitcoin Cash address you can browse, track and share NFT CashTokens collections.</p>
         <HomeSearchBar />
     </div>
@@ -18,8 +18,11 @@ import HomeSearchBar from '@/components/HomeSearchBar.vue';
 .wrapper {
     display: flex;
     flex-direction: column;
+    flex-grow: stretch;
     justify-content: center;
     align-items: center;
+    min-height: 40vh;
+    /* margin: 0 0 40vh 0; */
 }
 
 .wrapper p {
