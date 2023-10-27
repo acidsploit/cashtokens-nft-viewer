@@ -13,7 +13,11 @@ function toggleSidebar() {
 </script>
 
 <template>
-  <button @click="toggleSidebar" id="btn-close-sidebar" title="Close sidebar"></button>
+  <!-- <button @click="toggleSidebar" id="btn-close-sidebar" title="Close sidebar"></button> -->
+  <span id="btn-close-sidebar" class="close material-symbols-outlined" @click="toggleSidebar">
+    cancel
+  </span>
+
   <div class="col title">
     <h3>My</h3>
     <h3>Collections</h3>
@@ -57,6 +61,7 @@ function toggleSidebar() {
   cursor: pointer;
   flex-grow: 0;
   margin-right: 1rem;
+  color: red;
 }
 
 .title {
@@ -76,11 +81,21 @@ function toggleSidebar() {
 
 #btn-close-sidebar {
   float: right;
+  margin: 1rem 1rem 0 0;
+  font-size: 4rem;
 }
 
 @media only screen and (min-width: 768px) {
   #btn-close-sidebar {
     display: none;
   }
+}
+
+.material-symbols-outlined {
+  font-variation-settings:
+    'FILL' 0,
+    'wght' 400,
+    'GRAD' 0,
+    'opsz' 32
 }
 </style>

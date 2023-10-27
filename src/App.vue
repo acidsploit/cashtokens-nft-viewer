@@ -2,7 +2,6 @@
 import { RouterView } from "vue-router"
 import { useDark } from "@vueuse/core"
 
-
 import router from './router'
 
 import CollectionListView from './views/CollectionListView.vue'
@@ -62,7 +61,6 @@ function toggleSidebar() {
 
 
 .brand {
-  /* padding: 1rem 0 1rem 0; */
   margin: 2rem 0 1rem 0;
   display: flex;
   align-items: center;
@@ -85,7 +83,6 @@ function toggleSidebar() {
 
 .logo {
   max-width: 100px;
-  /* margin-top: 15px; */
 }
 
 .brand img {
@@ -150,8 +147,6 @@ footer {
   .sidebar {
     min-width: 30rem;
     margin-right: 1rem;
-    /* flex: 20%; */
-    /* flex: 20rem; */
     flex: 1;
     position: inherit;
     height: auto;
@@ -167,7 +162,6 @@ footer {
   }
 
   .content {
-    /* flex: 80%; */
     flex: 5;
   }
 
@@ -175,16 +169,6 @@ footer {
     display: none;
   }
 }
-
-/* @media only screen and (min-width: 1200px) {
-  .sidebar {
-    flex: 15%;
-  }
-
-  .content {
-    flex: 85%;
-  }
-} */
 
 @media screen and (max-width: 599px) {
   .col, [class*="col-"], [class^="col-"] {
