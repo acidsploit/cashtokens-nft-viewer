@@ -96,7 +96,7 @@ function handleFavorite(title: string, addr: string | undefined, id: string) {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  align-items: baseline;
+  align-items: flex-end;
 }
 .btn-view-collection {
   padding: .5rem 1rem .5rem 1rem;
@@ -139,6 +139,7 @@ function handleFavorite(title: string, addr: string | undefined, id: string) {
   align-self: flex-start;
   flex-grow: 1;
   max-width: fit-content;
+  font-size: 4rem;
 }
 
 .favorite:hover {
@@ -147,6 +148,8 @@ function handleFavorite(title: string, addr: string | undefined, id: string) {
 
 p.amount {
   font-family: monospace;
+  margin: 0;
+  line-height: 1;
 }
 
 .wrapper {
