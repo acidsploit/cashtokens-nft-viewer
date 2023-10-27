@@ -105,9 +105,19 @@ function formatImgUri(uri: string | undefined): string | undefined {
   return undefined
 }
 
-function handleFavorite(title: string, addr: string | undefined, id: string) {
+// function handleFavorite(title: string, addr: string | undefined, id: string) {
+//   let favId = `${addr}/${id}`
+//   favorites.add(favId, title)
+// }
+
+function addFav(title: string, addr: string | undefined, id: string) {
   let favId = `${addr}/${id}`
   favorites.add(favId, title)
+}
+
+function removeFav(addr: string | undefined, id: string) {
+  let favId = `${addr}/${id}`
+  favorites.remove(favId)
 }
 </script>
 
@@ -119,8 +129,14 @@ function handleFavorite(title: string, addr: string | undefined, id: string) {
         <div>On address: {{ search.wallet?.tokenaddr }}</div>
         <div>Child NFTs: {{ nftBalance }}</div>
       </div>
-      <span class="favorite material-symbols-outlined"
-        @click="handleFavorite(collectionNameFormat, search.wallet?.cashaddr, props.tokenId)">
+      <span v-if="!favorites.isFav(`${search.wallet?.cashaddr}/${props.tokenId}`)"
+        class="favorite material-symbols-outlined"
+        @click="addFav(collectionNameFormat, search.wallet?.cashaddr, props.tokenId)">
+        favorite
+      </span>
+      <span v-if="favorites.isFav(`${search.wallet?.cashaddr}/${props.tokenId}`)"
+        class="favorite material-symbols-outlined red"
+        @click="removeFav(search.wallet?.cashaddr, props.tokenId)">
         favorite
       </span>
     </div>
@@ -156,6 +172,7 @@ function handleFavorite(title: string, addr: string | undefined, id: string) {
   flex-grow: 1;
   max-width: fit-content;
   cursor: pointer;
+  font-size: 4rem;
 }
 
 .collection-name {
@@ -212,5 +229,9 @@ function handleFavorite(title: string, addr: string | undefined, id: string) {
   font-size: 12;
   font-family: monospace;
   align-self: baseline;
+}
+
+.red {
+  color: red;
 }
 </style>

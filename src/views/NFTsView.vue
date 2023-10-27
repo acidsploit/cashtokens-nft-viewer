@@ -2,7 +2,6 @@
 import { onMounted } from "vue";
 import WalletNav from "@/components/WalletNav.vue";
 import { useSearchStore } from "@/stores/search";
-import { storeToRefs } from 'pinia';
 import { useSettingsStore } from "@/stores/settings";
 import { useFavorites } from "@/stores/favorites"
 
@@ -45,16 +44,22 @@ function formatImgUri(uri: string | undefined): string | undefined {
   return undefined
 }
 
-function handleFavorite(title: string, addr: string | undefined, id: string) {
+function addFav(title: string, addr: string | undefined, id: string) {
   let favId = `${addr}/${id}`
   favorites.add(favId, title)
 }
+
+function removeFav(addr: string | undefined, id: string) {
+  let favId = `${addr}/${id}`
+  favorites.remove(favId)
+}
+
 </script>
 
 <template>
   <!-- <WalletNav /> -->
 
-  <div v-if="search.nftDetails.length !== 0" class="wrapper container">
+  <div v-if="search.nftDetails.length !== 0 && search.wallet" class="wrapper container">
     <div class="heading">
       <div class="col title">
         <h3>NFT</h3>
@@ -70,14 +75,20 @@ function handleFavorite(title: string, addr: string | undefined, id: string) {
         <div class="collection-name">
           <img v-if="detail.BCMR?.uris?.icon" :src="formatImgUri(detail.BCMR.uris.icon)" alt="icon">
           <h3>{{ collectionName(detail.BCMR?.name, detail.id) }} </h3>
-          <span class="favorite material-symbols-outlined"
-            @click="handleFavorite(collectionName(detail.BCMR?.name, detail.id), search.wallet?.cashaddr, detail.id)">
+          <span v-if="!favorites.isFav(`${search.wallet.cashaddr}/${detail.id}`)"
+            class="favorite material-symbols-outlined"
+            @click="addFav(collectionName(detail.BCMR?.name, detail.id), search.wallet.cashaddr, detail.id)">
+            favorite
+          </span>
+          <span v-if="favorites.isFav(`${search.wallet.cashaddr}/${detail.id}`)"
+            class="favorite material-symbols-outlined red"
+            @click="removeFav(search.wallet.cashaddr, detail.id)">
             favorite
           </span>
         </div>
 
         <p class="description">{{ detail.BCMR?.description ? detail.BCMR?.description : "" }}</p>
-        
+
         <div class="bottom-row">
           <p class="amount">
             {{ detail.amount / 10 ** (detail.BCMR?.token?.decimals ? detail.BCMR?.token?.decimals : 0) }}
@@ -86,7 +97,6 @@ function handleFavorite(title: string, addr: string | undefined, id: string) {
           <RouterLink class="btn-view-collection" :to="`/collection/${search.wallet?.address}/${detail.id}`">View Collection
           </RouterLink>
         </div>
-
       </div>
     </div>
   </div>
@@ -199,5 +209,10 @@ p.amount {
     'wght' 400,
     'GRAD' 0,
     'opsz' 24
+}
+
+.red {
+  color: red;
+
 }
 </style>
