@@ -9,8 +9,9 @@
         <div class="content">
             <h3>Props</h3>
             <p><a href="https://twitter.com/GeukensMathieu" target="_blank">Mathieu</a></p>
-            <p><a href="https://cashonize.com/" target="_blank">Cashonize Wallet</a></p>
-            <p><a href="https://mainnet.cash/" target="_blank">mainnet-js</a></p>
+            <p><a href="https://cashonize.com" target="_blank">Cashonize Wallet</a></p>
+            <p><a href="https://mainnet.cash" target="_blank">mainnet-js</a></p>
+            <p><a href="https://github.com/bitauth/libauth" target="_blank">bitauth/libauth</a></p>
         </div>
         <div class="content">
             <h3>Links</h3>
