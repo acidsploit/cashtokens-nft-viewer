@@ -9,7 +9,7 @@ import HomeSearchBar from '@/components/HomeSearchBar.vue';
     <!-- <WalletNav /> -->
     <div class="container wrapper">
         <h1>Browse CashTokens NFT Collections</h1>
-        <p>By searching for a Bitcoin Cash address you can browse, track and share NFT CashTokens collections.</p>
+        <p>By searching for a Bitcoin Cash address you can browse, track and share CashTokens NFT collections.</p>
         <HomeSearchBar />
     </div>
 </template>
