@@ -155,6 +155,24 @@ async function share(address: string | undefined, tokenId: string) {
 </template>
 
 <style scoped>
+.wrapper {
+  border-style: solid;
+  border-radius: 4px;
+  border-width: 2px;
+  border-color: var(--color-darkGrey);
+  height: 100%;
+}
+
+.container h3 {
+  max-width: fit-content;
+  word-wrap: break-word;
+  text-align: left;
+  font-size: 1.3em;
+  font-weight: 800;
+  line-height: 30px;
+  transform: rotate(-13deg);
+}
+
 .collection-title {
   display: flex;
   flex-direction: row;
@@ -193,23 +211,6 @@ async function share(address: string | undefined, tokenId: string) {
   max-width: fit-content;
   font-size: 4rem;
   margin: 0 1rem 0 0;
-}
-
-.container h3 {
-  max-width: fit-content;
-  word-wrap: break-word;
-  text-align: left;
-  font-size: 1.3em;
-  font-weight: 800;
-  line-height: 30px;
-  transform: rotate(-13deg);
-}
-
-.wrapper {
-  border-style: solid;
-  border-radius: 4px;
-  border-width: 2px;
-  border-color: var(--color-darkGrey);
 }
 
 .nft-container {
