@@ -1,8 +1,6 @@
 <script setup lang="ts">
 import { useDark } from "@vueuse/core"
-import { storeToRefs } from "pinia"
 import { useSearchStore } from "@/stores/search"
-import router from "@/router";
 
 
 const isDark = useDark()

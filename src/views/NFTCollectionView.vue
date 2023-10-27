@@ -2,8 +2,7 @@
 import { useSearchStore } from '@/stores/search';
 import type { UtxoI } from 'mainnet-js/dist/module/interface';
 import type { NftType } from 'mainnet-js/dist/module/wallet/bcmr-v2.schema';
-import { computed, onMounted, ref, watchEffect } from 'vue';
-import { storeToRefs } from 'pinia';
+import { computed, onMounted, ref, watch, watchEffect } from 'vue';
 import { useSettingsStore } from '@/stores/settings';
 import { useFavorites } from '@/stores/favorites';
 
@@ -22,7 +21,6 @@ const settings = useSettingsStore()
 const search = useSearchStore()
 const favorites = useFavorites()
 
-const { wallet } = storeToRefs(search)
 const nftBalance = ref(0)
 const nftUtxos = ref([] as UtxoI[])
 const nftList = ref([] as NftDetail[])
@@ -41,13 +39,29 @@ onMounted(async () => {
   }
 })
 
-watchEffect(async () => {
-  search.query = props.address
-  search.type = "path"
-  await search.search(props.tokenId).then(async () => {
-    await loadNftCardData()
-  })
-})
+
+
+watch(
+  [() => props.address, () => props.tokenId],
+  async ([newAaddress, newTokenId]) => {
+    search.query = newAaddress
+    search.type = "path"
+    await search.search(newTokenId).then(async () => {
+      await loadNftCardData()
+    })
+  }
+)
+
+// watch(
+//   () => props.tokenId,
+//   async (tokenId) => {
+//     search.query = props.address
+//     search.type = "path"
+//     await search.search(tokenId).then(async () => {
+//       await loadNftCardData()
+//     })
+//   }
+// )
 
 async function loadNftCardData() {
   nftList.value = [] as NftDetail[]
@@ -102,7 +116,7 @@ function handleFavorite(title: string, addr: string | undefined, id: string) {
     <div class="collection-title">
       <h3 class="collection-name">{{ collectionNameFormat }}</h3>
       <div class="collection-address">
-        <div>On address: {{ wallet?.tokenaddr }}</div>
+        <div>On address: {{ search.wallet?.tokenaddr }}</div>
         <div>Child NFTs: {{ nftBalance }}</div>
       </div>
       <span class="favorite material-symbols-outlined"

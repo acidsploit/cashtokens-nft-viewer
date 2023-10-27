@@ -40,15 +40,10 @@ export const useSearchStore = defineStore('search', () => {
 
       validatedQuery.value.query = formatAddress(query.value)
       validatedQuery.value.queryType = QueryType.address
-      query.value = ""
-      wallet.value = {} as Wallet
+      wallet.value = null as Wallet | null
       nftDetails.value = []
       tokenDetails.value = []
-
-      if (type.value === "query") {
-        router.push(`/nfts/${validatedQuery.value.query}`)
-        type.value = ""
-      }
+      query.value = ""
 
       await Wallet.fromCashaddr(validatedQuery.value.query).then(async (wlt) => {
         wallet.value = wlt
@@ -95,6 +90,11 @@ export const useSearchStore = defineStore('search', () => {
         //   })
         // }
       })
+
+      if (type.value === "query") {
+        router.push(`/nfts/${validatedQuery.value.query}`)
+        type.value = ""
+      }
     }
     // else if (isTokenID(query.value)) {
     //   validatedQuery.value.query = query.value
