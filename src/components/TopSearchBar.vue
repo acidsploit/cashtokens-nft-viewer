@@ -18,7 +18,7 @@ async function handleSubmit() {
     <form @submit.prevent="handleSubmit" class="search-form">
       <img v-if="!isDark" @click="handleSubmit" src="../assets/images/search.svg" alt="search">
       <img v-if="isDark" @click="handleSubmit" src="../assets/images/search-dark.svg" alt="search">
-      <input v-model="search.query" class="search-input" placeholder="search by cashaddress" />
+      <input v-model.trim="search.query" class="search-input" placeholder="search by cashaddress" />
     </form>
   </div>
 </template>
