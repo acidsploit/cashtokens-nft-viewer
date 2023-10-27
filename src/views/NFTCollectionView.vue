@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import { useSearchStore } from '@/stores/search';
+import { computed, onMounted, ref, watch } from 'vue';
 import type { UtxoI } from 'mainnet-js/dist/module/interface';
 import type { NftType } from 'mainnet-js/dist/module/wallet/bcmr-v2.schema';
-import { computed, onMounted, ref, watch, watchEffect } from 'vue';
+import { useSearchStore } from '@/stores/search';
+import PageLoading from "@/components/PageLoading.vue";
 import { useSettingsStore } from '@/stores/settings';
 import { useFavorites } from '@/stores/favorites';
 
@@ -122,7 +123,11 @@ function removeFav(addr: string | undefined, id: string) {
 </script>
 
 <template>
-  <div class="container">
+  <div v-if="nftList.length === 0">
+    <PageLoading />
+  </div>
+
+  <div v-if="nftList.length !== 0" class="wrapper container">
     <div class="collection-title">
       <h3 class="collection-name">{{ collectionNameFormat }}</h3>
       <div class="collection-address">
@@ -191,7 +196,7 @@ function removeFav(addr: string | undefined, id: string) {
   transform: rotate(-13deg);
 }
 
-.container {
+.wrapper {
   border-style: solid;
   border-radius: 4px;
   border-width: 2px;

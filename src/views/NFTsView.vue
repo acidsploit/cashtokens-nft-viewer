@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { onMounted } from "vue";
-import WalletNav from "@/components/WalletNav.vue";
+// import WalletNav from "@/components/WalletNav.vue";
+import PageLoading from "@/components/PageLoading.vue";
 import { useSearchStore } from "@/stores/search";
 import { useSettingsStore } from "@/stores/settings";
 import { useFavorites } from "@/stores/favorites"
@@ -58,6 +59,9 @@ function removeFav(addr: string | undefined, id: string) {
 
 <template>
   <!-- <WalletNav /> -->
+  <div v-if="search.nftDetails.length === 0">
+    <PageLoading />
+  </div>
 
   <div v-if="search.nftDetails.length !== 0" class="wrapper container">
     <div class="heading">
