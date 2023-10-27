@@ -105,7 +105,7 @@ main.container {
 }
 
 .content {
-  align-self: center;
+  align-self: flex-start;
 }
 
 footer {
