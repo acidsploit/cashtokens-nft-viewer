@@ -1,10 +1,9 @@
-import { defineStore } from "pinia"
+import { acceptHMRUpdate, defineStore } from "pinia"
 import { ref } from "vue"
 import { BCMR, Wallet } from "mainnet-js"
 import type { NftType } from "mainnet-js/dist/module/wallet/bcmr-v2.schema";
 import {
   isValidAddress,
-  isTokenID,
   QueryType,
   formatAddress,
   type TokenMetadata
@@ -184,5 +183,8 @@ export const useSearchStore = defineStore('search', () => {
     getNftCollectionNameById,
     getNftDetailByCommitment,
   }
-
 })
+
+if (import.meta.hot) {
+  import.meta.hot.accept(acceptHMRUpdate(useSearchStore, import.meta.hot))
+}
