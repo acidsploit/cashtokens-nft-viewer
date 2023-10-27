@@ -60,7 +60,7 @@ export const useSearchStore = defineStore('search', () => {
                 amount: amount,
                 BCMR: md?.BCMR
               } as NFTDetail
-              console.log("nftDetails.push")
+              // console.log("nftDetails.push")
               nftDetails.value.push(detail)
             })
           })
@@ -74,7 +74,7 @@ export const useSearchStore = defineStore('search', () => {
                   amount: amount,
                   BCMR: md?.BCMR
                 } as NFTDetail
-                console.log("nftDetails.push all")
+                // console.log("nftDetails.push all")
                 nftDetails.value.push(detail)
               })
             }
@@ -127,12 +127,12 @@ export const useSearchStore = defineStore('search', () => {
         if (httpsUrl !== undefined) {
           await BCMR.addMetadataRegistryFromUri(httpsUrl).then(() => {
             const info = BCMR.getTokenInfo(tokenId);
-            console.log("BCMR: " + JSON.stringify(info))
+            // console.log("BCMR: " + JSON.stringify(info))
             const detail: TokenMetadata = {
               id: tokenId,
               BCMR: info
             }
-            console.log("cachedTokenMetadata.push")
+            // console.log("cachedTokenMetadata.push")
             cachedTokenMetadata.value.push(detail)
 
             result = detail

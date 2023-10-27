@@ -53,30 +53,16 @@ watch(
   }
 )
 
-// watch(
-//   () => props.tokenId,
-//   async (tokenId) => {
-//     search.query = props.address
-//     search.type = "path"
-//     await search.search(tokenId).then(async () => {
-//       await loadNftCardData()
-//     })
-//   }
-// )
-
 async function loadNftCardData() {
   nftList.value = [] as NftDetail[]
   collectionName.value = search.getNftCollectionNameById(props.tokenId)
   nftBalance.value = search.wallet ? await search.wallet.getNftTokenBalance(props.tokenId) : 0
   nftUtxos.value = search.wallet ? await search.wallet.getTokenUtxos(props.tokenId) : []
-  // console.log("nftUtxos: " + nftUtxos.value)
 
   nftUtxos.value.forEach(nft => {
     if (nft.token?.tokenId && nft.token?.commitment) {
-      // console.log("FILTERED NFTS")
       let nftType = search.getNftDetailByCommitment(nft.token.tokenId, nft.token.commitment)
       if (nftType) {
-        // console.log(nftType)
         nftList.value.push({
           id: nft.token.tokenId,
           commitment: nft.token.commitment,
@@ -88,8 +74,6 @@ async function loadNftCardData() {
 }
 
 const collectionNameFormat = computed(() => {
-  console.log(props.tokenId)
-  console.log(`${props.tokenId.slice(0, 4)}...${props.tokenId.slice(-4)}`)
   return collectionName.value ? collectionName.value : `${props.tokenId.slice(0, 4)}...${props.tokenId.slice(-4)}`
 })
 
@@ -105,11 +89,6 @@ function formatImgUri(uri: string | undefined): string | undefined {
 
   return undefined
 }
-
-// function handleFavorite(title: string, addr: string | undefined, id: string) {
-//   let favId = `${addr}/${id}`
-//   favorites.add(favId, title)
-// }
 
 function addFav(title: string, addr: string | undefined, id: string) {
   let favId = `${addr}/${id}`
@@ -161,7 +140,6 @@ function removeFav(addr: string | undefined, id: string) {
 .collection-title {
   display: flex;
   flex-direction: row;
-  /* justify-content: space-between; */
   margin: 25px;
 }
 
@@ -185,8 +163,6 @@ function removeFav(addr: string | undefined, id: string) {
 }
 
 .container h3 {
-  /* margin-left: 25px;
-  margin-top: 25px; */
   max-width: fit-content;
   word-wrap: break-word;
   text-align: left;
@@ -208,7 +184,6 @@ function removeFav(addr: string | undefined, id: string) {
   display: flex;
   flex-wrap: wrap;
   justify-content: space-around;
-  /* position: relative; */
 }
 
 .nft-card {
