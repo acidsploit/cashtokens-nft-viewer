@@ -47,6 +47,12 @@ export const useSearchStore = defineStore('search', () => {
 
       await Wallet.fromCashaddr(validatedQuery.value.query).then(async (wlt) => {
         wallet.value = wlt
+
+        if (type.value === "query") {
+          router.push(`/nfts/${validatedQuery.value.query}`)
+          type.value = ""
+        }
+
         if (tokenId && wallet.value !== null) {
           await loadTokenMetadata(tokenId).then(async (md) => {
             await wallet.value?.getNftTokenBalance(tokenId).then((amount) => {
@@ -91,10 +97,7 @@ export const useSearchStore = defineStore('search', () => {
         // }
       })
 
-      if (type.value === "query") {
-        router.push(`/nfts/${validatedQuery.value.query}`)
-        type.value = ""
-      }
+      
     }
     // else if (isTokenID(query.value)) {
     //   validatedQuery.value.query = query.value
