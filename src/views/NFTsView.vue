@@ -70,23 +70,41 @@ function handleFavorite(title: string, addr: string | undefined, id: string) {
         <div class="collection-name">
           <img v-if="detail.BCMR?.uris?.icon" :src="formatImgUri(detail.BCMR.uris.icon)" alt="icon">
           <h3>{{ collectionName(detail.BCMR?.name, detail.id) }} </h3>
-          <span class="favorite material-symbols-outlined" @click="handleFavorite(collectionName(detail.BCMR?.name, detail.id), search.wallet?.cashaddr, detail.id)">
+          <span class="favorite material-symbols-outlined"
+            @click="handleFavorite(collectionName(detail.BCMR?.name, detail.id), search.wallet?.cashaddr, detail.id)">
             favorite
           </span>
         </div>
 
         <p class="description">{{ detail.BCMR?.description ? detail.BCMR?.description : "" }}</p>
-        <p class="amount">
-          {{ detail.amount / 10 ** (detail.BCMR?.token?.decimals ? detail.BCMR?.token?.decimals : 0) }}
-          {{ detail.BCMR?.token?.symbol ? detail.BCMR?.token?.symbol : "units" }}
-        </p>
-        <RouterLink :to="`/collection/${search.wallet?.address}/${detail.id}`">View Collection</RouterLink>
+        <div class="bottom-row">
+          <p class="amount">
+            {{ detail.amount / 10 ** (detail.BCMR?.token?.decimals ? detail.BCMR?.token?.decimals : 0) }}
+            {{ detail.BCMR?.token?.symbol ? detail.BCMR?.token?.symbol : "units" }}
+          </p>
+          <RouterLink class="btn-view-collection" :to="`/collection/${search.wallet?.address}/${detail.id}`">View Collection
+          </RouterLink>
+        </div>
+
       </div>
     </div>
   </div>
 </template> 
 
 <style scoped>
+.bottom-row {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: baseline;
+}
+.btn-view-collection {
+  padding: .5rem 1rem .5rem 1rem;
+  border-style: solid;
+  border-width: 1px;
+  border-radius: 4px;
+}
+
 .nft-collection {
   margin: 2rem;
   padding: 3rem;
