@@ -77,6 +77,7 @@ function handleFavorite(title: string, addr: string | undefined, id: string) {
         </div>
 
         <p class="description">{{ detail.BCMR?.description ? detail.BCMR?.description : "" }}</p>
+        
         <div class="bottom-row">
           <p class="amount">
             {{ detail.amount / 10 ** (detail.BCMR?.token?.decimals ? detail.BCMR?.token?.decimals : 0) }}
@@ -92,17 +93,43 @@ function handleFavorite(title: string, addr: string | undefined, id: string) {
 </template> 
 
 <style scoped>
-.bottom-row {
+.wrapper {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  border-style: solid;
+  border-radius: 4px;
+  border-width: 2px;
+  border-color: var(--color-darkGrey);
+}
+
+.heading {
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
-  align-items: flex-end;
+  align-self: flex-start;
+  margin-bottom: 3rem;
+  /* justify-content: space-between; */
+  /* margin: 25px; */
 }
-.btn-view-collection {
-  padding: .5rem 1rem .5rem 1rem;
-  border-style: solid;
-  border-width: 1px;
-  border-radius: 4px;
+
+.title {
+  padding-top: 15px;
+}
+
+.title h3 {
+  margin-left: 1.7rem;
+  max-width: 7rem;
+  text-align: left;
+  font-size: 1.5em;
+  font-weight: 800;
+  line-height: 1.5rem;
+  transform: rotate(-13deg);
+}
+
+.address {
+  margin-top: 7rem;
+  margin-left: 3rem;
+  word-break: break-all;
 }
 
 .nft-collection {
@@ -146,49 +173,24 @@ function handleFavorite(title: string, addr: string | undefined, id: string) {
   cursor: pointer;
 }
 
+.bottom-row {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: flex-end;
+}
+
 p.amount {
   font-family: monospace;
   margin: 0;
   line-height: 1;
 }
 
-.wrapper {
-  display: flex;
-  align-items: center;
-  flex-direction: column;
+.btn-view-collection {
+  padding: .5rem 1rem .5rem 1rem;
   border-style: solid;
+  border-width: 1px;
   border-radius: 4px;
-  border-width: 2px;
-  border-color: var(--color-darkGrey);
-}
-
-.heading {
-  display: flex;
-  flex-direction: row;
-  align-self: flex-start;
-  margin-bottom: 3rem;
-  /* justify-content: space-between; */
-  /* margin: 25px; */
-}
-
-.title {
-  padding-top: 15px;
-}
-
-.title h3 {
-  margin-left: 1.7rem;
-  max-width: 7rem;
-  text-align: left;
-  font-size: 1.5em;
-  font-weight: 800;
-  line-height: 1.5rem;
-  transform: rotate(-13deg);
-}
-
-.address {
-  margin-top: 7rem;
-  margin-left: 3rem;
-  word-break: break-all;
 }
 
 .material-symbols-outlined {
