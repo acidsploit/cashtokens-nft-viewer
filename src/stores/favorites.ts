@@ -29,7 +29,6 @@ export const useFavorites = defineStore('favorites', () => {
       })
       localStorage.setItem("favorites", JSON.stringify(list.value))
     }
-
   }
 
   function remove(id: string) {
@@ -41,7 +40,6 @@ export const useFavorites = defineStore('favorites', () => {
     localStorage.setItem("favorites", JSON.stringify(list.value))
   }
   
-
   function isFav(id: string): boolean {
     if (list.value.find((fav) => { return fav.id === id })) {
       return true
