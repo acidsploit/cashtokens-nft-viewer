@@ -161,13 +161,13 @@ export const useSearchStore = defineStore('search', () => {
     return md?.BCMR?.name ? md.BCMR.name : undefined
   }
 
-  function getNftDetailByCommitment(tokenId: string, commitment: string): NftType | undefined {
+  function getNftTypeByCommitment(tokenId: string, commitment: string): NftType | undefined {
     const collection = getNftCollectionById(tokenId)
     if (collection?.BCMR?.token?.nfts?.parse) {
-      for (const [type, nftDefinition] of Object.entries(collection.BCMR.token.nfts.parse.types)) {
-        if (type === commitment) {
+      for (const [commt, nftType] of Object.entries(collection.BCMR.token.nfts.parse.types)) {
+        if (commt === commitment) {
           // console.log("nftDetail: " + JSON.stringify(nftDefinition))
-          return nftDefinition
+          return nftType
         }
       }
     }
@@ -187,7 +187,7 @@ export const useSearchStore = defineStore('search', () => {
     search,
     getNftCollectionById,
     getNftCollectionNameById,
-    getNftDetailByCommitment,
+    getNftTypeByCommitment,
   }
 })
 

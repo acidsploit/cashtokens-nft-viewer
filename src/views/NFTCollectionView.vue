@@ -81,7 +81,7 @@ async function loadNftCardData() {
   nftUtxos.value.forEach(utxo => {
   //  console.log(JSON.stringify(utxo, null, 4))
     if (utxo.token?.tokenId && utxo.token?.commitment) {
-      let nftType = search.getNftDetailByCommitment(utxo.token.tokenId, utxo.token.commitment)
+      let nftType = search.getNftTypeByCommitment(utxo.token.tokenId, utxo.token.commitment)
       if (nftType) {
         nftList.value.push({
           id: utxo.token.tokenId,
