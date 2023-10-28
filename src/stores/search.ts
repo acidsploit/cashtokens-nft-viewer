@@ -15,10 +15,6 @@ export interface NFTDetail extends TokenMetadata {
   amount: number;
 }
 
-export interface TokenDetail extends TokenMetadata {
-  amount: number;
-}
-
 export const useSearchStore = defineStore('search', () => {
   const query = ref("")
   const type = ref("")
@@ -32,7 +28,6 @@ export const useSearchStore = defineStore('search', () => {
   const wallet = ref(null as Wallet | null)
   const cachedTokenMetadata = ref([] as TokenMetadata[])
   const nftDetails = ref([] as NFTDetail[])
-  const tokenDetails = ref([] as TokenDetail[])
 
   async function search(tokenId?: string) {
     error.value = null
@@ -42,7 +37,6 @@ export const useSearchStore = defineStore('search', () => {
         validatedQuery.value.queryType = QueryType.address
         wallet.value = null as Wallet | null
         nftDetails.value = []
-        tokenDetails.value = []
         query.value = ""
 
         await Wallet.fromCashaddr(validatedQuery.value.query).then(async (wlt) => {
@@ -81,30 +75,11 @@ export const useSearchStore = defineStore('search', () => {
               }
             })
           }
-          // if (!tokenId) {
-          //   await wallet.value.getAllTokenBalances().then(async (tokens) => {
-          //     for (const [id, amount] of Object.entries(tokens)) {
-          //       await loadTokenMetadata(id).then(async (md) => {
-          //         const detail = {
-          //           id: id,
-          //           amount: amount,
-          //           BCMR: md?.BCMR
-          //         } as TokenDetail
-          //         tokenDetails.value.push(detail)
-          //       })
-          //     }
-          //   })
-          // }
         })
       } catch (err) {
         error.value = err
       }
     }
-    // else if (isTokenID(query.value)) {
-    //   validatedQuery.value.query = query.value
-    //   validatedQuery.value.queryType = QueryType.token
-    //   query.value = ""
-    // }
     else {
       if (query.value !== "") {
         wallet.value = null
@@ -183,7 +158,6 @@ export const useSearchStore = defineStore('search', () => {
     wallet,
     cachedTokenMetadata,
     nftDetails,
-    tokenDetails,
     search,
     getNftCollectionById,
     getNftCollectionNameById,

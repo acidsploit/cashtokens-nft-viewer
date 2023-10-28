@@ -10,7 +10,6 @@ import HomeView from '@/views/HomeView.vue'
 // route level code-splitting
 // this generates a separate chunk (About.[hash].js) for this route
 // which is lazy-loaded when the route is visited.
-const TokensView = () => import('@/views/TokensView.vue')
 const NFTsView = () => import('@/views/NFTsView.vue')
 const BCHView = () => import('@/views/BCHView.vue')
 const SettingsView = () => import('@/views/SettingsView.vue')
@@ -36,12 +35,6 @@ const router = createRouter({
       name: 'collection',
       props: true,
       component: NFTCollectionView
-    },
-    {
-      path: '/tokens/:address',
-      name: 'tokens',
-      props: true,
-      component: TokensView
     },
     {
       path: '/bch/:address',
