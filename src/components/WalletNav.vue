@@ -4,7 +4,12 @@ import { QueryType } from '../utils'
 import { storeToRefs } from 'pinia';
 
 const search = useSearchStore()
-const { validatedQuery, nftDetails, tokenDetails, wallet } = storeToRefs(search)
+const { 
+  validatedQuery, 
+  nftDetails, 
+  // tokenDetails, 
+  wallet 
+} = storeToRefs(search)
 
 </script>
 

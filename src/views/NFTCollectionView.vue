@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, onMounted, ref, watch } from 'vue';
-import type { UtxoI } from 'mainnet-js/dist/module/interface';
+import type { NFTCapability, UtxoI } from 'mainnet-js/dist/module/interface';
 import type { NftType } from 'mainnet-js/dist/module/wallet/bcmr-v2.schema';
 import { useToast } from 'vue-toast-notification';
 
@@ -10,7 +10,6 @@ import { useFavorites } from '@/stores/favorites';
 
 import PageLoading from "@/components/PageLoading.vue";
 import SearchError from "@/components/SearchError.vue";
-
 
 const props = defineProps({
   address: { type: String, required: true },
@@ -28,7 +27,8 @@ interface OtherNftDetail {
   category: string | undefined,
   symbol: string | undefined,
   icon: string | undefined,
-  commitment: string | undefined
+  commitment: string | undefined,
+  capability: NFTCapability | undefined,
 }
 
 const settings = useSettingsStore()
@@ -71,27 +71,31 @@ async function loadNftCardData() {
   otherNftList.value = [] as OtherNftDetail[]
 
   collectionBCMR.value = search.getNftCollectionById(props.tokenId)
-  console.log(JSON.stringify(collectionBCMR.value, null, 4))
+  // console.log("BCMR")
+  // console.log(JSON.stringify(collectionBCMR.value, null, 4))
   collectionName.value = search.getNftCollectionNameById(props.tokenId)
   nftBalance.value = search.wallet ? await search.wallet.getNftTokenBalance(props.tokenId) : 0
   nftUtxos.value = search.wallet ? await search.wallet.getTokenUtxos(props.tokenId) : []
 
-  nftUtxos.value.forEach(nft => {
-    if (nft.token?.tokenId && nft.token?.commitment) {
-      let nftType = search.getNftDetailByCommitment(nft.token.tokenId, nft.token.commitment)
+  // console.log("TOKEN UTXOs for: " +  props.tokenId)
+  nftUtxos.value.forEach(utxo => {
+  //  console.log(JSON.stringify(utxo, null, 4))
+    if (utxo.token?.tokenId && utxo.token?.commitment) {
+      let nftType = search.getNftDetailByCommitment(utxo.token.tokenId, utxo.token.commitment)
       if (nftType) {
         nftList.value.push({
-          id: nft.token.tokenId,
-          commitment: nft.token.commitment,
+          id: utxo.token.tokenId,
+          commitment: utxo.token.commitment,
           nftType: nftType
         })
       } else {
         otherNftList.value.push({
-          id: nft.token.tokenId,
+          id: utxo.token.tokenId,
           category: collectionBCMR.value?.BCMR?.token?.category,
           symbol: collectionBCMR.value?.BCMR?.token?.symbol,
           icon: collectionBCMR.value?.BCMR?.uris?.icon,
-          commitment: nft.token.commitment
+          commitment: utxo.token.commitment,
+          capability: utxo.token.capability
         })
       }
     }
@@ -205,6 +209,7 @@ async function share(address: string | undefined, tokenId: string) {
       <div class="nft-card" v-for="nft in otherNftList" v-bind:key="nft.category">
         <img v-if="nft.icon" :src="formatImgUri(nft.icon)" />
         <!-- <p>{{ nft.nftType.name }}</p> -->
+        <p class="commitment">Capability: {{ nft.capability}}</p>
         <p class="commitment">Commitment: {{ nft.commitment}}</p>
         <p class="commitment">1 {{ nft.symbol }}</p>
       </div>

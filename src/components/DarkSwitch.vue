@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
+import { ref } from 'vue';
 import { useDark, useToggle } from "@vueuse/core";
 
 const input = ref<null | HTMLElement>(null);
