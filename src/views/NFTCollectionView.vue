@@ -23,6 +23,13 @@ interface NftDetail {
   nftType: NftType
 }
 
+interface OtherNftDetail {
+  id: string,
+  category: string | undefined,
+  symbol: string | undefined,
+  icon: string | undefined
+}
+
 const settings = useSettingsStore()
 const search = useSearchStore()
 const favorites = useFavorites()
@@ -30,6 +37,7 @@ const favorites = useFavorites()
 const nftBalance = ref(0)
 const nftUtxos = ref([] as UtxoI[])
 const nftList = ref([] as NftDetail[])
+const otherNftList = ref([] as OtherNftDetail[])
 const collectionName = ref("" as string | undefined)
 
 onMounted(async () => {
@@ -58,18 +66,28 @@ watch(
 
 async function loadNftCardData() {
   nftList.value = [] as NftDetail[]
+  otherNftList.value = [] as OtherNftDetail[]
   collectionName.value = search.getNftCollectionNameById(props.tokenId)
   nftBalance.value = search.wallet ? await search.wallet.getNftTokenBalance(props.tokenId) : 0
   nftUtxos.value = search.wallet ? await search.wallet.getTokenUtxos(props.tokenId) : []
 
   nftUtxos.value.forEach(nft => {
     if (nft.token?.tokenId && nft.token?.commitment) {
+      let collection = search.getNftCollectionById(nft.token.tokenId)
+      console.log(JSON.stringify(collection, null, 4))
       let nftType = search.getNftDetailByCommitment(nft.token.tokenId, nft.token.commitment)
       if (nftType) {
         nftList.value.push({
           id: nft.token.tokenId,
           commitment: nft.token.commitment,
           nftType: nftType
+        })
+      } else {
+        otherNftList.value.push({
+          id: nft.token.tokenId,
+          category: collection?.BCMR?.token?.category,
+          symbol: collection?.BCMR?.token?.symbol,
+          icon: collection?.BCMR?.uris?.icon
         })
       }
     }
@@ -121,7 +139,7 @@ async function share(address: string | undefined, tokenId: string) {
 <template>
   <SearchError v-if="search.error !== null" :error="search.error" :type="'page'" />
 
-  <div v-if="nftList.length === 0 && search.error === null">
+  <div v-if="nftList.length === 0 && otherNftList.length === 0 && search.error === null">
     <PageLoading />
   </div>
 
@@ -154,7 +172,39 @@ async function share(address: string | undefined, tokenId: string) {
         <p class="commitment">Commitment: {{ nft.commitment }}</p>
       </div>
     </div>
-    
+
+  </div>
+
+  <div v-if="otherNftList.length !== 0" class="wrapper container">
+
+    <div class="collection-header">
+      <h3 class="collection-name">{{ collectionNameFormat }}</h3>
+      <div class="collection-address">
+        <div>On address: {{ search.wallet?.tokenaddr }}</div>
+        <div>Child NFTs: {{ nftBalance }}</div>
+      </div>
+      <span class="share material-symbols-outlined" @click="share(search.wallet?.cashaddr, props.tokenId)">
+        share
+      </span>
+      <span v-if="!favorites.isFav(`${search.wallet?.cashaddr}/${props.tokenId}`)"
+        class="favorite material-symbols-outlined"
+        @click="addFav(collectionNameFormat, search.wallet?.cashaddr, props.tokenId)">
+        favorite
+      </span>
+      <span v-if="favorites.isFav(`${search.wallet?.cashaddr}/${props.tokenId}`)"
+        class="favorite material-symbols-outlined red" @click="removeFav(search.wallet?.cashaddr, props.tokenId)">
+        favorite
+      </span>
+    </div>
+
+    <div class="nft-container">
+      <div class="nft-card" v-for="nft in otherNftList" v-bind:key="nft.category">
+        <img v-if="nft.icon" :src="formatImgUri(nft.icon)" />
+        <!-- <p>{{ nft.nftType.name }}</p> -->
+        <p class="commitment">1 {{ nft.symbol }}</p>
+      </div>
+    </div>
+
   </div>
 </template>
 
