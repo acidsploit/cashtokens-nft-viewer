@@ -10,6 +10,7 @@ import { useFavorites } from '@/stores/favorites';
 
 import PageLoading from "@/components/PageLoading.vue";
 import SearchError from "@/components/SearchError.vue";
+import { pushTokenCommitment } from '@bitauth/libauth';
 
 
 const props = defineProps({
@@ -27,7 +28,8 @@ interface OtherNftDetail {
   id: string,
   category: string | undefined,
   symbol: string | undefined,
-  icon: string | undefined
+  icon: string | undefined,
+  commitment: string | undefined
 }
 
 const settings = useSettingsStore()
@@ -87,7 +89,8 @@ async function loadNftCardData() {
           id: nft.token.tokenId,
           category: collection?.BCMR?.token?.category,
           symbol: collection?.BCMR?.token?.symbol,
-          icon: collection?.BCMR?.uris?.icon
+          icon: collection?.BCMR?.uris?.icon,
+          commitment: nft.token.commitment
         })
       }
     }
@@ -201,6 +204,7 @@ async function share(address: string | undefined, tokenId: string) {
       <div class="nft-card" v-for="nft in otherNftList" v-bind:key="nft.category">
         <img v-if="nft.icon" :src="formatImgUri(nft.icon)" />
         <!-- <p>{{ nft.nftType.name }}</p> -->
+        <p class="commitment">Commitment: {{ nft.commitment}}</p>
         <p class="commitment">1 {{ nft.symbol }}</p>
       </div>
     </div>
