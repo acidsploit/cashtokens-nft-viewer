@@ -122,7 +122,7 @@ async function share(address: string | undefined, tokenId: string) {
 
   <div v-if="nftList.length !== 0" class="wrapper container">
 
-    <div class="collection-title">
+    <div class="collection-header">
       <h3 class="collection-name">{{ collectionNameFormat }}</h3>
       <div class="collection-address">
         <div>On address: {{ search.wallet?.tokenaddr }}</div>
@@ -162,8 +162,19 @@ async function share(address: string | undefined, tokenId: string) {
   height: 100%;
 }
 
-.container h3 {
+/* .container h3 {
   max-width: fit-content;
+  word-wrap: break-word;
+  text-align: left;
+  font-size: 1.3em;
+  font-weight: 800;
+  line-height: 30px;
+  transform: rotate(-13deg);
+} */
+
+h3.collection-name {
+  /* max-width: fit-content; */
+  max-width: 30rem;
   word-wrap: break-word;
   text-align: left;
   font-size: 1.3em;
@@ -172,7 +183,7 @@ async function share(address: string | undefined, tokenId: string) {
   transform: rotate(-13deg);
 }
 
-.collection-title {
+.collection-header {
   display: flex;
   flex-direction: row;
   margin: 25px;
@@ -185,7 +196,7 @@ async function share(address: string | undefined, tokenId: string) {
 }
 
 .collection-name {
-  flex-grow: 1;
+  flex-grow: 0;
 }
 
 .favorite:hover {
