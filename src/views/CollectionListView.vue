@@ -15,6 +15,7 @@ function toggleSidebar() {
 
 function toggleEdit() {
   edit.value = !edit.value
+  favorites.save()
 }
 </script>
 

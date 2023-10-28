@@ -37,14 +37,10 @@ export const useFavorites = defineStore('favorites', () => {
     localStorage.setItem("favorites", JSON.stringify(list.value))
   }
 
-  function update(id: string, title: string) {
-    list.value.forEach(favorite => {
-      if (favorite.id === id) {
-        favorite.title = title
-      }
-    });
+  function save() {
     localStorage.setItem("favorites", JSON.stringify(list.value))
   }
+  
 
   function isFav(id: string): boolean {
     if (list.value.find((fav) => { return fav.id === id })) {
@@ -54,7 +50,7 @@ export const useFavorites = defineStore('favorites', () => {
     return false
   }
 
-  return { list, add, remove, update, isFav }
+  return { list, add, remove, save, isFav }
 })
 
 if (import.meta.hot) {
