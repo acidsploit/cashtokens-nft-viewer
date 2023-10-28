@@ -44,7 +44,10 @@ function toggleEdit() {
       <span @click="favorites.remove(favorite.id)" :class="edit ? 'hide' : ''" class="remove material-symbols-outlined">
         close
       </span>
-      <input :class="edit ? '' : 'hide'" v-model.trim="favorite.title">
+      <form @submit.prevent="toggleEdit">
+        <input :class="edit ? '' : 'hide'" v-model.trim="favorite.title">
+      </form>
+      
     </div>
   </div>
 </template>
