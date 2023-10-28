@@ -5,7 +5,7 @@ import type { NftType } from "mainnet-js/dist/module/wallet/bcmr-v2.schema";
 import {
   isValidAddress,
   QueryType,
-  formatAddress,
+  formatCashAddress,
   type TokenMetadata
 } from '../utils'
 import { useSettingsStore } from "./settings";
@@ -38,7 +38,7 @@ export const useSearchStore = defineStore('search', () => {
     error.value = null
     if (query.value !== "" && isValidAddress(query.value)) {
       try {
-        validatedQuery.value.query = formatAddress(query.value)
+        validatedQuery.value.query = formatCashAddress(query.value)
         validatedQuery.value.queryType = QueryType.address
         wallet.value = null as Wallet | null
         nftDetails.value = []
@@ -146,7 +146,7 @@ export const useSearchStore = defineStore('search', () => {
     return result
   }
 
-  function getNftCollectionById(id: string): TokenMetadata | undefined {
+  function getNftCollectionById(id: string): NFTDetail | undefined {
     const result = nftDetails.value.find(detail => {
       if (detail.id === id) {
         return true

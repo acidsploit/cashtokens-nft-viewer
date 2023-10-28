@@ -1,16 +1,16 @@
 // import { Buffer } from 'buffer';
 // eslint-disable-next-line
 import { 
-    type CashAddressType,
+    CashAddressType,
     decodeCashAddress, 
     decodeCashAddressFormatWithoutPrefix, 
     encodeCashAddress,
     isHex,
     hexToBin,
-    binToHex,
-    swapEndianness,
+    // binToHex,
+    // swapEndianness,
 CashAddressNetworkPrefix,
-cashAddressTypeBitsToType,
+// cashAddressTypeBitsToType,
 decodeCashAddressVersionByte
 } from '@bitauth/libauth'
 import type { IdentitySnapshot } from 'mainnet-js/dist/module/wallet/bcmr-v2.schema';
@@ -42,7 +42,7 @@ export function isValidAddress(addr: string): boolean {
   return true;
 }
 
-export function formatAddress(addr: string): string {
+export function formatCashAddress(addr: string): string {
     let encodedCashAddress;
     if (addr.includes(":")) {
         const decodedCashAddress = decodeCashAddress(addr);
@@ -51,7 +51,7 @@ export function formatAddress(addr: string): string {
         } else {
             encodedCashAddress = encodeCashAddress(
                 decodedCashAddress.prefix as CashAddressNetworkPrefix, 
-                decodedCashAddress.type, 
+                CashAddressType.p2pkh, 
                 decodedCashAddress.payload
                 );
         }
@@ -63,15 +63,16 @@ export function formatAddress(addr: string): string {
         } else {
             const info = decodeCashAddressVersionByte(decodedCashAddress.version);
             if (typeof info === "string") throw new Error(info);
-            const type = cashAddressTypeBitsToType[
-                info.typeBits as keyof typeof cashAddressTypeBitsToType
-              ] as CashAddressType | undefined;
-            if (type === undefined) {
-              throw Error("Wrong cashaddress type");
-            }
+            // const type = cashAddressTypeBitsToType[
+            //     info.typeBits as keyof typeof cashAddressTypeBitsToType
+            //   ] as CashAddressType | undefined;
+            // if (type === undefined) {
+            //   throw Error("Wrong cashaddress type");
+            // }
             encodedCashAddress = encodeCashAddress(
                 decodedCashAddress.prefix as CashAddressNetworkPrefix, 
-                type, 
+                // type, 
+                CashAddressType.p2pkh,
                 decodedCashAddress.payload
                 );
         }
