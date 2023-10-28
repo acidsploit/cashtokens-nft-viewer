@@ -140,8 +140,6 @@ async function share(address: string | undefined, tokenId: string) {
   flex-direction: row;
   align-self: flex-start;
   margin-bottom: 3rem;
-  /* justify-content: space-between; */
-  /* margin: 25px; */
 }
 
 .title {

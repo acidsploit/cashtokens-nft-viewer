@@ -24,7 +24,6 @@ function toggleZoom() {
   }
 
 }
-
 </script>
 
 <template>

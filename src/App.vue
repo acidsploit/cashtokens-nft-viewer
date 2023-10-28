@@ -132,7 +132,6 @@ main.container {
 }
 
 footer {
-  /* align-self: center stretch; */
   box-shadow: 0 50vh 0 50vh var(--bg-secondary-color);
 }
 

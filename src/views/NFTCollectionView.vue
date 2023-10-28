@@ -208,7 +208,6 @@ async function share(address: string | undefined, tokenId: string) {
     <div class="nft-container">
       <div class="nft-card" v-for="nft in otherNftList" v-bind:key="nft.category">
         <img v-if="nft.icon" :src="formatImgUri(nft.icon)" />
-        <!-- <p>{{ nft.nftType.name }}</p> -->
         <p class="commitment">Capability: {{ nft.capability}}</p>
         <p class="commitment">Commitment: {{ nft.commitment}}</p>
         <p class="commitment">1 {{ nft.symbol }}</p>
@@ -227,18 +226,7 @@ async function share(address: string | undefined, tokenId: string) {
   height: 100%;
 }
 
-/* .container h3 {
-  max-width: fit-content;
-  word-wrap: break-word;
-  text-align: left;
-  font-size: 1.3em;
-  font-weight: 800;
-  line-height: 30px;
-  transform: rotate(-13deg);
-} */
-
 h3.collection-name {
-  /* max-width: fit-content; */
   max-width: 30rem;
   word-wrap: break-word;
   text-align: left;

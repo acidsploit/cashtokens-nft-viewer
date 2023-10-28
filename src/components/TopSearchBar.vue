@@ -2,7 +2,6 @@
 import { useDark } from "@vueuse/core"
 import { useSearchStore } from "@/stores/search"
 
-
 const isDark = useDark()
 const search = useSearchStore()
 
@@ -44,7 +43,6 @@ button:focus {
   border: none;
   outline: none;
   background: transparent;
-  /* color: var(--font-color); */
   color: var(--color-lightGrey);
 
 }

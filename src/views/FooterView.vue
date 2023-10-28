@@ -17,7 +17,6 @@
             <h3>Links</h3>
             <a href="https://github.com/acidsploit/cashtokens-nft-viewer" target="_blank"><img class="logo" src="../assets/images/github-logo.svg" /></a>
         </div>
-
     </div>
 </template>
 
@@ -52,5 +51,4 @@ img.logo {
     'GRAD' 0,
     'opsz' 24
 }
-
 </style>
