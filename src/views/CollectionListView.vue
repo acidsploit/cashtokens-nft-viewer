@@ -1,8 +1,10 @@
 <script setup lang="ts">
 import { useFavorites } from '@/stores/favorites';
 import router from "@/router"
+import { ref } from 'vue';
 
 const favorites = useFavorites()
+const edit = ref(false)
 
 function toggleSidebar() {
   let doc = document.getElementById("sidebar")
@@ -10,13 +12,25 @@ function toggleSidebar() {
     doc.classList.toggle("collapsed")
   }
 }
+
+function toggleEdit() {
+  edit.value = !edit.value
+}
 </script>
 
 <template>
-  <!-- <button @click="toggleSidebar" id="btn-close-sidebar" title="Close sidebar"></button> -->
-  <span id="btn-close-sidebar" class="close material-symbols-outlined" @click="toggleSidebar">
-    cancel
-  </span>
+  <div class="btn-menu">
+    <span @click="toggleEdit" :class="edit ? 'hide' : ''" class="edit material-symbols-outlined">
+      edit
+    </span>
+    <span @click="toggleEdit" :class="edit ? '' : 'hide'" class="done material-symbols-outlined">
+      done
+    </span>
+    <span @click="toggleSidebar" id="btn-close-sidebar" class="close material-symbols-outlined">
+      cancel
+    </span>
+  </div>
+
 
   <div class="col title">
     <h3>My</h3>
@@ -24,44 +38,43 @@ function toggleSidebar() {
   </div>
   <div class="container favourites">
     <div class="favorite" v-for="favorite in favorites.list" v-bind:key="favorite.id">
-      <div class="fav-title" @click="router.push(`/collection/${favorite.id}`)">{{ favorite.title }}</div>
-      <span class="remove material-symbols-outlined" @click="favorites.remove(favorite.id)">
+      <div @click="router.push(`/collection/${favorite.id}`)" :class="edit ? 'hide' : ''" class="fav-title">{{
+        favorite.title }}</div>
+      <span @click="favorites.remove(favorite.id)" :class="edit ? 'hide' : ''" class="remove material-symbols-outlined">
         close
       </span>
-
+      <input :class="edit ? '' : 'hide'" v-model.trim="favorite.title">
     </div>
   </div>
-  <!-- <fieldset>
-      <legend>Collection List</legend>
-    </fieldset> -->
 </template>
 
 <style scoped>
-.favorite {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
-  color: var(--color-lightGrey);
-  background-color: var(--bg-secondary-color);
-  border-radius: 8px;
-  margin-bottom: 1rem;
-  /* padding: 1rem; */
-  font-weight: 600;
+.btn-menu {
+  float: right;
+  margin: 1rem 1rem 0 0;
 }
 
-.fav-title {
-  flex-grow: 5;
-  padding: 1rem;
+.edit {
   cursor: pointer;
-  overflow: hidden;
+  margin-right: .5rem;
+  font-size: 4rem;
 }
 
-.remove {
+.done {
   cursor: pointer;
-  flex-grow: 0;
-  margin-right: 1rem;
-  color: red;
+  margin-right: .5rem;
+  font-size: 4rem;
+  color: green;
+}
+
+.close {
+  cursor: pointer;
+  margin-left: 1.5rem;
+  font-size: 4rem;
+}
+
+.hide {
+  display: none;
 }
 
 .title {
@@ -79,10 +92,30 @@ function toggleSidebar() {
   transform: rotate(-13deg);
 }
 
-#btn-close-sidebar {
-  float: right;
-  margin: 1rem 1rem 0 0;
-  font-size: 4rem;
+.favorite {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  color: var(--color-lightGrey);
+  background-color: var(--bg-secondary-color);
+  border-radius: 8px;
+  margin-bottom: 1rem;
+  font-weight: 600;
+}
+
+.fav-title {
+  flex-grow: 5;
+  padding: 1rem;
+  cursor: pointer;
+  overflow: hidden;
+}
+
+.remove {
+  cursor: pointer;
+  flex-grow: 0;
+  margin-right: 1rem;
+  color: red;
 }
 
 @media only screen and (min-width: 768px) {
