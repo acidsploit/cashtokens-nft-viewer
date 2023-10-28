@@ -1,12 +1,8 @@
 <script setup lang="ts">
 import HomeSearchBar from '@/components/HomeSearchBar.vue';
-
-// import WalletNav from "@/components/WalletNav.vue";
-
 </script>
 
 <template>
-    <!-- <WalletNav /> -->
     <div class="container wrapper">
         <h1>Browse CashTokens NFT Collections</h1>
         <p>By searching for a Bitcoin Cash address you can browse, track and share CashTokens NFT collections.</p>
@@ -22,7 +18,6 @@ import HomeSearchBar from '@/components/HomeSearchBar.vue';
     justify-content: center;
     align-items: center;
     min-height: 40vh;
-    /* margin: 0 0 40vh 0; */
 }
 
 .wrapper p {

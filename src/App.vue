@@ -38,8 +38,6 @@ function toggleSidebar() {
         <h1>Viewer</h1>
       </div>
     </div>
-
-    <!-- <SearchBar v-show="$route.name !== 'settings'" /> -->
   </header>
 
   <main class="container">

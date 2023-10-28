@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { useDark } from "@vueuse/core"
 import { useSearchStore } from "@/stores/search"
+import SearchError from "./SearchError.vue";
 
 
 const isDark = useDark()
@@ -20,6 +21,7 @@ async function handleSubmit() {
       <img v-if="!isDark" @click="handleSubmit" src="../assets/images/search.svg" alt="search">
       <img v-if="isDark" @click="handleSubmit" src="../assets/images/search-dark.svg" alt="search">
     </form>
+    <SearchError v-if="search.error !== null" :error="search.error" :type="'inline'" />
   </div>
 </template>
 

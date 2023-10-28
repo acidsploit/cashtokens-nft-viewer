@@ -9,6 +9,8 @@ import { useSettingsStore } from '@/stores/settings';
 import { useFavorites } from '@/stores/favorites';
 
 import PageLoading from "@/components/PageLoading.vue";
+import SearchError from "@/components/SearchError.vue";
+
 
 const props = defineProps({
   address: { type: String, required: true },
@@ -47,6 +49,7 @@ watch(
   async ([newAaddress, newTokenId]) => {
     search.query = newAaddress
     search.type = "path"
+    nftList.value = []
     await search.search(newTokenId).then(async () => {
       await loadNftCardData()
     })
@@ -116,7 +119,9 @@ async function share(address: string | undefined, tokenId: string) {
 </script>
 
 <template>
-  <div v-if="nftList.length === 0">
+  <SearchError v-if="search.error !== null" :error="search.error" :type="'page'" />
+
+  <div v-if="nftList.length === 0 && search.error === null">
     <PageLoading />
   </div>
 
