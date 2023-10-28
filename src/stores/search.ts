@@ -22,6 +22,7 @@ export interface TokenDetail extends TokenMetadata {
 export const useSearchStore = defineStore('search', () => {
   const query = ref("")
   const type = ref("")
+  const error = ref(null as any)
   const validatedQuery = ref({
     query: "",
     queryType: QueryType.empty,
@@ -34,68 +35,70 @@ export const useSearchStore = defineStore('search', () => {
   const tokenDetails = ref([] as TokenDetail[])
 
   async function search(tokenId?: string) {
+    error.value = null
     if (query.value !== "" && isValidAddress(query.value)) {
+      try {
+        validatedQuery.value.query = formatAddress(query.value)
+        validatedQuery.value.queryType = QueryType.address
+        wallet.value = null as Wallet | null
+        nftDetails.value = []
+        tokenDetails.value = []
+        query.value = ""
 
-      validatedQuery.value.query = formatAddress(query.value)
-      validatedQuery.value.queryType = QueryType.address
-      wallet.value = null as Wallet | null
-      nftDetails.value = []
-      tokenDetails.value = []
-      query.value = ""
+        await Wallet.fromCashaddr(validatedQuery.value.query).then(async (wlt) => {
+          wallet.value = wlt
 
-      await Wallet.fromCashaddr(validatedQuery.value.query).then(async (wlt) => {
-        wallet.value = wlt
+          if (type.value === "query") {
+            router.push(`/nfts/${validatedQuery.value.query}`)
+            type.value = ""
+          }
 
-        if (type.value === "query") {
-          router.push(`/nfts/${validatedQuery.value.query}`)
-          type.value = ""
-        }
-
-        if (tokenId && wallet.value !== null) {
-          await loadTokenMetadata(tokenId).then(async (md) => {
-            await wallet.value?.getNftTokenBalance(tokenId).then((amount) => {
-              const detail = {
-                id: tokenId,
-                amount: amount,
-                BCMR: md?.BCMR
-              } as NFTDetail
-              // console.log("nftDetails.push")
-              nftDetails.value.push(detail)
-            })
-          })
-        }
-        else {
-          await wallet.value.getAllNftTokenBalances().then(async (nfts) => {
-            for (const [id, amount] of Object.entries(nfts)) {
-              await loadTokenMetadata(id).then(async (md) => {
+          if (tokenId && wallet.value !== null) {
+            await loadTokenMetadata(tokenId).then(async (md) => {
+              await wallet.value?.getNftTokenBalance(tokenId).then((amount) => {
                 const detail = {
-                  id: id,
+                  id: tokenId,
                   amount: amount,
                   BCMR: md?.BCMR
                 } as NFTDetail
-                // console.log("nftDetails.push all")
+                // console.log("nftDetails.push")
                 nftDetails.value.push(detail)
               })
-            }
-          })
-        }
-        // if (!tokenId) {
-        //   await wallet.value.getAllTokenBalances().then(async (tokens) => {
-        //     for (const [id, amount] of Object.entries(tokens)) {
-        //       await loadTokenMetadata(id).then(async (md) => {
-        //         const detail = {
-        //           id: id,
-        //           amount: amount,
-        //           BCMR: md?.BCMR
-        //         } as TokenDetail
-        //         tokenDetails.value.push(detail)
-        //       })
-        //     }
-        //   })
-        // }
-      })
-
-      
+            })
+          }
+          else {
+            await wallet.value.getAllNftTokenBalances().then(async (nfts) => {
+              for (const [id, amount] of Object.entries(nfts)) {
+                await loadTokenMetadata(id).then(async (md) => {
+                  const detail = {
+                    id: id,
+                    amount: amount,
+                    BCMR: md?.BCMR
+                  } as NFTDetail
+                  // console.log("nftDetails.push all")
+                  nftDetails.value.push(detail)
+                })
+              }
+            })
+          }
+          // if (!tokenId) {
+          //   await wallet.value.getAllTokenBalances().then(async (tokens) => {
+          //     for (const [id, amount] of Object.entries(tokens)) {
+          //       await loadTokenMetadata(id).then(async (md) => {
+          //         const detail = {
+          //           id: id,
+          //           amount: amount,
+          //           BCMR: md?.BCMR
+          //         } as TokenDetail
+          //         tokenDetails.value.push(detail)
+          //       })
+          //     }
+          //   })
+          // }
+        })
+      } catch (err) {
+        error.value = err
+      }
     }
     // else if (isTokenID(query.value)) {
     //   validatedQuery.value.query = query.value
@@ -105,9 +108,9 @@ export const useSearchStore = defineStore('search', () => {
     else {
       if (query.value !== "") {
         wallet.value = null
-        alert("invalid search query")
+        error.value = "invalid search query"
+        // alert("invalid search query")
       }
-      
     }
   }
 
@@ -175,6 +178,7 @@ export const useSearchStore = defineStore('search', () => {
   return {
     query,
     type,
+    error,
     validatedQuery,
     wallet,
     cachedTokenMetadata,

@@ -2,13 +2,12 @@
 import { onMounted } from "vue";
 import {useToast} from 'vue-toast-notification';
 
-// import WalletNav from "@/components/WalletNav.vue";
-import PageLoading from "@/components/PageLoading.vue";
 import { useSearchStore } from "@/stores/search";
 import { useSettingsStore } from "@/stores/settings";
 import { useFavorites } from "@/stores/favorites"
-import router from "@/router";
 
+import PageLoading from "@/components/PageLoading.vue";
+import SearchError from "@/components/SearchError.vue";
 
 const props = defineProps({
   address: { type: String, required: true },
@@ -17,7 +16,6 @@ const props = defineProps({
 const settings = useSettingsStore()
 const search = useSearchStore()
 const favorites = useFavorites()
-
 
 onMounted(async () => {
   console.log("props: " + props.address)
@@ -29,7 +27,6 @@ onMounted(async () => {
     await search.search()
   }
 })
-
 
 function collectionName(name: string | undefined, id: string): string {
   return name ? name : `${id.slice(0, 4)}...${id.slice(-4)}`
@@ -75,8 +72,9 @@ async function share(address: string | undefined, tokenId: string) {
 </script>
 
 <template>
-  <!-- <WalletNav /> -->
-  <div v-if="search.nftDetails.length === 0">
+  <SearchError v-if="search.error !== null" :error="search.error" :type="'page'" />
+
+  <div v-if="search.nftDetails.length === 0 && search.error === null">
     <PageLoading />
   </div>
 
