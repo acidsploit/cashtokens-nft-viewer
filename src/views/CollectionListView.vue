@@ -13,7 +13,6 @@ function toggleSidebar() {
 </script>
 
 <template>
-  <!-- <button @click="toggleSidebar" id="btn-close-sidebar" title="Close sidebar"></button> -->
   <span id="btn-close-sidebar" class="close material-symbols-outlined" @click="toggleSidebar">
     cancel
   </span>
@@ -25,45 +24,23 @@ function toggleSidebar() {
   <div class="container favourites">
     <div class="favorite" v-for="favorite in favorites.list" v-bind:key="favorite.id">
       <div class="fav-title" @click="router.push(`/collection/${favorite.id}`)">{{ favorite.title }}</div>
+      <span class="edit material-symbols-outlined" @click="favorites.remove(favorite.id)">
+        edit
+      </span>
       <span class="remove material-symbols-outlined" @click="favorites.remove(favorite.id)">
         close
       </span>
 
     </div>
   </div>
-  <!-- <fieldset>
-      <legend>Collection List</legend>
-    </fieldset> -->
 </template>
 
 <style scoped>
-.favorite {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
-  color: var(--color-lightGrey);
-  background-color: var(--bg-secondary-color);
-  border-radius: 8px;
-  margin-bottom: 1rem;
-  /* padding: 1rem; */
-  font-weight: 600;
+#btn-close-sidebar {
+  float: right;
+  margin: 1rem 1rem 0 0;
+  font-size: 4rem;
 }
-
-.fav-title {
-  flex-grow: 5;
-  padding: 1rem;
-  cursor: pointer;
-  overflow: hidden;
-}
-
-.remove {
-  cursor: pointer;
-  flex-grow: 0;
-  margin-right: 1rem;
-  color: red;
-}
-
 .title {
   padding-top: 15px;
   margin-bottom: 4rem;
@@ -79,10 +56,30 @@ function toggleSidebar() {
   transform: rotate(-13deg);
 }
 
-#btn-close-sidebar {
-  float: right;
-  margin: 1rem 1rem 0 0;
-  font-size: 4rem;
+.favorite {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  color: var(--color-lightGrey);
+  background-color: var(--bg-secondary-color);
+  border-radius: 8px;
+  margin-bottom: 1rem;
+  font-weight: 600;
+}
+
+.fav-title {
+  flex-grow: 5;
+  padding: 1rem;
+  cursor: pointer;
+  overflow: hidden;
+}
+
+.remove {
+  cursor: pointer;
+  flex-grow: 0;
+  margin-right: 1rem;
+  color: red;
 }
 
 @media only screen and (min-width: 768px) {

@@ -2,12 +2,13 @@
 import { computed, onMounted, ref, watch } from 'vue';
 import type { UtxoI } from 'mainnet-js/dist/module/interface';
 import type { NftType } from 'mainnet-js/dist/module/wallet/bcmr-v2.schema';
-import {useToast} from 'vue-toast-notification';
+import { useToast } from 'vue-toast-notification';
 
 import { useSearchStore } from '@/stores/search';
-import PageLoading from "@/components/PageLoading.vue";
 import { useSettingsStore } from '@/stores/settings';
 import { useFavorites } from '@/stores/favorites';
+
+import PageLoading from "@/components/PageLoading.vue";
 
 const props = defineProps({
   address: { type: String, required: true },
@@ -32,7 +33,6 @@ const collectionName = ref("" as string | undefined)
 onMounted(async () => {
   if (search.validatedQuery.query === props.address) {
     await loadNftCardData()
-
   } else {
     search.query = props.address
     search.type = "path"
@@ -41,8 +41,6 @@ onMounted(async () => {
     })
   }
 })
-
-
 
 watch(
   [() => props.address, () => props.tokenId],
@@ -108,12 +106,12 @@ async function share(address: string | undefined, tokenId: string) {
 
   await navigator.clipboard.writeText(`${origin}/collection/${address}/${tokenId}`).then(() => {
     let instance = $toast.open({
-    message: "Link copied to clipboard",
-    type: "success",
-    position: "top-right",
-    duration: 5000
+      message: "Link copied to clipboard",
+      type: "success",
+      position: "top-right",
+      duration: 5000
+    })
   })
-  }) 
 }
 </script>
 
@@ -123,6 +121,7 @@ async function share(address: string | undefined, tokenId: string) {
   </div>
 
   <div v-if="nftList.length !== 0" class="wrapper container">
+
     <div class="collection-title">
       <h3 class="collection-name">{{ collectionNameFormat }}</h3>
       <div class="collection-address">
@@ -143,7 +142,6 @@ async function share(address: string | undefined, tokenId: string) {
       </span>
     </div>
 
-
     <div class="nft-container">
       <div class="nft-card" v-for="nft in nftList" v-bind:key="nft.commitment">
         <img v-if="nft.nftType.uris?.icon" :src="formatImgUri(nft.nftType.uris.icon)" />
@@ -151,6 +149,7 @@ async function share(address: string | undefined, tokenId: string) {
         <p class="commitment">Commitment: {{ nft.commitment }}</p>
       </div>
     </div>
+    
   </div>
 </template>
 
@@ -192,6 +191,7 @@ async function share(address: string | undefined, tokenId: string) {
 .favorite:hover {
   cursor: pointer;
 }
+
 .favorite {
   text-align: right;
   align-self: flex-start;
