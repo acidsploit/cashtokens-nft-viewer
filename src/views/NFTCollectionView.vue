@@ -4,13 +4,12 @@ import type { UtxoI } from 'mainnet-js/dist/module/interface';
 import type { NftType } from 'mainnet-js/dist/module/wallet/bcmr-v2.schema';
 import { useToast } from 'vue-toast-notification';
 
-import { useSearchStore } from '@/stores/search';
+import { useSearchStore, type NFTDetail } from '@/stores/search';
 import { useSettingsStore } from '@/stores/settings';
 import { useFavorites } from '@/stores/favorites';
 
 import PageLoading from "@/components/PageLoading.vue";
 import SearchError from "@/components/SearchError.vue";
-import { pushTokenCommitment } from '@bitauth/libauth';
 
 
 const props = defineProps({
@@ -40,6 +39,7 @@ const nftBalance = ref(0)
 const nftUtxos = ref([] as UtxoI[])
 const nftList = ref([] as NftDetail[])
 const otherNftList = ref([] as OtherNftDetail[])
+const collectionBCMR = ref({} as NFTDetail | undefined)
 const collectionName = ref("" as string | undefined)
 
 onMounted(async () => {
@@ -69,14 +69,15 @@ watch(
 async function loadNftCardData() {
   nftList.value = [] as NftDetail[]
   otherNftList.value = [] as OtherNftDetail[]
+
+  collectionBCMR.value = search.getNftCollectionById(props.tokenId)
+  console.log(JSON.stringify(collectionBCMR.value, null, 4))
   collectionName.value = search.getNftCollectionNameById(props.tokenId)
   nftBalance.value = search.wallet ? await search.wallet.getNftTokenBalance(props.tokenId) : 0
   nftUtxos.value = search.wallet ? await search.wallet.getTokenUtxos(props.tokenId) : []
 
   nftUtxos.value.forEach(nft => {
     if (nft.token?.tokenId && nft.token?.commitment) {
-      let collection = search.getNftCollectionById(nft.token.tokenId)
-      // console.log(JSON.stringify(collection, null, 4))
       let nftType = search.getNftDetailByCommitment(nft.token.tokenId, nft.token.commitment)
       if (nftType) {
         nftList.value.push({
@@ -87,9 +88,9 @@ async function loadNftCardData() {
       } else {
         otherNftList.value.push({
           id: nft.token.tokenId,
-          category: collection?.BCMR?.token?.category,
-          symbol: collection?.BCMR?.token?.symbol,
-          icon: collection?.BCMR?.uris?.icon,
+          category: collectionBCMR.value?.BCMR?.token?.category,
+          symbol: collectionBCMR.value?.BCMR?.token?.symbol,
+          icon: collectionBCMR.value?.BCMR?.uris?.icon,
           commitment: nft.token.commitment
         })
       }
