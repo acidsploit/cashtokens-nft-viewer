@@ -68,6 +68,8 @@ function toggleEdit() {
 }
 
 .close {
+  cursor: pointer;
+  margin-left: 1.5rem;
   font-size: 4rem;
 }
 
