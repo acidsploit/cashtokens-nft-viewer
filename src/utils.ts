@@ -7,10 +7,10 @@ import {
     encodeCashAddress,
     isHex,
     hexToBin,
-    binToHex,
-    swapEndianness,
+    // binToHex,
+    // swapEndianness,
 CashAddressNetworkPrefix,
-cashAddressTypeBitsToType,
+// cashAddressTypeBitsToType,
 decodeCashAddressVersionByte
 } from '@bitauth/libauth'
 import type { IdentitySnapshot } from 'mainnet-js/dist/module/wallet/bcmr-v2.schema';
