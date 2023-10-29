@@ -126,11 +126,13 @@ function formatImgUri(uri: string | undefined): string | undefined {
 
     <div class="nft-container">
       <div class="nft-card" v-for="utxo in collection?.utxos" v-bind:key="utxo.token?.commitment">
-        <img v-if="collection?.bcmr && utxo.token?.commitment" :src="formatImgUri(collection.bcmr.token?.nfts?.parse?.types[utxo.token.commitment].uris?.icon ?
-          collection.bcmr.token?.nfts?.parse?.types[utxo.token.commitment].uris?.icon
-          :
-          collection.bcmr.uris?.icon
-        )" />
+        <div v-if="collection?.bcmr && utxo.token?.commitment" class="img">
+          <img :src="formatImgUri(collection.bcmr.token?.nfts?.parse?.types[utxo.token.commitment].uris?.icon ?
+            collection.bcmr.token?.nfts?.parse?.types[utxo.token.commitment].uris?.icon
+            :
+            collection.bcmr.uris?.icon
+          )" />
+        </div>
         <div v-else class="spinner">
           <atom-spinner v-if="isDark" :animation-duration="1000" :size="60" color="#00c3ff" />
           <atom-spinner v-if="!isDark" :animation-duration="1000" :size="60" color="#0ac18e" />
@@ -228,6 +230,12 @@ h3.collection-name {
   width: 230px;
   margin-bottom: 15px;
   border-radius: 8px;
+}
+
+.img {
+  width:230px;
+  height: 230px;
+  margin-bottom: 15px;
 }
 
 .spinner {
