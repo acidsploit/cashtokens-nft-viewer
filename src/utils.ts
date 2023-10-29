@@ -13,7 +13,15 @@ CashAddressNetworkPrefix,
 // cashAddressTypeBitsToType,
 decodeCashAddressVersionByte
 } from '@bitauth/libauth'
+import type { UtxoI } from 'mainnet-js/dist/module/interface';
 import type { IdentitySnapshot } from 'mainnet-js/dist/module/wallet/bcmr-v2.schema';
+
+export interface Token {
+    id: string,
+    amount: number | undefined,
+    utxos: UtxoI[] | undefined
+    bcmr: IdentitySnapshot | undefined
+  }
 
 export enum QueryType {
     empty = "EMPTY",
@@ -41,6 +49,22 @@ export function isValidAddress(addr: string): boolean {
   
   return true;
 }
+
+export function isValidAddress2(addr: string): boolean | string {
+    if (addr.includes(":")) {
+      const decodedCashAddress = decodeCashAddress(addr);
+      if (typeof decodedCashAddress === "string") {
+        return decodedCashAddress;
+      }
+    } else {
+      const decodedCashAddress = decodeCashAddressFormatWithoutPrefix(addr);
+      if (typeof decodedCashAddress === "string") {
+        return decodedCashAddress;
+      }
+    }
+    
+    return true;
+  }
 
 export function formatCashAddress(addr: string): string {
     let encodedCashAddress;

@@ -1,123 +1,46 @@
 <script setup lang="ts">
 import { computed, onMounted, ref, watch } from 'vue';
-import type { NFTCapability, UtxoI } from 'mainnet-js/dist/module/interface';
-import type { NftType } from 'mainnet-js/dist/module/wallet/bcmr-v2.schema';
 import { useToast } from 'vue-toast-notification';
 
-import { useSearchStore, type NFTDetail } from '@/stores/search';
+import type { Token } from '../utils'
+
 import { useSettingsStore } from '@/stores/settings';
 import { useFavorites } from '@/stores/favorites';
 
 import PageLoading from "@/components/PageLoading.vue";
 import SearchError from "@/components/SearchError.vue";
+import { useSearchStore } from '@/stores/search';
 
 const props = defineProps({
   address: { type: String, required: true },
   tokenId: { type: String, required: true },
 })
 
-interface NftDetail {
-  id: string,
-  commitment: string,
-  nftType: NftType
-}
-
-interface OtherNftDetail {
-  id: string,
-  category: string | undefined,
-  symbol: string | undefined,
-  icon: string | undefined,
-  commitment: string | undefined,
-  capability: NFTCapability | undefined,
-}
-
 const settings = useSettingsStore()
 const search = useSearchStore()
 const favorites = useFavorites()
 
-const nftBalance = ref(0)
-const nftUtxos = ref([] as UtxoI[])
-const nftList = ref([] as NftDetail[])
-const otherNftList = ref([] as OtherNftDetail[])
-const collectionBCMR = ref({} as NFTDetail | undefined)
-const collectionName = ref("" as string | undefined)
+const collection = ref(undefined as Token | undefined)
 
 onMounted(async () => {
-  if (search.validatedQuery.query === props.address) {
-    await loadNftCardData()
-  } else {
-    search.query = props.address
-    search.type = "path"
-    await search.search(props.tokenId).then(async () => {
-      await loadNftCardData()
+  if (search.result.address !== props.address) {
+    await search.search2("path", props.address, props.tokenId).then(() => {
+      collection.value = search.result.tokens.find((token) => { return token.id === props.tokenId })
     })
+  } else {
+    collection.value = search.result.tokens.find((token) => { return token.id === props.tokenId })
   }
 })
 
 watch(
   [() => props.address, () => props.tokenId],
   async ([newAaddress, newTokenId]) => {
-    search.query = newAaddress
-    search.type = "path"
-    nftList.value = []
-    await search.search(newTokenId).then(async () => {
-      await loadNftCardData()
+    collection.value = undefined
+    await search.search2("path", newAaddress, newTokenId).then(() => {
+      collection.value = search.result.tokens.find((token) => { return token.id === props.tokenId })
     })
   }
 )
-
-async function loadNftCardData() {
-  nftList.value = [] as NftDetail[]
-  otherNftList.value = [] as OtherNftDetail[]
-
-  collectionBCMR.value = search.getNftCollectionById(props.tokenId)
-  // console.log("BCMR")
-  // console.log(JSON.stringify(collectionBCMR.value, null, 4))
-  collectionName.value = search.getNftCollectionNameById(props.tokenId)
-  nftBalance.value = search.wallet ? await search.wallet.getNftTokenBalance(props.tokenId) : 0
-  nftUtxos.value = search.wallet ? await search.wallet.getTokenUtxos(props.tokenId) : []
-
-  // console.log("TOKEN UTXOs for: " +  props.tokenId)
-  nftUtxos.value.forEach(utxo => {
-  //  console.log(JSON.stringify(utxo, null, 4))
-    if (utxo.token?.tokenId && utxo.token?.commitment) {
-      let nftType = search.getNftTypeByCommitment(utxo.token.tokenId, utxo.token.commitment)
-      if (nftType) {
-        nftList.value.push({
-          id: utxo.token.tokenId,
-          commitment: utxo.token.commitment,
-          nftType: nftType
-        })
-      } else {
-        otherNftList.value.push({
-          id: utxo.token.tokenId,
-          category: collectionBCMR.value?.BCMR?.token?.category,
-          symbol: collectionBCMR.value?.BCMR?.token?.symbol,
-          icon: collectionBCMR.value?.BCMR?.uris?.icon,
-          commitment: utxo.token.commitment,
-          capability: utxo.token.capability
-        })
-      }
-    }
-  });
-}
-
-const collectionNameFormat = computed(() => {
-  return collectionName.value ? collectionName.value : `${props.tokenId.slice(0, 4)}...${props.tokenId.slice(-4)}`
-})
-
-function formatImgUri(uri: string | undefined): string | undefined {
-  if (uri && uri.slice(0, 7) === "ipfs://") {
-    let prefix = settings.ipfsGateway
-    let path = uri.slice(7)
-
-    return prefix + path
-  } else if (uri) {
-    return uri
-  }
-
-  return undefined
-}
 
 function addFav(title: string, addr: string | undefined, id: string) {
   let favId = `${addr}/${id}`
@@ -142,75 +65,70 @@ async function share(address: string | undefined, tokenId: string) {
     })
   })
 }
+
+const collectionNameFormat = computed(() => {
+  return collection.value?.bcmr?.name ? collection.value?.bcmr?.name : `${props.tokenId.slice(0, 4)}...${props.tokenId.slice(-4)}`
+})
+
+function nftCardName(commitment: string | undefined): string {
+  if (commitment)
+    return collection.value?.bcmr?.token?.nfts?.parse?.types[commitment]?.name ? collection.value.bcmr.token.nfts.parse.types[commitment].name : commitment
+  else
+    return ""
+}
+
+function formatImgUri(uri: string | undefined): string | undefined {
+  if (uri && uri.slice(0, 7) === "ipfs://") {
+    let prefix = settings.ipfsGateway
+    let path = uri.slice(7)
+
+    return prefix + path
+  } else if (uri) {
+    return uri
+  }
+
+  return undefined
+}
 </script>
 
 <template>
   <SearchError v-if="search.error !== null" :error="search.error" :type="'page'" />
 
-  <div v-if="nftList.length === 0 && otherNftList.length === 0 && search.error === null">
+  <div v-if="collection === undefined">
     <PageLoading />
   </div>
 
-  <div v-if="nftList.length !== 0" class="wrapper container">
+  <div v-if="collection !== undefined" class="wrapper container">
 
     <div class="collection-header">
       <h3 class="collection-name">{{ collectionNameFormat }}</h3>
       <div class="collection-address">
-        <div>On address: {{ search.wallet?.tokenaddr }}</div>
-        <div>Child NFTs: {{ nftBalance }}</div>
+        <div>On address: {{ search.result.wallet?.tokenaddr }}</div>
+        <div>Child NFTs: {{ collection?.amount }}</div>
       </div>
-      <span class="share material-symbols-outlined" @click="share(search.wallet?.cashaddr, props.tokenId)">
+      <span class="share material-symbols-outlined" @click="share(search.result.wallet?.cashaddr, props.tokenId)">
         share
       </span>
-      <span v-if="!favorites.isFav(`${search.wallet?.cashaddr}/${props.tokenId}`)"
+      <span v-if="!favorites.isFav(`${search.result.wallet?.cashaddr}/${props.tokenId}`)"
         class="favorite material-symbols-outlined"
-        @click="addFav(collectionNameFormat, search.wallet?.cashaddr, props.tokenId)">
+        @click="addFav(collectionNameFormat, search.result.wallet?.cashaddr, props.tokenId)">
         favorite
       </span>
-      <span v-if="favorites.isFav(`${search.wallet?.cashaddr}/${props.tokenId}`)"
-        class="favorite material-symbols-outlined red" @click="removeFav(search.wallet?.cashaddr, props.tokenId)">
+      <span v-if="favorites.isFav(`${search.result.wallet?.cashaddr}/${props.tokenId}`)"
+        class="favorite material-symbols-outlined red" @click="removeFav(search.result.wallet?.cashaddr, props.tokenId)">
         favorite
       </span>
     </div>
 
     <div class="nft-container">
-      <div class="nft-card" v-for="nft in nftList" v-bind:key="nft.commitment">
-        <img v-if="nft.nftType.uris?.icon" :src="formatImgUri(nft.nftType.uris.icon)" />
-        <p>{{ nft.nftType.name }}</p>
-        <p class="commitment">Commitment: {{ nft.commitment }}</p>
-      </div>
-    </div>
-
-  </div>
-
-  <div v-if="otherNftList.length !== 0" class="wrapper container">
-
-    <div class="collection-header">
-      <h3 class="collection-name">{{ collectionNameFormat }}</h3>
-      <div class="collection-address">
-        <div>On address: {{ search.wallet?.tokenaddr }}</div>
-        <div>Child NFTs: {{ nftBalance }}</div>
-      </div>
-      <span class="share material-symbols-outlined" @click="share(search.wallet?.cashaddr, props.tokenId)">
-        share
-      </span>
-      <span v-if="!favorites.isFav(`${search.wallet?.cashaddr}/${props.tokenId}`)"
-        class="favorite material-symbols-outlined"
-        @click="addFav(collectionNameFormat, search.wallet?.cashaddr, props.tokenId)">
-        favorite
-      </span>
-      <span v-if="favorites.isFav(`${search.wallet?.cashaddr}/${props.tokenId}`)"
-        class="favorite material-symbols-outlined red" @click="removeFav(search.wallet?.cashaddr, props.tokenId)">
-        favorite
-      </span>
-    </div>
-
-    <div class="nft-container">
-      <div class="nft-card" v-for="nft in otherNftList" v-bind:key="nft.category">
-        <img v-if="nft.icon" :src="formatImgUri(nft.icon)" />
-        <p class="commitment">Capability: {{ nft.capability}}</p>
-        <p class="commitment">Commitment: {{ nft.commitment}}</p>
-        <p class="commitment">1 {{ nft.symbol }}</p>
+      <div class="nft-card" v-for="utxo in collection?.utxos" v-bind:key="utxo.token?.commitment">
+        <img v-if="collection?.bcmr && utxo.token?.commitment" :src="formatImgUri(collection.bcmr.token?.nfts?.parse?.types[utxo.token.commitment].uris?.icon ?
+          collection.bcmr.token?.nfts?.parse?.types[utxo.token.commitment].uris?.icon
+          :
+          collection.bcmr.uris?.icon
+        )" />
+        <p>{{ nftCardName(utxo.token?.commitment) }}</p>
+        <p class="commitment">Commitment: {{ utxo.token?.commitment }}</p>
       </div>
     </div>
 

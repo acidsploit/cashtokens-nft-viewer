@@ -1,12 +1,14 @@
 import { acceptHMRUpdate, defineStore } from "pinia"
 import { ref } from "vue"
-import { BCMR, Wallet } from "mainnet-js"
-import type { NftType } from "mainnet-js/dist/module/wallet/bcmr-v2.schema";
+import { BCMR, TokenSendRequest, Wallet, type UtxoI } from "mainnet-js"
+import type { IdentitySnapshot, NftType } from "mainnet-js/dist/module/wallet/bcmr-v2.schema";
 import {
   isValidAddress,
   QueryType,
   formatCashAddress,
-  type TokenMetadata
+  type TokenMetadata,
+  isValidAddress2,
+type Token
 } from '../utils'
 import { useSettingsStore } from "./settings";
 import router from "@/router";
@@ -15,12 +17,19 @@ export interface NFTDetail extends TokenMetadata {
   amount: number;
 }
 
+// export interface Token {
+//   id: string,
+//   amount?: number,
+//   utxos?: UtxoI[]
+//   bcmr?: IdentitySnapshot
+// }
+
 export const useSearchStore = defineStore('search', () => {
   const query = ref("")
   const type = ref("")
   const error = ref(null as any)
   const validatedQuery = ref({
-    query: "",
+    query: null as string | null,
     queryType: QueryType.empty,
   })
 
@@ -28,6 +37,75 @@ export const useSearchStore = defineStore('search', () => {
   const wallet = ref(null as Wallet | null)
   const cachedTokenMetadata = ref([] as TokenMetadata[])
   const nftDetails = ref([] as NFTDetail[])
+
+
+  const result = ref({
+    address: null as string | null,
+    wallet: null as Wallet | null,
+    tokens: [] as Token[]
+  })
+
+  async function search2(type: string, address: string, tokenId?: string) {
+    error.value = null
+
+    if (address !== "") {
+      const isValidatedAddress = isValidAddress2(address)
+      if (isValidatedAddress === true) {
+        result.value.address = formatCashAddress(address)
+        console.log("Validate address as :" + result.value.address)
+        result.value.wallet = null as Wallet | null
+        result.value.tokens = [] as Token[]
+
+        try {
+          await Wallet.fromCashaddr(result.value.address).then(async (wallet) => {
+            console.log("Created watch-only wallet from: " + result.value.address)
+            console.log("Wallet CashAddress:  " + wallet.cashaddr)
+            console.log("Wallet TokenAddress: " + wallet.tokenaddr)
+
+            result.value.wallet = wallet
+
+            if (type === "query") {
+              router.push(`/nfts/${validatedQuery.value.query}`)
+            }
+
+            if (tokenId) {
+              try {
+                const token = { id: tokenId } as Token
+                await result.value.wallet.getNftTokenBalance(tokenId).then(async (balance) => {
+                  console.log(`Fetched token balance (${balance}) for tokenid: tokenId`)
+                  token.amount = balance
+                  await result.value.wallet?.getTokenUtxos(tokenId).then(async (utxos) => {
+                    console.log(`Fetched ${utxos.length} token utxos for tokenid: ${tokenId}`)
+                    token.utxos = utxos
+                    result.value.tokens.push(token)
+
+                    fetchTokenMetadata(tokenId).then((snapshot) => {
+                      result.value.tokens.forEach((token) => {
+                        if (token.id === tokenId) {
+                          console.log("Fetched bcmr metadata for: " + tokenId)
+                          token.bcmr = snapshot
+                        }
+                      })
+                    })
+                  })
+                })
+              } catch (err) {
+                error.value = "Failed to fetch token data: " + err
+              }
+            } else {
+              console.log("no tokenid")
+            }
+          })
+        } catch (err) {
+          error.value = `Failed to create wallet from ${result.value.address}: ${err}`
+          console.log(error.value)
+        }
+      } else {
+        error.value = "Invalid CashAddress: " + isValidatedAddress
+        console.log(error.value)
+      }
+    }
+  }
 
   async function search(tokenId?: string) {
     error.value = null
@@ -87,6 +165,35 @@ export const useSearchStore = defineStore('search', () => {
         // alert("invalid search query")
       }
     }
+  }
+  
+  async function fetchTokenMetadata(tokenId: string): Promise<IdentitySnapshot | undefined> {
+      try {
+        let snapshot = BCMR.getTokenInfo(tokenId)
+        if (snapshot === undefined) {
+          await BCMR.fetchAuthChainFromChaingraph({
+            transactionHash: tokenId,
+            chaingraphUrl: settings.chaingraphUrl,
+            network: 'mainnet'
+          }).then(async (authChain) => {
+            console.log("Fetched authchain from chaingraph for tokenId: " + tokenId)
+            // console.log(JSON.stringify(authChain, null, 4))
+            const httpsUrl = authChain.pop()?.httpsUrl
+            if (httpsUrl !== undefined) {
+              await BCMR.addMetadataRegistryFromUri(httpsUrl).then(() => {
+                console.log("Added metadata registry from: " + httpsUrl)
+                snapshot = BCMR.getTokenInfo(tokenId)
+              })
+            }
+          })
+        }
+
+        return snapshot
+
+      } catch (err) {
+        error.value = `Failed to fetch token metadata for tokenid: ${tokenId} Error: ${err}`
+        console.log(error.value)
+      }
   }
 
   async function loadTokenMetadata(tokenId: string): Promise<TokenMetadata | undefined> {
@@ -158,7 +265,9 @@ export const useSearchStore = defineStore('search', () => {
     wallet,
     cachedTokenMetadata,
     nftDetails,
+    result,
     search,
+    search2,
     getNftCollectionById,
     getNftCollectionNameById,
     getNftTypeByCommitment,
