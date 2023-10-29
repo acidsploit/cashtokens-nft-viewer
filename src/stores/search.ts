@@ -70,15 +70,18 @@ export const useSearchStore = defineStore('search', () => {
 
             if (tokenId) {
               try {
-                const token = { id: tokenId } as Token
                 await result.value.wallet.getNftTokenBalance(tokenId).then(async (balance) => {
                   console.log(`Fetched token balance (${balance}) for tokenid: tokenId`)
-                  token.amount = balance
                   await result.value.wallet?.getTokenUtxos(tokenId).then(async (utxos) => {
                     console.log(`Fetched ${utxos.length} token utxos for tokenid: ${tokenId}`)
-                    token.utxos = utxos
-                    result.value.tokens.push(token)
+                    result.value.tokens.push({
+                      id: tokenId,
+                      amount: balance,
+                      utxos: utxos,
+                      bcmr: undefined
+                    })
 
+                    // Fetch metadata in background
                     fetchTokenMetadata(tokenId).then((snapshot) => {
                       result.value.tokens.forEach((token) => {
                         if (token.id === tokenId) {
