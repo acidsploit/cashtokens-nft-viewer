@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { computed, onMounted, ref, watch } from 'vue';
 import { useToast } from 'vue-toast-notification';
+import { useDark } from '@vueuse/core';
+import { AtomSpinner } from 'epic-spinners'
 
 import type { Token } from '../utils'
 
@@ -16,9 +18,11 @@ const props = defineProps({
   tokenId: { type: String, required: true },
 })
 
+const isDark = useDark()
 const settings = useSettingsStore()
 const search = useSearchStore()
 const favorites = useFavorites()
+
 
 const collection = ref(undefined as Token | undefined)
 
@@ -127,8 +131,13 @@ function formatImgUri(uri: string | undefined): string | undefined {
           :
           collection.bcmr.uris?.icon
         )" />
+        <div v-else class="spinner">
+          <atom-spinner v-if="isDark" :animation-duration="1000" :size="60" color="#00c3ff" />
+          <atom-spinner v-if="!isDark" :animation-duration="1000" :size="60" color="#0ac18e" />
+        </div>
         <p>{{ nftCardName(utxo.token?.commitment) }}</p>
-        <p class="commitment">Commitment: {{ utxo.token?.commitment }}</p>
+        <p v-if="utxo.token?.capability !== 'none'" class="commitment">Capability: {{ utxo.token?.capability }}</p>
+        <p v-if="utxo.token?.commitment" class="commitment">Commitment: {{ utxo.token?.commitment }}</p>
       </div>
     </div>
 
@@ -219,6 +228,18 @@ h3.collection-name {
   width: 230px;
   margin-bottom: 15px;
   border-radius: 8px;
+}
+
+.spinner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  width: 230px;
+  height: 230px;
+  margin-bottom: 15px;
+  align-self: center;
 }
 
 .commitment {

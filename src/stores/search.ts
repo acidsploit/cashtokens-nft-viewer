@@ -103,6 +103,7 @@ export const useSearchStore = defineStore('search', () => {
                 })
               } catch (err) {
                 error.value = "Failed to fetch token data: " + err
+                console.log(error.value)
               }
             }
           })
