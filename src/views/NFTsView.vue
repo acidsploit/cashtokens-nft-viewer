@@ -19,12 +19,10 @@ const favorites = useFavorites()
 
 onMounted(async () => {
   console.log("props: " + props.address)
-  console.log("validated query: " + search.validatedQuery.query)
+  console.log("validated query: " + search.result.address)
 
-  if (search.validatedQuery.query !== props.address) {
-    search.query = props.address
-    search.type = "path"
-    await search.search()
+  if (search.result.address !== props.address) {
+    await search.search("path", props.address)
   }
 })
 
@@ -74,48 +72,48 @@ async function share(address: string | undefined, tokenId: string) {
 <template>
   <SearchError v-if="search.error !== null" :error="search.error" :type="'page'" />
 
-  <div v-if="search.nftDetails.length === 0 && search.error === null">
+  <div v-if="search.result.tokens.length === 0 && search.error === null">
     <PageLoading />
   </div>
 
-  <div v-if="search.nftDetails.length !== 0" class="wrapper container">
+  <div v-if="search.result.tokens.length !== 0" class="wrapper container">
     <div class="heading">
       <div class="col title">
         <h3>NFT</h3>
         <h3>Collections</h3>
       </div>
-      <div class="address" v-if="search.wallet">
-        On address: {{ search.wallet.tokenaddr }}
+      <div class="address" v-if="search.result.wallet">
+        On address: {{ search.result.wallet.tokenaddr }}
       </div>
     </div>
 
     <div class="collection-list container">
-      <div class="nft-collection" v-for="detail in search.nftDetails" :key="detail.id">
+      <div class="nft-collection" v-for="token in search.result.tokens" :key="token.id">
         <div class="collection-name">
-          <img v-if="detail.BCMR?.uris?.icon" :src="formatImgUri(detail.BCMR.uris.icon)" alt="icon">
-          <h3>{{ collectionName(detail.BCMR?.name, detail.id) }} </h3>
-          <span class="share material-symbols-outlined" @click="share(search.wallet?.cashaddr, detail.id)">
+          <img v-if="token.bcmr?.uris?.icon" :src="formatImgUri(token.bcmr.uris.icon)" alt="icon">
+          <h3>{{ collectionName(token.bcmr?.name, token.id) }} </h3>
+          <span class="share material-symbols-outlined" @click="share(search.result.wallet?.cashaddr, token.id)">
             share
           </span>
-          <span v-if="!favorites.isFav(`${search.wallet?.cashaddr}/${detail.id}`)"
+          <span v-if="!favorites.isFav(`${search.result.wallet?.cashaddr}/${token.id}`)"
             class="favorite material-symbols-outlined"
-            @click="addFav(collectionName(detail.BCMR?.name, detail.id), search.wallet?.cashaddr, detail.id)">
+            @click="addFav(collectionName(token.bcmr?.name, token.id), search.result.wallet?.cashaddr, token.id)">
             favorite
           </span>
-          <span v-if="favorites.isFav(`${search.wallet?.cashaddr}/${detail.id}`)"
-            class="favorite material-symbols-outlined red" @click="removeFav(search.wallet?.cashaddr, detail.id)">
+          <span v-if="favorites.isFav(`${search.result.wallet?.cashaddr}/${token.id}`)"
+            class="favorite material-symbols-outlined red" @click="removeFav(search.result.wallet?.cashaddr, token.id)">
             favorite
           </span>
         </div>
 
-        <p class="description">{{ detail.BCMR?.description ? detail.BCMR?.description : "" }}</p>
+        <p class="description">{{ token.bcmr?.description ? token.bcmr?.description : "" }}</p>
 
         <div class="bottom-row">
           <p class="amount">
-            {{ detail.amount / 10 ** (detail.BCMR?.token?.decimals ? detail.BCMR?.token?.decimals : 0) }}
-            {{ detail.BCMR?.token?.symbol ? detail.BCMR?.token?.symbol : "units" }}
+            {{ token.amount / 10 ** (token.bcmr?.token?.decimals ? token.bcmr?.token?.decimals : 0) }}
+            {{ token.bcmr?.token?.symbol ? token.bcmr?.token?.symbol : "units" }}
           </p>
-          <RouterLink class="btn-view-collection" :to="`/collection/${search.wallet?.address}/${detail.id}`">View
+          <RouterLink class="btn-view-collection" :to="`/collection/${search.result.wallet?.address}/${token.id}`">View
             Collection
           </RouterLink>
         </div>

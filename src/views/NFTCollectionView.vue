@@ -24,7 +24,7 @@ const collection = ref(undefined as Token | undefined)
 
 onMounted(async () => {
   if (search.result.address !== props.address) {
-    await search.search2("path", props.address, props.tokenId).then(() => {
+    await search.search("path", props.address, props.tokenId).then(() => {
       collection.value = search.result.tokens.find((token) => { return token.id === props.tokenId })
     })
   } else {
@@ -36,7 +36,7 @@ watch(
   [() => props.address, () => props.tokenId],
   async ([newAaddress, newTokenId]) => {
     collection.value = undefined
-    await search.search2("path", newAaddress, newTokenId).then(() => {
+    await search.search("path", newAaddress, newTokenId).then(() => {
       collection.value = search.result.tokens.find((token) => { return token.id === props.tokenId })
     })
   }

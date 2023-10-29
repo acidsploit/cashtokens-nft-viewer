@@ -18,39 +18,28 @@ import type { IdentitySnapshot } from 'mainnet-js/dist/module/wallet/bcmr-v2.sch
 
 export interface Token {
     id: string,
-    amount: number | undefined,
-    utxos: UtxoI[] | undefined
+    amount: number,
+    utxos: UtxoI[],
     bcmr: IdentitySnapshot | undefined
   }
 
-export enum QueryType {
-    empty = "EMPTY",
-    address = "ADDRESS",
-    token = "TOKEN",
-  }
-
-export interface TokenMetadata {
-    id: string;
-    BCMR: IdentitySnapshot | undefined;
-}
-
-export function isValidAddress(addr: string): boolean {
-  if (addr.includes(":")) {
-    const result = decodeCashAddress(addr);
-    if (typeof result === "string") {
-      return false;
-    }
-  } else {
-    const decodedCashAddress = decodeCashAddressFormatWithoutPrefix(addr);
-    if (typeof decodedCashAddress === "string") {
-      return false;
-    }
-  }
+// export function isValidAddress(addr: string): boolean {
+//   if (addr.includes(":")) {
+//     const result = decodeCashAddress(addr);
+//     if (typeof result === "string") {
+//       return false;
+//     }
+//   } else {
+//     const decodedCashAddress = decodeCashAddressFormatWithoutPrefix(addr);
+//     if (typeof decodedCashAddress === "string") {
+//       return false;
+//     }
+//   }
   
-  return true;
-}
+//   return true;
+// }
 
-export function isValidAddress2(addr: string): boolean | string {
+export function isValidAddress(addr: string): boolean | string {
     if (addr.includes(":")) {
       const decodedCashAddress = decodeCashAddress(addr);
       if (typeof decodedCashAddress === "string") {
