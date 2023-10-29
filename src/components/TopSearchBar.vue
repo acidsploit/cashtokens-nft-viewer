@@ -10,7 +10,6 @@ const search = useSearchStore()
 const query = ref("")
 
 async function handleSubmit() {
-
   await search.search("query", query.value)
 }
 </script>

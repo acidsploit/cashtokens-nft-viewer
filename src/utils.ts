@@ -23,22 +23,6 @@ export interface Token {
     bcmr: IdentitySnapshot | undefined
   }
 
-// export function isValidAddress(addr: string): boolean {
-//   if (addr.includes(":")) {
-//     const result = decodeCashAddress(addr);
-//     if (typeof result === "string") {
-//       return false;
-//     }
-//   } else {
-//     const decodedCashAddress = decodeCashAddressFormatWithoutPrefix(addr);
-//     if (typeof decodedCashAddress === "string") {
-//       return false;
-//     }
-//   }
-  
-//   return true;
-// }
-
 export function isValidAddress(addr: string): boolean | string {
     if (addr.includes(":")) {
       const decodedCashAddress = decodeCashAddress(addr);

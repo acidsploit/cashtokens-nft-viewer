@@ -6,8 +6,6 @@ import { useSearchStore } from "@/stores/search"
 
 import SearchError from "./SearchError.vue";
 
-
-
 const isDark = useDark()
 const search = useSearchStore()
 
