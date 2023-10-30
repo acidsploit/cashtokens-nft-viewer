@@ -134,7 +134,7 @@ function toggleEdit() {
   color: red;
 }
 
-@media only screen and (min-width: 768px) {
+@media only screen and (min-width: 900px) {
   #btn-close-sidebar {
     display: none;
   }

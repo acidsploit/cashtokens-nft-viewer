@@ -96,6 +96,7 @@ main {
 
 main.container {
   flex-direction: row;
+  flex-wrap: nowrap;
 }
 
 .content {
@@ -135,7 +136,7 @@ footer {
   box-shadow: 0 50vh 0 50vh var(--bg-secondary-color);
 }
 
-@media only screen and (min-width: 768px) {
+@media only screen and (min-width: 900px) {
   main {
     display: flex;
     flex-direction: row;
@@ -143,7 +144,7 @@ footer {
   }
 
   .sidebar {
-    min-width: 30rem;
+    min-width: 25rem;
     margin-right: 1rem;
     flex: 1;
     position: inherit;
