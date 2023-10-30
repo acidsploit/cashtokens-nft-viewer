@@ -115,9 +115,9 @@ main.container {
   width: 90%;
   transition: width .35s;
 
-  border-right-color: var(--color-primary);
+  /* border-right-color: var(--color-primary);
   border-right-style: solid;
-  border-right-width: 1px;
+  border-right-width: 1px; */
 }
 
 #sidebar.collapsed {
@@ -148,12 +148,11 @@ footer {
     flex: 1;
     position: inherit;
     height: auto;
-    border-style: solid;
+    /* border-style: solid;
     border-radius: 8px;
     border-width: 1px 1px 1px 1px;
     border-color: var(--color-darkGrey);
-    /* border-width: 0 0 0 0; */
-    background-color: transparent;
+    background-color: transparent; */
   }
 
   #sidebar.collapsed {

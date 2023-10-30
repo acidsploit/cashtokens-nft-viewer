@@ -92,16 +92,19 @@ async function share(address: string | undefined, tokenId: string) {
         <div class="collection-name">
           <img v-if="token.bcmr?.uris?.icon" :src="formatImgUri(token.bcmr.uris.icon)" alt="icon">
           <h3>{{ collectionName(token.bcmr?.name, token.id) }} </h3>
-          <span class="share material-symbols-outlined" @click="share(search.result.wallet?.cashaddr, token.id)">
+          <span class="share material-symbols-outlined" @click="share(search.result.wallet?.cashaddr, token.id)"
+          title="Copy shareable link">
             share
           </span>
           <span v-if="!favorites.isFav(`${search.result.wallet?.cashaddr}/${token.id}`)"
             class="favorite material-symbols-outlined"
-            @click="addFav(collectionName(token.bcmr?.name, token.id), search.result.wallet?.cashaddr, token.id)">
+            @click="addFav(collectionName(token.bcmr?.name, token.id), search.result.wallet?.cashaddr, token.id)"
+            title="Add NFT collection to favorites">
             favorite
           </span>
           <span v-if="favorites.isFav(`${search.result.wallet?.cashaddr}/${token.id}`)"
-            class="favorite material-symbols-outlined red" @click="removeFav(search.result.wallet?.cashaddr, token.id)">
+            class="favorite material-symbols-outlined red" @click="removeFav(search.result.wallet?.cashaddr, token.id)"
+            title="Remove NFT collection from favorites">
             favorite
           </span>
         </div>

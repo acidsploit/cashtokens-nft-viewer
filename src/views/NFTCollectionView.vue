@@ -134,16 +134,18 @@ function formatImgUri(utxo: UtxoI): string {
         <div>On address: {{ search.result.wallet?.tokenaddr }}</div>
         <div>Child NFTs: {{ collection?.amount }}</div>
       </div>
-      <span class="share material-symbols-outlined" @click="share(search.result.wallet?.cashaddr, props.tokenId)">
+      <span class="share material-symbols-outlined" @click="share(search.result.wallet?.cashaddr, props.tokenId)" title="Copy shareable link">
         share
       </span>
       <span v-if="!favorites.isFav(`${search.result.wallet?.cashaddr}/${props.tokenId}`)"
         class="favorite material-symbols-outlined"
-        @click="addFav(collectionNameFormat, search.result.wallet?.cashaddr, props.tokenId)">
+        @click="addFav(collectionNameFormat, search.result.wallet?.cashaddr, props.tokenId)"
+        title="Add NFT collection to favorites">
         favorite
       </span>
       <span v-if="favorites.isFav(`${search.result.wallet?.cashaddr}/${props.tokenId}`)"
-        class="favorite material-symbols-outlined red" @click="removeFav(search.result.wallet?.cashaddr, props.tokenId)">
+        class="favorite material-symbols-outlined red" @click="removeFav(search.result.wallet?.cashaddr, props.tokenId)"
+        title="Remove NFT collection from favorites">
         favorite
       </span>
     </div>
