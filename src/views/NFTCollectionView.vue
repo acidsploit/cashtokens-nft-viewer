@@ -13,6 +13,7 @@ import PageLoading from "@/components/PageLoading.vue";
 import SearchError from "@/components/SearchError.vue";
 import { useSearchStore } from '@/stores/search';
 import type { UtxoI } from 'mainnet-js';
+import router from '@/router';
 
 const props = defineProps({
   address: { type: String, required: true },
@@ -117,6 +118,12 @@ function formatImgUri(utxo: UtxoI): string {
 
   return ""
 }
+
+function handleNFTClick(commitment: string | undefined) {
+  if (commitment != undefined) {
+    router.push(`/nft/${props.address}/${props.tokenId}/${commitment}`)
+  }
+}
 </script>
 
 <template>
@@ -151,7 +158,7 @@ function formatImgUri(utxo: UtxoI): string {
     </div>
 
     <div class="nft-container">
-      <div class="nft-card" v-for="utxo in collection?.utxos" v-bind:key="utxo.txid + utxo.vout">
+      <div class="nft-card" v-for="utxo in collection?.utxos" v-bind:key="utxo.txid + utxo.vout" @click="handleNFTClick(utxo.token?.commitment)">
         <div class="img">
           <img v-show="!loading[utxo.txid + utxo.vout]" :src="formatImgUri(utxo)"
             @load="loading[utxo.txid + utxo.vout] = false" />
