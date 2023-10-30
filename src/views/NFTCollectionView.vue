@@ -170,8 +170,8 @@ function formatImgUri(utxo: UtxoI): string {
 <style scoped>
 .wrapper {
   border-style: solid;
-  border-radius: 4px;
-  border-width: 2px;
+  border-radius: 8px;
+  border-width: 1px;
   border-color: var(--color-darkGrey);
   height: 100%;
 }
@@ -199,7 +199,7 @@ h3.collection-name {
 }
 
 .collection-name {
-  flex-grow: 0;
+  flex-grow: 2;
 }
 
 .favorite:hover {

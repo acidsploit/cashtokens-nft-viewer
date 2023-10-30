@@ -149,9 +149,10 @@ footer {
     position: inherit;
     height: auto;
     border-style: solid;
-    border-radius: 4px;
-    border-width: 2px;
+    border-radius: 8px;
+    border-width: 1px 1px 1px 1px;
     border-color: var(--color-darkGrey);
+    /* border-width: 0 0 0 0; */
     background-color: transparent;
   }
 

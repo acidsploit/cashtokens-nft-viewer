@@ -128,8 +128,8 @@ async function share(address: string | undefined, tokenId: string) {
   align-items: center;
   flex-direction: column;
   border-style: solid;
-  border-radius: 4px;
-  border-width: 2px;
+  border-radius: 8px;
+  border-width: 1px;
   border-color: var(--color-darkGrey);
 }
 
