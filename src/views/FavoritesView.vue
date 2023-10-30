@@ -35,7 +35,7 @@ function toggleEdit() {
 
   <div class="col title">
     <h3>My</h3>
-    <h3>Collections</h3>
+    <h3>Favorites</h3>
   </div>
   <div class="container favourites">
     <div class="favorite" v-for="favorite in favorites.list" v-bind:key="favorite.id">
@@ -82,17 +82,18 @@ function toggleEdit() {
 }
 
 .title {
-  padding-top: 15px;
+  /* padding-top: 15px; */
   margin-bottom: 4rem;
 }
 
 .title h3 {
+  margin-top: 2rem;
   margin-left: 1.7rem;
-  max-width: 5rem;
+  width: fit-content;
   text-align: left;
-  font-size: 1.5em;
+  font-size: 2.5rem;
   font-weight: 800;
-  line-height: 1.5rem;
+  line-height: 1rem;
   transform: rotate(-13deg);
 }
 

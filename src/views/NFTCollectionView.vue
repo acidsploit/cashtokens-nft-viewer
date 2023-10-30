@@ -180,7 +180,7 @@ h3.collection-name {
   max-width: 30rem;
   word-wrap: break-word;
   text-align: left;
-  font-size: 1.3em;
+  font-size: 2.5rem;
   font-weight: 800;
   line-height: 30px;
   transform: rotate(-13deg);

@@ -4,7 +4,7 @@ import { useDark } from "@vueuse/core"
 
 import router from './router'
 
-import CollectionListView from './views/CollectionListView.vue'
+import FavoritesView from './views/FavoritesView.vue'
 import FooterView from './views/FooterView.vue'
 import DarkSwitch from './components/DarkSwitch.vue'
 import TopSearchBar from './components/TopSearchBar.vue'
@@ -42,7 +42,7 @@ function toggleSidebar() {
 
   <main class="container">
     <div id="sidebar" class="sidebar bg-primary collapsed">
-      <CollectionListView />
+      <FavoritesView />
     </div>
     <div class="content">
       <RouterView />
