@@ -12,27 +12,39 @@ import { useFavorites } from '@/stores/favorites';
 import PageLoading from "@/components/PageLoading.vue";
 import SearchError from "@/components/SearchError.vue";
 import { useSearchStore } from '@/stores/search';
+import type { UtxoI } from 'mainnet-js';
 
 const props = defineProps({
   address: { type: String, required: true },
   tokenId: { type: String, required: true },
 })
 
+export interface LoadingImage {
+  [id: string]: boolean
+}
+
 const isDark = useDark()
 const settings = useSettingsStore()
 const search = useSearchStore()
 const favorites = useFavorites()
-
-
 const collection = ref(undefined as Token | undefined)
+const loading = ref({} as { [key: string]: boolean })
+
+function setImageLoaders() {
+  collection.value?.utxos.forEach((utxo) => {
+    loading.value[utxo.txid + utxo.vout] = true
+  })
+}
 
 onMounted(async () => {
   if (search.result.address !== props.address) {
     await search.search("path", props.address, props.tokenId).then(() => {
       collection.value = search.result.tokens.find((token) => { return token.id === props.tokenId })
+      setImageLoaders()
     })
   } else {
     collection.value = search.result.tokens.find((token) => { return token.id === props.tokenId })
+    setImageLoaders()
   }
 })
 
@@ -41,7 +53,8 @@ watch(
   async ([newAaddress, newTokenId]) => {
     collection.value = undefined
     await search.search("path", newAaddress, newTokenId).then(() => {
-      collection.value = search.result.tokens.find((token) => { return token.id === props.tokenId })
+      collection.value = search.result.tokens.find((token) => { return token.id === newTokenId })
+      setImageLoaders()
     })
   }
 )
@@ -81,36 +94,33 @@ function nftCardName(commitment: string | undefined): string {
     return ""
 }
 
-function formatImgUri(uri: string | undefined): string | undefined {
-  if (uri && uri.slice(0, 7) === "ipfs://") {
+function prefixImgUri(uri: string): string {
+  if (uri.slice(0, 7) === "ipfs://") {
     let prefix = settings.ipfsGateway
     let path = uri.slice(7)
-
-    return prefix + path
-  } else if (uri) {
-    return uri
+    uri = prefix + path
   }
 
-  return undefined
+  return uri
 }
 
-function formatImgUri2(commitment: string | undefined): string {
-  let src = ""
-  if (commitment != undefined) {
-    let uri = collection.value?.bcmr?.token?.nfts?.parse.types[commitment].uris?.icon
-    if (uri != undefined) {
-      src = uri
-    } else {
-      uri = collection.value?.bcmr?.uris?.icon
-      if (uri != undefined) {
-        src = uri
-      }
+function formatImgUri(utxo: UtxoI): string {
+  if (utxo.token?.commitment !== undefined && collection.value?.bcmr?.token?.nfts?.parse.types[utxo.token.commitment] !== undefined) {
+    let uri = collection.value?.bcmr?.token?.nfts?.parse.types[utxo.token.commitment].uris?.icon
+    if (uri !== undefined) {
+      return prefixImgUri(uri)
     }
   }
 
-  return src
-}
+  if (collection.value?.bcmr?.uris !== undefined) {
+    let uri = collection.value?.bcmr?.uris?.icon
+    if (uri !== undefined) {
+      return prefixImgUri(uri)
+    }
+  }
 
+  return ""
+}
 </script>
 
 <template>
@@ -143,17 +153,14 @@ function formatImgUri2(commitment: string | undefined): string {
     </div>
 
     <div class="nft-container">
-      <div class="nft-card" v-for="utxo in collection?.utxos" v-bind:key="utxo.txid">
-        <div v-if="collection?.bcmr && utxo.token?.commitment" class="img">
-          <img :src="formatImgUri(collection.bcmr.token?.nfts?.parse?.types[utxo.token.commitment].uris?.icon ?
-            collection.bcmr.token?.nfts?.parse?.types[utxo.token.commitment].uris?.icon
-            :
-            collection.bcmr.uris?.icon
-          )" />
-        </div>
-        <div v-else class="spinner">
-          <atom-spinner v-if="isDark" :animation-duration="1000" :size="60" color="#00c3ff" />
-          <atom-spinner v-if="!isDark" :animation-duration="1000" :size="60" color="#0ac18e" />
+      <div class="nft-card" v-for="utxo in collection?.utxos" v-bind:key="utxo.txid + utxo.vout">
+        <div class="img">
+          <img v-show="!loading[utxo.txid + utxo.vout]" :src="formatImgUri(utxo)"
+            @load="loading[utxo.txid + utxo.vout] = false" />
+          <div v-if="loading[utxo.txid + utxo.vout]" class="spinner">
+            <atom-spinner v-if="isDark" :animation-duration="1000" :size="60" color="#00c3ff" />
+            <atom-spinner v-if="!isDark" :animation-duration="1000" :size="60" color="#0ac18e" />
+          </div>
         </div>
         <p>{{ nftCardName(utxo.token?.commitment) }}</p>
         <p v-if="utxo.token?.capability !== 'none'" class="commitment">Capability: {{ utxo.token?.capability }}</p>

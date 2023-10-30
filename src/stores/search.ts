@@ -21,101 +21,103 @@ export const useSearchStore = defineStore('search', () => {
 
   async function search(type: string, address: string, tokenId?: string) {
     error.value = null
-
     if (address !== "") {
       const isValidatedAddress = isValidAddress(address)
       if (isValidatedAddress === true) {
-        result.value.address = formatCashAddress(address)
-        console.log("Validate address as: " + result.value.address)
-        result.value.wallet = null as Wallet | null
-        result.value.tokens = [] as Token[]
+        if (type === "query") {
+          router.push(`/nfts/${result.value.address}`)
+        } else {
+          result.value.address = formatCashAddress(address)
+          console.log("Validate address as: " + result.value.address)
+          result.value.wallet = null as Wallet | null
+          result.value.tokens = [] as Token[]
 
-        try {
-          await Wallet.fromCashaddr(result.value.address).then(async (wallet) => {
-            console.log("Created watch-only wallet from: " + result.value.address)
-            console.log("Wallet CashAddress:  " + wallet.cashaddr)
-            console.log("Wallet TokenAddress: " + wallet.tokenaddr)
+          try {
+            await Wallet.fromCashaddr(result.value.address).then(async (wallet) => {
+              console.log("Created watch-only wallet from: " + result.value.address)
+              console.log("Wallet CashAddress:  " + wallet.cashaddr)
+              console.log("Wallet TokenAddress: " + wallet.tokenaddr)
 
-            result.value.wallet = wallet
+              result.value.wallet = wallet
+              if (tokenId) {
+                try {
+                  await result.value.wallet.getNftTokenBalance(tokenId).then(async (balance) => {
+                    console.log(`Fetched token balance (${balance} units) for tokenid: ${tokenId}`)
+                    await result.value.wallet?.getTokenUtxos(tokenId).then((utxos) => {
+                      console.log(`Fetched (${utxos.length}) token utxos for tokenid: ${tokenId}`)
+                      // console.log(JSON.stringify(utxos, null, 4))
 
-            if (type === "query") {
-              router.push(`/nfts/${result.value.address}`)
-            }
-
-            if (tokenId) {
-              try {
-                await result.value.wallet.getNftTokenBalance(tokenId).then(async (balance) => {
-                  console.log(`Fetched token balance (${balance} units) for tokenid: ${tokenId}`)
-                  await result.value.wallet?.getTokenUtxos(tokenId).then((utxos) => {
-                    console.log(`Fetched (${utxos.length}) token utxos for tokenid: ${tokenId}`)
-                    // console.log(JSON.stringify(utxos, null, 4))
-
-                    //move minting utxo to top of array
-                    for (let i = 0; i < utxos.length; i++) {
-                      if (utxos[i].token?.capability === "minting") {
-                        const mint = utxos.splice(i, 1)
-                        utxos.unshift(...mint)
-                        break
-                      }
-                    }
-
-                    result.value.tokens.push({
-                      id: tokenId,
-                      amount: balance,
-                      utxos: utxos,
-                      bcmr: undefined
-                    })
-
-                    // Fetch metadata in background
-                    fetchTokenMetadata(tokenId).then((snapshot) => {
-                      result.value.tokens.forEach((token) => {
-                        if (token.id === tokenId) {
-                          console.log("Fetched and pushed bcmr metadata for: " + tokenId)
-                          token.bcmr = snapshot
+                      //move minting utxo to top of array
+                      for (let i = 0; i < utxos.length; i++) {
+                        if (utxos[i].token?.capability === "minting") {
+                          const mint = utxos.splice(i, 1)
+                          utxos.unshift(...mint)
+                          break
                         }
-                      })
-                    })
-                  })
-                })
-              } catch (err) {
-                error.value = "Failed to fetch token data: " + err
-              }
-            } else {
-              try {
-                console.log("no tokenid")
-                await result.value.wallet.getAllNftTokenBalances().then(async (balances) => {
-                  console.log(`Fetched token balances for (${balances.length}) tokens`)
-                  for (const [id, amount] of Object.entries(balances)) {
-                    await result.value.wallet?.getTokenUtxos(id).then((utxos) => {
-                      console.log(`Fetched (${utxos.length}) token utxos for token: ${id}`)
+                      }
+
                       result.value.tokens.push({
-                        id: id,
-                        amount: amount,
+                        id: tokenId,
+                        amount: balance,
                         utxos: utxos,
                         bcmr: undefined
                       })
 
                       // Fetch metadata in background
-                      fetchTokenMetadata(id).then((snapshot) => {
-                        result.value.tokens.forEach((token) => {
-                          if (token.id === id) {
-                            console.log("Fetched and pushed bcmr metadata for: " + id)
-                            token.bcmr = snapshot
+                      fetchTokenMetadata(tokenId).then((snapshot) => {
+                        if (snapshot !== undefined) {
+                          result.value.tokens.forEach((token) => {
+                            if (token.id === tokenId) {
+                              console.log("Fetched and pushed bcmr metadata for: " + tokenId)
+                              token.bcmr = snapshot
+                            }
+                          })
+                        }
+                      })
+                    })
+                  })
+                } catch (err) {
+                  error.value = "Failed to fetch token data: " + err
+                }
+              } else {
+                try {
+                  console.log("no tokenid")
+                  await result.value.wallet.getAllNftTokenBalances().then(async (balances) => {
+                    console.log(`Fetched token balances for (${balances.length}) tokens`)
+                    for (const [id, amount] of Object.entries(balances)) {
+                      await result.value.wallet?.getTokenUtxos(id).then((utxos) => {
+                        console.log(`Fetched (${utxos.length}) token utxos for token: ${id}`)
+                        result.value.tokens.push({
+                          id: id,
+                          amount: amount,
+                          utxos: utxos,
+                          bcmr: undefined
+                        })
+
+                        // Fetch metadata in background
+                        fetchTokenMetadata(id).then((snapshot) => {
+                          if (snapshot !== undefined) {
+                            result.value.tokens.forEach((token) => {
+                              if (token.id === id) {
+                                console.log("Fetched and pushed bcmr metadata for: " + id)
+                                token.bcmr = snapshot
+                              }
+                            })
                           }
                         })
                       })
-                    })
-                  }
-                })
-              } catch (err) {
-                error.value = "Failed to fetch token data: " + err
-                console.log(error.value)
+                    }
+                  })
+                } catch (err) {
+                  error.value = "Failed to fetch token data: " + err
+                  console.log(error.value)
+                }
               }
-            }
-          })
-        } catch (err) {
-          error.value = `Failed to create wallet from ${result.value.address}: ${err}`
-          console.log(error.value)
+            })
+          } catch (err) {
+            error.value = `Failed to create wallet from ${result.value.address}: ${err}`
+            console.log(error.value)
+          }
         }
       } else {
         error.value = "Invalid CashAddress: " + isValidatedAddress
