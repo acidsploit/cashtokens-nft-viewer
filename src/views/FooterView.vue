@@ -11,7 +11,7 @@
       <p>
         Building and maintaining a project on a fast and progressively changing platform like Bitcoin Cash requires
         continious maintenance and updates.
-        To offset this cost I would greatly appreciate any change you could chuck my way.
+        I am, neverthelss, having a lot of fun with this. So if there is any change you could chuck my way to offset the costs, or buy me a beer, that would make my day :)
       </p>
 
       <p>
