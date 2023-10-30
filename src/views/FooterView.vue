@@ -2,46 +2,92 @@
 </script>
 
 <template>
-    <div class="container footer">
-        <div class="content">
-            By <a href="https://twitter.com/acidsploit" target="_blank">sploit</a> with <span class="heart">❤️</span>
-        </div>
-        <div class="content">
-            <h3>Props</h3>
-            <p><a href="https://twitter.com/GeukensMathieu" target="_blank">Mathieu</a></p>
-            <p><a href="https://cashonize.com" target="_blank">Cashonize Wallet</a></p>
-            <p><a href="https://mainnet.cash" target="_blank">mainnet-js</a></p>
-            <p><a href="https://github.com/bitauth/libauth" target="_blank">bitauth/libauth</a></p>
-        </div>
-        <div class="content">
-            <h3>Links</h3>
-            <a href="https://github.com/acidsploit/cashtokens-nft-viewer" target="_blank"><img class="logo" src="../assets/images/github-logo.svg" /></a>
-        </div>
+  <div class="container footer">
+    <div class="content first">
+      <p>
+        By <a href="https://twitter.com/acidsploit" target="_blank">sploit</a> with <span class="heart">❤️</span>
+      </p>
+
+      <p>
+        Building and maintaining a project on a fast and progressively changing platform like Bitcoin Cash requires
+        continious maintenance and updates.
+        To offset this cost I would greatly appreciate any change you could chuck my way.
+      </p>
+
+      <p>
+        CashAddress<br />
+        <a href="bitcoincash:qrnml95v6wmduw6xzwvddph4cevahxzzhq9n56y2sv">bitcoincash:qrnml95v6wmduw6xzwvddph4cevahxzzhq9n56y2sv</a>
+      </p>
+      <p>
+        TokenAddress<br />
+        <a href="bitcoincash:zrnml95v6wmduw6xzwvddph4cevahxzzhqze8y2v0l">bitcoincash:zrnml95v6wmduw6xzwvddph4cevahxzzhqze8y2v0l</a>
+      </p>
     </div>
+    <div class="content second">
+      <h3>Props</h3>
+      <p><a href="https://twitter.com/GeukensMathieu" target="_blank">Mathieu</a></p>
+      <p><a href="https://cashonize.com" target="_blank">Cashonize Wallet</a></p>
+      <p><a href="https://mainnet.cash" target="_blank">mainnet-js</a></p>
+      <p><a href="https://github.com/bitauth/libauth" target="_blank">bitauth/libauth</a></p>
+    </div>
+    <div class="content third">
+      <h3>Links</h3>
+      <p>
+        <a href="https://github.com/acidsploit/cashtokens-nft-viewer" target="_blank"><img class="logo"
+          src="../assets/images/github-logo.svg" /></a>
+      </p>
+      <p>
+        <a href="https://t.me/CashTokensNFTViewer" target="_blank"><img class="telegram"
+          src="../assets/images/telegram-logo.svg" /></a>
+      </p>
+      
+    </div>
+  </div>
 </template>
 
 <style scoped>
 .footer {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-around;
-    padding: 5rem 0 5rem 0;
-    color: var(--color-lightGrey)
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  padding: 5rem 0 5rem 0;
+  color: var(--color-lightGrey)
 }
 
 .content {
-    border-style: solid;
-    padding: 0 0 0 2rem;
-    border-width: 0 0 0 1px;
-    border-color: var(--color-darkGrey);
+  border-style: solid;
+  padding: 0 0 0 2rem;
+  border-width: 0 0 0 1px;
+  border-color: var(--color-darkGrey);
+}
+
+.first {
+  flex: 1 1 33%;
+  max-width: 35vw;
+  word-wrap: break-word;
+}
+
+.second {
+  flex-grow: 1 1 34%;
+  /* width: 34vw; */
+}
+
+.third {
+  flex-grow: 1 1 33%;
+  /* width: 33vw; */
 }
 
 .heart {
-    color: red;
+  color: red;
 }
 
 img.logo {
-    max-width: 50px;
+  max-width: 50px;
+}
+
+img.telegram {
+  /* max-width: 55px; */
+  width: 55px;
 }
 
 .material-symbols-outlined {
