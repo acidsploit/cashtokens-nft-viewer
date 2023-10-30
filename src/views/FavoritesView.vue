@@ -140,6 +140,8 @@ function toggleEdit() {
   }
 
   .wrapper {
+    height: auto;
+    min-height: 60rem;
     border-style: solid;
     border-radius: 8px;
     border-width: 1px 1px 1px 1px;
