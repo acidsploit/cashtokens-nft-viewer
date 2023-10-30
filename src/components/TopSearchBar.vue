@@ -1,14 +1,16 @@
 <script setup lang="ts">
+import { ref } from "vue";
 import { useDark } from "@vueuse/core"
+
 import { useSearchStore } from "@/stores/search"
 
 const isDark = useDark()
 const search = useSearchStore()
 
+const query = ref("")
+
 async function handleSubmit() {
-  console.log(`search query: ${search.query}`)
-  search.type = "query"
-  await search.search()
+  await search.search("query", query.value)
 }
 </script>
 
@@ -17,7 +19,7 @@ async function handleSubmit() {
     <form @submit.prevent="handleSubmit" class="search-form">
       <img v-if="!isDark" @click="handleSubmit" src="../assets/images/search.svg" alt="search">
       <img v-if="isDark" @click="handleSubmit" src="../assets/images/search-dark.svg" alt="search">
-      <input v-model.trim="search.query" class="search-input" placeholder="search by cashaddress" />
+      <input v-model.trim="query" class="search-input" placeholder="search by cashaddress" />
     </form>
   </div>
 </template>

@@ -14,7 +14,7 @@ export const useFavorites = defineStore('favorites', () => {
     list.value = JSON.parse(initialList)
   } else {
     list.value.push({
-      id: "bitcoincash:zry95eucgfkjs8087p5suge6s730py4jjqu4vumuh9/77a95410a07c2392c340384aef323aea902ebfa698a35815c4ef100062c6d8ac",
+      id: "bitcoincash:qry95eucgfkjs8087p5suge6s730py4jjqmllz46gk/77a95410a07c2392c340384aef323aea902ebfa698a35815c4ef100062c6d8ac",
       title: "sploit's Ninjas"
     })
   }
