@@ -19,10 +19,6 @@ const props = defineProps({
   tokenId: { type: String, required: true },
 })
 
-export interface LoadingImage {
-  [id: string]: boolean
-}
-
 const isDark = useDark()
 const settings = useSettingsStore()
 const search = useSearchStore()
