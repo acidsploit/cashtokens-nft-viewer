@@ -93,6 +93,24 @@ function formatImgUri(uri: string | undefined): string | undefined {
 
   return undefined
 }
+
+function formatImgUri2(commitment: string | undefined): string {
+  let src = ""
+  if (commitment != undefined) {
+    let uri = collection.value?.bcmr?.token?.nfts?.parse.types[commitment].uris?.icon
+    if (uri != undefined) {
+      src = uri
+    } else {
+      uri = collection.value?.bcmr?.uris?.icon
+      if (uri != undefined) {
+        src = uri
+      }
+    }
+  }
+
+  return src
+}
+
 </script>
 
 <template>
@@ -125,7 +143,7 @@ function formatImgUri(uri: string | undefined): string | undefined {
     </div>
 
     <div class="nft-container">
-      <div class="nft-card" v-for="utxo in collection?.utxos" v-bind:key="utxo.token?.commitment">
+      <div class="nft-card" v-for="utxo in collection?.utxos" v-bind:key="utxo.txid">
         <div v-if="collection?.bcmr && utxo.token?.commitment" class="img">
           <img :src="formatImgUri(collection.bcmr.token?.nfts?.parse?.types[utxo.token.commitment].uris?.icon ?
             collection.bcmr.token?.nfts?.parse?.types[utxo.token.commitment].uris?.icon
@@ -233,7 +251,7 @@ h3.collection-name {
 }
 
 .img {
-  width:230px;
+  width: 230px;
   height: 230px;
   margin-bottom: 15px;
 }

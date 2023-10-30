@@ -48,6 +48,17 @@ export const useSearchStore = defineStore('search', () => {
                   console.log(`Fetched token balance (${balance} units) for tokenid: ${tokenId}`)
                   await result.value.wallet?.getTokenUtxos(tokenId).then((utxos) => {
                     console.log(`Fetched (${utxos.length}) token utxos for tokenid: ${tokenId}`)
+                    // console.log(JSON.stringify(utxos, null, 4))
+
+                    //move minting utxo to top of array
+                    for (let i = 0; i < utxos.length; i++) {
+                      if (utxos[i].token?.capability === "minting") {
+                        const mint = utxos.splice(i, 1)
+                        utxos.unshift(...mint)
+                        break
+                      }
+                    }
+
                     result.value.tokens.push({
                       id: tokenId,
                       amount: balance,
