@@ -18,7 +18,11 @@ onMounted(() => {
     if (searchCollection != undefined) {
       console.log("we have data")
       collection.value = searchCollection
+    } else {
+      search.search(props.address, props.tokenId)
     }
+  } else {
+    search.search(props.address, props.tokenId)
   }
 })
 
@@ -26,9 +30,10 @@ onMounted(() => {
 
 <template>
 <h1>NFT Details</h1>
-<p>{{ props.address }}</p>
-<p>{{ props.tokenId }}</p>
-<p>{{ props.commitment }}</p>
+<p class="mono">{{ props.address }}</p>
+<p class="mono">{{ search.result.address }}</p>
+<p class="mono">{{ props.tokenId }}</p>
+<p class="mono">{{ props.commitment }}</p>
 <pre class="mono data">
   {{ JSON.stringify(collection?.bcmr?.token?.nfts?.parse.types[props.commitment], null, 4) }}
 </pre>
