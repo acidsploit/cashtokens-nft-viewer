@@ -170,8 +170,12 @@ img {
 }
 
 @media only screen and (min-width: 1200px) {
+  img {
+    max-width: 40vw;
+  }
   .meta {
     flex-wrap: nowrap;
+    justify-content: space-around;
   }
 
   .entry {
@@ -180,11 +184,12 @@ img {
   }
 
   .attributes {
-    margin: 0 1rem 0 0;
+    margin: 1rem 2rem 1rem 1rem;
+    width: fit-content;
   }
 
   .description {
-    margin: 0 0 0 1rem;
+    margin: 1rem 1rem 1rem 2rem;
   }
 }
 
