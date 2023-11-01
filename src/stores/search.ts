@@ -109,10 +109,9 @@ export const useSearchStore = defineStore('search', () => {
                         })
                       }
                     } else {
-                      error.value = `There a no NFTs on this address: ${result.value.wallet?.tokenaddr}`
+                      error.value = `There are no NFTs on this address: ${result.value.wallet?.tokenaddr}`
                       console.log(error.value)
                     }
-
                   })
                 } catch (err) {
                   error.value = "Failed to fetch token data: " + err
