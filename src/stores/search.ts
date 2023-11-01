@@ -83,30 +83,36 @@ export const useSearchStore = defineStore('search', () => {
                 try {
                   console.log("no tokenid")
                   await result.value.wallet.getAllNftTokenBalances().then(async (balances) => {
-                    console.log(`Fetched token balances for (${balances.length}) tokens`)
-                    for (const [id, amount] of Object.entries(balances)) {
-                      await result.value.wallet?.getTokenUtxos(id).then((utxos) => {
-                        console.log(`Fetched (${utxos.length}) token utxos for token: ${id}`)
-                        result.value.tokens.push({
-                          id: id,
-                          amount: amount,
-                          utxos: utxos,
-                          bcmr: undefined
-                        })
+                    if (Object.keys(balances).length >= 1) {
+                      console.log(`Fetched token balances for (${Object.keys(balances).length}) tokens`)
+                      for (const [id, amount] of Object.entries(balances)) {
+                        await result.value.wallet?.getTokenUtxos(id).then((utxos) => {
+                          console.log(`Fetched (${utxos.length}) token utxos for token: ${id}`)
+                          result.value.tokens.push({
+                            id: id,
+                            amount: amount,
+                            utxos: utxos,
+                            bcmr: undefined
+                          })
 
-                        // Fetch metadata in background
-                        fetchTokenMetadata(id).then((snapshot) => {
-                          if (snapshot !== undefined) {
-                            result.value.tokens.forEach((token) => {
-                              if (token.id === id) {
-                                console.log("Fetched and pushed bcmr metadata for: " + id)
-                                token.bcmr = snapshot
-                              }
-                            })
-                          }
+                          // Fetch metadata in background
+                          fetchTokenMetadata(id).then((snapshot) => {
+                            if (snapshot !== undefined) {
+                              result.value.tokens.forEach((token) => {
+                                if (token.id === id) {
+                                  console.log("Fetched and pushed bcmr metadata for: " + id)
+                                  token.bcmr = snapshot
+                                }
+                              })
+                            }
+                          })
                         })
-                      })
+                      }
+                    } else {
+                      error.value = `There a no NFTs on this address: ${result.value.wallet?.tokenaddr}`
+                      console.log(error.value)
                     }
+
                   })
                 } catch (err) {
                   error.value = "Failed to fetch token data: " + err
