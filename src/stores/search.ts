@@ -24,13 +24,15 @@ export const useSearchStore = defineStore('search', () => {
     if (address !== "") {
       const isValidatedAddress = isValidAddress(address)
       if (isValidatedAddress === true) {
+        result.value.address = formatCashAddress(address)
+        console.log("Validate address as: " + result.value.address)
+        result.value.wallet = null as Wallet | null
+        result.value.tokens = [] as Token[]
+
         if (type === "query") {
           router.push(`/nfts/${result.value.address}`)
         } else {
-          result.value.address = formatCashAddress(address)
-          console.log("Validate address as: " + result.value.address)
-          result.value.wallet = null as Wallet | null
-          result.value.tokens = [] as Token[]
+
 
           try {
             await Wallet.fromCashaddr(result.value.address).then(async (wallet) => {
