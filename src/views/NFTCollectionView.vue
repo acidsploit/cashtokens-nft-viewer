@@ -168,8 +168,8 @@ function handleNFTClick(utxo: UtxoI) {
           </div>
         </div>
         <p>{{ nftCardName(utxo.token?.commitment) }}</p>
-        <p v-if="utxo.token?.capability !== 'none'" class="commitment">Capability: {{ utxo.token?.capability }}</p>
-        <p v-if="utxo.token?.commitment" class="commitment">Commitment: {{ utxo.token?.commitment }}</p>
+        <p v-if="utxo.token?.capability !== 'none'" class="commitment mono">Capability: {{ utxo.token?.capability }}</p>
+        <p v-if="utxo.token?.commitment" class="commitment mono">Commitment: {{ utxo.token?.commitment }}</p>
       </div>
     </div>
 
@@ -283,7 +283,6 @@ h3.collection-name {
 
 .commitment {
   font-size: 12;
-  font-family: monospace;
   align-self: baseline;
 }
 
