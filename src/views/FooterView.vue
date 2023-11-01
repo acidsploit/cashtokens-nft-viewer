@@ -5,15 +5,10 @@
   <div class="container footer">
     <div class="content first">
       <p>
-        By <a href="https://twitter.com/acidsploit" target="_blank">sploit</a> with <span class="heart">❤️</span>
-      </p>
-
-      <p>
         Building and maintaining a project on a fast and progressively changing platform like Bitcoin Cash requires
         continious maintenance and updates.
         I am, nevertheless, having a lot of fun with this. So if there is any change you could chuck my way to offset the costs, or buy me a beer, that would make my day :)
       </p>
-
       <p>
         CashAddress<br />
         <a href="bitcoincash:qrnml95v6wmduw6xzwvddph4cevahxzzhq9n56y2sv">bitcoincash:qrnml95v6wmduw6xzwvddph4cevahxzzhq9n56y2sv</a>
@@ -21,6 +16,9 @@
       <p>
         TokenAddress<br />
         <a href="bitcoincash:zrnml95v6wmduw6xzwvddph4cevahxzzhqze8y2v0l">bitcoincash:zrnml95v6wmduw6xzwvddph4cevahxzzhqze8y2v0l</a>
+      </p>
+      <p>
+        By <a href="https://twitter.com/acidsploit" target="_blank">sploit</a> with <span class="heart">❤️</span>
       </p>
     </div>
     <div class="content second">

@@ -1,3 +1,4 @@
+/* https://jenil.github.io/chota/#utilities */
 @import url("../../node_modules/chota/dist/chota.css");
 
 :root {
@@ -70,6 +71,6 @@ div {
   transition: all ease-in-out .3s;
 }
 
-.monospace {
+.mono {
   font-family: monospace;
 }

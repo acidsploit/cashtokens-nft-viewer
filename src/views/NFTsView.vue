@@ -22,7 +22,7 @@ onMounted(async () => {
   console.log("validated query: " + search.result.address)
 
   if (search.result.address !== props.address) {
-    await search.search("path", props.address)
+    await search.search("props", props.address)
   }
 })
 
@@ -112,7 +112,7 @@ async function share(address: string | undefined, tokenId: string) {
         <p class="description">{{ token.bcmr?.description ? token.bcmr?.description : "" }}</p>
 
         <div class="bottom-row">
-          <p class="amount">
+          <p class="amount mono">
             {{ token.amount / 10 ** (token.bcmr?.token?.decimals ? token.bcmr?.token?.decimals : 0) }}
             {{ token.bcmr?.token?.symbol ? token.bcmr?.token?.symbol : "units" }}
           </p>
@@ -224,7 +224,6 @@ async function share(address: string | undefined, tokenId: string) {
 }
 
 p.amount {
-  font-family: monospace;
   margin: 0;
   line-height: 1;
 }
