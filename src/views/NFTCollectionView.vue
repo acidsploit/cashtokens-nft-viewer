@@ -35,7 +35,7 @@ function setImageLoaders() {
 
 onMounted(async () => {
   if (search.result.address !== props.address) {
-    await search.search("path", props.address, props.tokenId).then(() => {
+    await search.search("props", props.address, props.tokenId).then(() => {
       collection.value = search.result.tokens.find((token) => { return token.id === props.tokenId })
       setImageLoaders()
     })
@@ -49,7 +49,7 @@ watch(
   [() => props.address, () => props.tokenId],
   async ([newAaddress, newTokenId]) => {
     collection.value = undefined
-    await search.search("path", newAaddress, newTokenId).then(() => {
+    await search.search("props", newAaddress, newTokenId).then(() => {
       collection.value = search.result.tokens.find((token) => { return token.id === newTokenId })
       setImageLoaders()
     })
@@ -119,9 +119,9 @@ function formatImgUri(utxo: UtxoI): string {
   return ""
 }
 
-function handleNFTClick(commitment: string | undefined) {
-  if (commitment != undefined) {
-    router.push(`/nft/${props.address}/${props.tokenId}/${commitment}`)
+function handleNFTClick(utxo: UtxoI) {
+  if (utxo.token?.commitment != undefined && utxo.token.capability !== "minting") {
+    router.push(`/nft/${props.address}/${props.tokenId}/${utxo.token?.commitment}`)
   }
 }
 </script>
@@ -158,7 +158,7 @@ function handleNFTClick(commitment: string | undefined) {
     </div>
 
     <div class="nft-container">
-      <div class="nft-card" v-for="utxo in collection?.utxos" v-bind:key="utxo.txid + utxo.vout" @click="handleNFTClick(utxo.token?.commitment)">
+      <div class="nft-card" v-for="utxo in collection?.utxos" v-bind:key="utxo.txid + utxo.vout" @click="handleNFTClick(utxo)">
         <div class="img">
           <img v-show="!loading[utxo.txid + utxo.vout]" :src="formatImgUri(utxo)"
             @load="loading[utxo.txid + utxo.vout] = false" />
@@ -242,7 +242,9 @@ h3.collection-name {
   flex-wrap: wrap;
   justify-content: space-around;
 }
-
+.nft-card:hover {
+  cursor: pointer;
+}
 .nft-card {
   display: flex;
   flex-direction: column;
@@ -253,7 +255,6 @@ h3.collection-name {
   margin: 15px;
   padding: 10px;
   border-radius: 12px;
-
 }
 
 .nft-card img {

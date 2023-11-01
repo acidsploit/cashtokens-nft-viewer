@@ -22,7 +22,7 @@ onMounted(async () => {
   console.log("validated query: " + search.result.address)
 
   if (search.result.address !== props.address) {
-    await search.search("path", props.address)
+    await search.search("props", props.address)
   }
 })
 
