@@ -70,7 +70,6 @@ const attributes = computed(() => {
     <img v-if="imgUri" :src="imgUri" />
 
     <div class="container meta">
-
       <div v-if="attributes" class="attributes">
         <h4 class="text-center">Attributes</h4>
         <div class="table">
@@ -85,28 +84,17 @@ const attributes = computed(() => {
             </div>
           </div>
         </div>
-
-        
-
-        <!-- <div class="row" v-for="[key, value] of Object.entries(attributes)" v-bind:key="key">
-          <span class="col mono">{{ key }}: </span>
-          <span class="col mono">{{ value }}</span>
-        </div> -->
       </div>
 
       <div v-if="description" class="description">
         <h4 class="text-center">Description</h4>
         <div>{{ description }}</div>
       </div>
-
     </div>
-
-
-
   </div>
 
 
-  <h1>NFT Details</h1>
+  <!-- <h1>NFT Details</h1>
   <p class="mono">{{ props.address }}</p>
   <p class="mono">{{ search.result.address }}</p>
   <p class="mono">{{ props.tokenId }}</p>
@@ -120,7 +108,7 @@ const attributes = computed(() => {
 
   <pre class="mono data">
     {{ JSON.stringify(collection, null, 4) }}
-  </pre>
+  </pre> -->
 </template>
 
 <style scoped>
