@@ -21,7 +21,7 @@ onMounted(async () => {
   console.log("props: " + props.address)
   console.log("validated query: " + search.result.address)
 
-  if (search.result.address !== props.address) {
+  if (search.result.address !== props.address || !search.result.fullAddressLookup) {
     await search.search("props", props.address)
   }
 })

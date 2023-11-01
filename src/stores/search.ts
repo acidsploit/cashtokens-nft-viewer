@@ -16,7 +16,8 @@ export const useSearchStore = defineStore('search', () => {
   const result = ref({
     address: null as string | null,
     wallet: null as Wallet | null,
-    tokens: [] as Token[]
+    tokens: [] as Token[],
+    fullAddressLookup: false
   })
 
   async function search(type: string, address: string, tokenId?: string) {
@@ -40,6 +41,7 @@ export const useSearchStore = defineStore('search', () => {
 
               result.value.wallet = wallet
               if (tokenId) {
+                result.value.fullAddressLookup = false
                 try {
                   await result.value.wallet.getNftTokenBalance(tokenId).then(async (balance) => {
                     console.log(`Fetched token balance (${balance} units) for tokenid: ${tokenId}`)
@@ -80,6 +82,7 @@ export const useSearchStore = defineStore('search', () => {
                   error.value = "Failed to fetch token data: " + err
                 }
               } else {
+                result.value.fullAddressLookup = true
                 try {
                   console.log("no tokenid")
                   await result.value.wallet.getAllNftTokenBalances().then(async (balances) => {
