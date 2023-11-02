@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { onMounted } from "vue";
-import {useToast} from 'vue-toast-notification';
+import { onMounted, watch } from "vue";
+import { useToast } from 'vue-toast-notification';
 
 import { useSearchStore } from "@/stores/search";
 import { useSettingsStore } from "@/stores/settings";
@@ -25,6 +25,15 @@ onMounted(async () => {
     await search.search("props", props.address)
   }
 })
+
+watch(
+  [() => props.address],
+  async ([newAaddress]) => {
+    if (search.result.address !== newAaddress || !search.result.fullAddressLookup) {
+      await search.search("props", newAaddress)
+    }
+  })
+
 
 function collectionName(name: string | undefined, id: string): string {
   return name ? name : `${id.slice(0, 4)}...${id.slice(-4)}`
@@ -59,12 +68,12 @@ async function share(address: string | undefined, tokenId: string) {
 
   await navigator.clipboard.writeText(`${origin}/collection/${address}/${tokenId}`).then(() => {
     let instance = $toast.open({
-    message: "Link copied to clipboard",
-    type: "success",
-    position: "top-right",
-    duration: 5000
+      message: "Link copied to clipboard",
+      type: "success",
+      position: "top-right",
+      duration: 5000
+    })
   })
-  }) 
 }
 
 </script>
@@ -93,7 +102,7 @@ async function share(address: string | undefined, tokenId: string) {
           <img v-if="token.bcmr?.uris?.icon" :src="formatImgUri(token.bcmr.uris.icon)" alt="icon">
           <h3>{{ collectionName(token.bcmr?.name, token.id) }} </h3>
           <span class="share material-symbols-outlined" @click="share(search.result.wallet?.cashaddr, token.id)"
-          title="Copy shareable link">
+            title="Copy shareable link">
             share
           </span>
           <span v-if="!favorites.isFav(`${search.result.wallet?.cashaddr}/${token.id}`)"
@@ -195,6 +204,7 @@ async function share(address: string | undefined, tokenId: string) {
 .favorite:hover {
   cursor: pointer;
 }
+
 .favorite {
   text-align: right;
   align-self: flex-start;
