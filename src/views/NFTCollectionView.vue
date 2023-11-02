@@ -174,14 +174,14 @@ function toggleLinks() {
         <div class="mono">{{ collection?.amount }} {{ collection.bcmr?.token?.symbol ? `${collection.bcmr?.token?.symbol}
           NFTs` : "NFTs" }}</div>
       </div>
-      <div class="is-vertical-align">
+      <div class="dropdown is-vertical-align">
         <span @click="toggleDescription" class="material-symbols-outlined small pointer">
           {{ description ? 'expand_more' : 'chevron_right' }}
         </span>
         <span @click="toggleDescription" class="pointer">Description:</span>
       </div>
       <div v-show="description">{{ collection.bcmr?.description }}</div>
-      <div class="is-vertical-align">
+      <div class="dropdown is-vertical-align">
         <span @click="toggleLinks" class="material-symbols-outlined small pointer">
           {{ links ? 'expand_more' : 'chevron_right' }}
         </span>
@@ -225,6 +225,10 @@ function toggleLinks() {
   justify-content: space-between;
   align-items: center;
 
+}
+
+.dropdown {
+  margin: 1rem 0 0 0;
 }
 
 .small {

@@ -25,7 +25,7 @@ async function copy() {
 </script>
 
 <template>
-  <div @click="copy" class="wrapper pointer">
+  <div @click="copy" class="address-wrapper pointer">
     <div class="mono">
       {{ address.slice(0,12) }}
     </div>
@@ -51,7 +51,7 @@ async function copy() {
 </template>
 
 <style scoped>
-.wrapper {
+.address-wrapper {
   display: flex;
   flex-direction: row;
   align-items: center;
