@@ -2,7 +2,6 @@
 import { computed } from 'vue'
 import { useToast } from 'vue-toast-notification';
 
-
 const props = defineProps({
   addr: { type: String, required: true },
 })
@@ -58,7 +57,6 @@ async function copy() {
   align-items: center;
   border: 0px;
 }
-
 .bold {
   font-weight: 900;
   color: var(--color-primary)

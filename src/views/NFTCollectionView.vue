@@ -178,14 +178,14 @@ function toggleLinks() {
         <span @click="toggleDescription" class="material-symbols-outlined small pointer">
           {{ description ? 'expand_more' : 'chevron_right' }}
         </span>
-        <span>Description:</span>
+        <span @click="toggleDescription" class="pointer">Description:</span>
       </div>
       <div v-show="description">{{ collection.bcmr?.description }}</div>
       <div class="is-vertical-align">
         <span @click="toggleLinks" class="material-symbols-outlined small pointer">
-          {{ description ? 'expand_more' : 'chevron_right' }}
+          {{ links ? 'expand_more' : 'chevron_right' }}
         </span>
-        <span>Links:</span>
+        <span @click="toggleLinks" class="pointer">Links:</span>
       </div>
       <div v-show="links">{{ collection.bcmr?.uris }}</div>
     </div>
@@ -226,9 +226,7 @@ function toggleLinks() {
   align-items: center;
 
 }
-.break {
-  word-wrap: break-word;
-}
+
 .small {
   font-variation-settings:
     'FILL' 0,
@@ -236,8 +234,6 @@ function toggleLinks() {
     'GRAD' -25,
     'opsz' 20
 }
-
-
 
 .wrapper {
   border-style: solid;
@@ -347,5 +343,4 @@ h3.name {
   white-space: pre-wrap;
   max-width: 100vw;
 }
-
 </style>
