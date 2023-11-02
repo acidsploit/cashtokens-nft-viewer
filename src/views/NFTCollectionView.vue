@@ -167,7 +167,7 @@ function toggleLinks() {
       </div>
     </div>
 
-    <div class="metadata container">
+    <div class="metadata ">
       <div class="address">
         <!-- <div class="mono break">{{ search.result.wallet?.tokenaddr }}</div> -->
         <CashAddress class="ca" :addr="search.result.wallet?.tokenaddr!" />
@@ -187,14 +187,22 @@ function toggleLinks() {
         </span>
         <span @click="toggleLinks" class="bold pointer">Links</span>
       </div>
-      <div v-show="links">
+      <div v-show="links" v-if="collection.bcmr?.uris">
+        <a v-for="[key, value] of Object.entries(collection.bcmr.uris)" 
+          v-show="!['icon', 'image'].includes(key)" 
+          v-bind:key="key" 
+          class="button outline primary mono"
+          :href="value" target="_blank">{{ key }}</a>
+      </div>
+
+      <!-- <div v-show="links">
         <div v-if="collection.bcmr?.uris">
           <div class="mono" v-for="[key, value] of Object.entries(collection.bcmr.uris)" v-bind:key="key"
             v-show="!['icon', 'image'].includes(key)">
             <a :href="value" target="_blank">{{ key }}</a>
           </div>
         </div>
-      </div>
+      </div> -->
     </div>
 
     <div class="nft-container">
@@ -219,20 +227,11 @@ function toggleLinks() {
 </template>
 
 <style scoped>
+.button {
+  margin: 1rem 1rem 1rem 1rem;
+}
 .metadata {
   padding: 0 4rem 2rem 4rem;
-  max-width: fit-content;
-  /* background-color: var(--bg-secondary-color); */
-  /* border-radius: 12px; */
-}
-
-.address {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  align-items: center;
-
 }
 
 .ca {
@@ -360,7 +359,11 @@ h3.name {
   max-width: 100vw;
 }
 
-/* @media only screen and (min-width: 900px) {
+@media only screen and (min-width: 900px) {
 
-} */
+  .metadata {
+    max-width: 70rem;
+  }
+
+}
 </style>

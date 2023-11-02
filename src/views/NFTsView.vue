@@ -124,8 +124,8 @@ async function share(address: string | undefined, tokenId: string) {
             {{ token.amount / 10 ** (token.bcmr?.token?.decimals ? token.bcmr?.token?.decimals : 0) }}
             {{ token.bcmr?.token?.symbol ? token.bcmr?.token?.symbol : "units" }}
           </p>
-          <RouterLink class="btn-view-collection" :to="`/collection/${search.result.wallet?.address}/${token.id}`">View
-            Collection
+          <RouterLink class="button outline primary mono" :to="`/collection/${search.result.wallet?.address}/${token.id}`">view
+            collection
           </RouterLink>
         </div>
       </div>
@@ -235,13 +235,6 @@ async function share(address: string | undefined, tokenId: string) {
 p.amount {
   margin: 0;
   line-height: 1;
-}
-
-.btn-view-collection {
-  padding: .5rem 1rem .5rem 1rem;
-  border-style: solid;
-  border-width: 1px;
-  border-radius: 4px;
 }
 
 .material-symbols-outlined {
