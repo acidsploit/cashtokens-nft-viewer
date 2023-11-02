@@ -170,7 +170,7 @@ function toggleLinks() {
     <div class="metadata container">
       <div class="address">
         <!-- <div class="mono break">{{ search.result.wallet?.tokenaddr }}</div> -->
-        <CashAddress :addr="search.result.wallet?.tokenaddr!" />
+        <CashAddress class="ca" :addr="search.result.wallet?.tokenaddr!" />
         <div class="mono">{{ collection?.amount }} {{ collection.bcmr?.token?.symbol ? `${collection.bcmr?.token?.symbol}
           NFTs` : "NFTs" }}</div>
       </div>
@@ -221,8 +221,9 @@ function toggleLinks() {
 <style scoped>
 .metadata {
   padding: 0 4rem 2rem 4rem;
+  max-width: fit-content;
   /* background-color: var(--bg-secondary-color); */
-  border-radius: 12px;
+  /* border-radius: 12px; */
 }
 
 .address {
@@ -232,6 +233,10 @@ function toggleLinks() {
   justify-content: space-between;
   align-items: center;
 
+}
+
+.ca {
+  margin: 0 4rem 0 0;
 }
 
 .dropdown {
@@ -245,8 +250,6 @@ function toggleLinks() {
     'GRAD' -25,
     'opsz' 20
 }
-
-
 
 .wrapper {
   border-style: solid;
@@ -356,4 +359,8 @@ h3.name {
   white-space: pre-wrap;
   max-width: 100vw;
 }
+
+/* @media only screen and (min-width: 900px) {
+
+} */
 </style>
