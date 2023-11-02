@@ -178,16 +178,31 @@ function toggleLinks() {
         <span @click="toggleDescription" class="material-symbols-outlined small pointer">
           {{ description ? 'expand_more' : 'chevron_right' }}
         </span>
-        <span @click="toggleDescription" class="pointer">Description:</span>
+        <span @click="toggleDescription" class="bold pointer">Description</span>
       </div>
       <div v-show="description">{{ collection.bcmr?.description }}</div>
       <div class="dropdown is-vertical-align">
         <span @click="toggleLinks" class="material-symbols-outlined small pointer">
           {{ links ? 'expand_more' : 'chevron_right' }}
         </span>
-        <span @click="toggleLinks" class="pointer">Links:</span>
+        <span @click="toggleLinks" class="bold pointer">Links</span>
       </div>
-      <div v-show="links">{{ collection.bcmr?.uris }}</div>
+      <div v-show="links">
+        <div class="table">
+          <div class="key" v-if="collection.bcmr?.uris">
+            <div class="entry mono" v-for="[key] of Object.entries(collection.bcmr.uris)" v-bind:key="key"
+              v-show="!['icon', 'image'].includes(key)">
+              {{ key }}
+            </div>
+          </div>
+          <div class="value" v-if="collection.bcmr?.uris">
+            <div class="entry mono" v-for="[key, value] of Object.entries(collection.bcmr.uris)" v-bind:key="key"
+              v-show="!['icon', 'image'].includes(key)">
+              {{ value }}
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
 
     <div class="nft-container">
@@ -239,6 +254,21 @@ function toggleLinks() {
     'opsz' 20
 }
 
+.table {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+
+.entry {
+  border-width: 0 0 1px 0;
+  border-style: solid;
+  border-color: var(--color-primary);
+  padding: 0.5rem 1rem 0 1rem;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
 .wrapper {
   border-style: solid;
   border-radius: 8px;
@@ -262,7 +292,7 @@ h3.name {
   flex-direction: row;
   flex-wrap: wrap-reverse;
   justify-content: space-between;
-  margin: 2rem 2rem 1rem 2rem;
+  margin: 2rem 2rem 1rem 1rem;
 }
 
 .favorite:hover {

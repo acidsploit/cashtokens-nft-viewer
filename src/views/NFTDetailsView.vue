@@ -159,6 +159,8 @@ img {
   border-style: solid;
   border-color: var(--color-primary);
   padding: 0.5rem 1rem 0 1rem;
+  white-space: nowrap;
+  overflow: hidden;
 }
 
 
@@ -173,14 +175,10 @@ img {
   img {
     max-width: 40vw;
   }
+
   .meta {
     flex-wrap: nowrap;
     justify-content: space-around;
-  }
-
-  .entry {
-    white-space: nowrap;
-    overflow: hidden;
   }
 
   .attributes {

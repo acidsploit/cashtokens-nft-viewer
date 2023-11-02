@@ -34,7 +34,7 @@ function toggleEdit() {
       </span>
     </div>
 
-    <div class="col title">
+    <div class="title">
       <h3>My</h3>
       <h3>Favorites</h3>
     </div>
@@ -93,7 +93,6 @@ function toggleEdit() {
 }
 
 .title {
-  /* padding-top: 15px; */
   margin-bottom: 4rem;
 }
 

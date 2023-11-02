@@ -1,4 +1,4 @@
-/* https://jenil.github.io/chota/#utilities */
+/* READ https://jenil.github.io/chota/#utilities */
 @import url("../../node_modules/chota/dist/chota.css");
 
 :root {
@@ -73,6 +73,10 @@ div {
 
 .mono {
   font-family: monospace;
+}
+
+.bold {
+  font-weight: 900;
 }
 
 .pointer {

@@ -29,7 +29,7 @@ async function copy() {
     <div class="mono">
       {{ address.slice(0,12) }}
     </div>
-    <div class="mono bold">
+    <div class="mono bold text-primary">
       {{ address.slice(12,14) }}
     </div>
     <div class="mono">
@@ -41,7 +41,7 @@ async function copy() {
     <div class="mono">
       {{ address.slice(-6,-2) }}
     </div>
-    <div class="mono bold">
+    <div class="mono bold text-primary">
       {{ address.slice(-2) }}
     </div>
     <span class="pointer material-symbols-outlined">
@@ -57,10 +57,7 @@ async function copy() {
   align-items: center;
   border: 0px;
 }
-.bold {
-  font-weight: 900;
-  color: var(--color-primary)
-}
+
 .material-symbols-outlined {
   font-variation-settings:
     'FILL' 0,
