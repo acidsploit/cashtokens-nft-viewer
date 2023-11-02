@@ -188,18 +188,10 @@ function toggleLinks() {
         <span @click="toggleLinks" class="bold pointer">Links</span>
       </div>
       <div v-show="links">
-        <div class="table">
-          <div class="key" v-if="collection.bcmr?.uris">
-            <div class="entry mono" v-for="[key] of Object.entries(collection.bcmr.uris)" v-bind:key="key"
-              v-show="!['icon', 'image'].includes(key)">
-              {{ key }}
-            </div>
-          </div>
-          <div class="value" v-if="collection.bcmr?.uris">
-            <div class="entry mono" v-for="[key, value] of Object.entries(collection.bcmr.uris)" v-bind:key="key"
-              v-show="!['icon', 'image'].includes(key)">
-              {{ value }}
-            </div>
+        <div v-if="collection.bcmr?.uris">
+          <div class="mono" v-for="[key, value] of Object.entries(collection.bcmr.uris)" v-bind:key="key"
+            v-show="!['icon', 'image'].includes(key)">
+            <a :href="value" target="_blank">{{ key }}</a>
           </div>
         </div>
       </div>
@@ -228,7 +220,7 @@ function toggleLinks() {
 
 <style scoped>
 .metadata {
-  padding: 0 4rem 4rem 4rem;
+  padding: 0 4rem 2rem 4rem;
   /* background-color: var(--bg-secondary-color); */
   border-radius: 12px;
 }
@@ -254,20 +246,7 @@ function toggleLinks() {
     'opsz' 20
 }
 
-.table {
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-}
 
-.entry {
-  border-width: 0 0 1px 0;
-  border-style: solid;
-  border-color: var(--color-primary);
-  padding: 0.5rem 1rem 0 1rem;
-  white-space: nowrap;
-  overflow: hidden;
-}
 
 .wrapper {
   border-style: solid;
