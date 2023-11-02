@@ -32,13 +32,11 @@ export const useSearchStore = defineStore('search', () => {
           console.log("Validate address as: " + result.value.address)
           result.value.wallet = null as Wallet | null
           result.value.tokens = [] as Token[]
-
           try {
             await Wallet.fromCashaddr(result.value.address).then(async (wallet) => {
               console.log("Created watch-only wallet from: " + result.value.address)
               console.log("Wallet CashAddress:  " + wallet.cashaddr)
               console.log("Wallet TokenAddress: " + wallet.tokenaddr)
-
               result.value.wallet = wallet
               if (tokenId) {
                 result.value.fullAddressLookup = false
