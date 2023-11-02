@@ -34,7 +34,6 @@ watch(
     }
   })
 
-
 function collectionName(name: string | undefined, id: string): string {
   return name ? name : `${id.slice(0, 4)}...${id.slice(-4)}`
 }
