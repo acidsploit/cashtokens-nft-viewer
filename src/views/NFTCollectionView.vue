@@ -11,6 +11,7 @@ import { useFavorites } from '@/stores/favorites';
 
 import PageLoading from "@/components/PageLoading.vue";
 import SearchError from "@/components/SearchError.vue";
+import CashAddress from '@/components/CashAddress.vue';
 import { useSearchStore } from '@/stores/search';
 import type { UtxoI } from 'mainnet-js';
 import router from '@/router';
@@ -26,6 +27,8 @@ const search = useSearchStore()
 const favorites = useFavorites()
 const collection = ref(undefined as Token | undefined)
 const loading = ref({} as { [key: string]: boolean })
+const description = ref(false)
+const links = ref(false)
 
 function setImageLoaders() {
   collection.value?.utxos.forEach((utxo) => {
@@ -124,6 +127,14 @@ function handleNFTClick(utxo: UtxoI) {
     router.push(`/nft/${props.address}/${props.tokenId}/${utxo.token?.commitment}`)
   }
 }
+
+function toggleDescription() {
+  description.value = !description.value
+}
+
+function toggleLinks() {
+  links.value = !links.value
+}
 </script>
 
 <template>
@@ -135,30 +146,53 @@ function handleNFTClick(utxo: UtxoI) {
 
   <div v-if="collection !== undefined" class="wrapper container">
 
-    <div class="collection-header">
-      <h3 class="collection-name">{{ collectionNameFormat }}</h3>
-      <div class="collection-address">
-        <div>On address: {{ search.result.wallet?.tokenaddr }}</div>
-        <div>Child NFTs: {{ collection?.amount }}</div>
+    <div class="header">
+      <h3 class="name">{{ collectionNameFormat }}</h3>
+      <div class="actions">
+        <span class="share material-symbols-outlined" @click="share(search.result.wallet?.cashaddr, props.tokenId)"
+          title="Copy shareable link">
+          share
+        </span>
+        <span v-if="!favorites.isFav(`${search.result.wallet?.cashaddr}/${props.tokenId}`)"
+          class="favorite material-symbols-outlined"
+          @click="addFav(collectionNameFormat, search.result.wallet?.cashaddr, props.tokenId)"
+          title="Add NFT collection to favorites">
+          favorite
+        </span>
+        <span v-if="favorites.isFav(`${search.result.wallet?.cashaddr}/${props.tokenId}`)"
+          class="favorite material-symbols-outlined red" @click="removeFav(search.result.wallet?.cashaddr, props.tokenId)"
+          title="Remove NFT collection from favorites">
+          favorite
+        </span>
       </div>
-      <span class="share material-symbols-outlined" @click="share(search.result.wallet?.cashaddr, props.tokenId)" title="Copy shareable link">
-        share
-      </span>
-      <span v-if="!favorites.isFav(`${search.result.wallet?.cashaddr}/${props.tokenId}`)"
-        class="favorite material-symbols-outlined"
-        @click="addFav(collectionNameFormat, search.result.wallet?.cashaddr, props.tokenId)"
-        title="Add NFT collection to favorites">
-        favorite
-      </span>
-      <span v-if="favorites.isFav(`${search.result.wallet?.cashaddr}/${props.tokenId}`)"
-        class="favorite material-symbols-outlined red" @click="removeFav(search.result.wallet?.cashaddr, props.tokenId)"
-        title="Remove NFT collection from favorites">
-        favorite
-      </span>
+    </div>
+
+    <div class="metadata container">
+      <div class="address">
+        <!-- <div class="mono break">{{ search.result.wallet?.tokenaddr }}</div> -->
+        <CashAddress :addr="search.result.wallet?.tokenaddr!" />
+        <div class="mono">{{ collection?.amount }} {{ collection.bcmr?.token?.symbol ? `${collection.bcmr?.token?.symbol}
+          NFTs` : "NFTs" }}</div>
+      </div>
+      <div class="is-vertical-align">
+        <span @click="toggleDescription" class="material-symbols-outlined small pointer">
+          {{ description ? 'expand_more' : 'chevron_right' }}
+        </span>
+        <span>Description:</span>
+      </div>
+      <div v-show="description">{{ collection.bcmr?.description }}</div>
+      <div class="is-vertical-align">
+        <span @click="toggleLinks" class="material-symbols-outlined small pointer">
+          {{ description ? 'expand_more' : 'chevron_right' }}
+        </span>
+        <span>Links:</span>
+      </div>
+      <div v-show="links">{{ collection.bcmr?.uris }}</div>
     </div>
 
     <div class="nft-container">
-      <div class="nft-card" v-for="utxo in collection?.utxos" v-bind:key="utxo.txid + utxo.vout" @click="handleNFTClick(utxo)">
+      <div class="nft-card" v-for="utxo in collection?.utxos" v-bind:key="utxo.txid + utxo.vout"
+        @click="handleNFTClick(utxo)">
         <div class="img">
           <img v-show="!loading[utxo.txid + utxo.vout]" :src="formatImgUri(utxo)"
             @load="loading[utxo.txid + utxo.vout] = false" />
@@ -174,9 +208,37 @@ function handleNFTClick(utxo: UtxoI) {
     </div>
 
   </div>
+  <!-- <pre class="mono data">{{ JSON.stringify(collection, null, 4) }}</pre> -->
 </template>
 
 <style scoped>
+.metadata {
+  padding: 0 4rem 4rem 4rem;
+  /* background-color: var(--bg-secondary-color); */
+  border-radius: 12px;
+}
+
+.address {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+
+}
+.break {
+  word-wrap: break-word;
+}
+.small {
+  font-variation-settings:
+    'FILL' 0,
+    'wght' 100,
+    'GRAD' -25,
+    'opsz' 20
+}
+
+
+
 .wrapper {
   border-style: solid;
   border-radius: 8px;
@@ -185,7 +247,7 @@ function handleNFTClick(utxo: UtxoI) {
   height: 100%;
 }
 
-h3.collection-name {
+h3.name {
   max-width: 30rem;
   word-wrap: break-word;
   text-align: left;
@@ -195,20 +257,12 @@ h3.collection-name {
   transform: rotate(-13deg);
 }
 
-.collection-header {
+.header {
   display: flex;
   flex-direction: row;
-  margin: 25px;
-}
-
-.collection-address {
-  margin-top: 15px;
-  word-break: break-all;
-  flex-grow: 5;
-}
-
-.collection-name {
-  flex-grow: 2;
+  flex-wrap: wrap-reverse;
+  justify-content: space-between;
+  margin: 2rem 2rem 1rem 2rem;
 }
 
 .favorite:hover {
@@ -217,8 +271,6 @@ h3.collection-name {
 
 .favorite {
   text-align: right;
-  align-self: flex-start;
-  flex-grow: 1;
   max-width: fit-content;
   font-size: 4rem;
 }
@@ -229,8 +281,6 @@ h3.collection-name {
 
 .share {
   text-align: right;
-  align-self: flex-start;
-  flex-grow: 1;
   max-width: fit-content;
   font-size: 4rem;
   margin: 0 1rem 0 0;
@@ -242,9 +292,11 @@ h3.collection-name {
   flex-wrap: wrap;
   justify-content: space-around;
 }
+
 .nft-card:hover {
   cursor: pointer;
 }
+
 .nft-card {
   display: flex;
   flex-direction: column;
@@ -289,4 +341,11 @@ h3.collection-name {
 .red {
   color: red;
 }
+
+.data {
+  word-wrap: break-word;
+  white-space: pre-wrap;
+  max-width: 100vw;
+}
+
 </style>
