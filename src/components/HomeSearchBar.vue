@@ -64,7 +64,14 @@ button:focus {
     cursor: pointer;
 }
 
-@media only screen and (min-width: 768px) {
+@media only screen and (min-width: 900px) {
+    .search-bar {
+        min-width: 60vw;
+    }
+
+}
+
+@media only screen and (min-width: 1200px) {
     .search-bar {
         min-width: 60rem;
     }
