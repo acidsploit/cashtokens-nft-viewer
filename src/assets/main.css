@@ -13,12 +13,21 @@
   --color-darkGrey: #3f4144;
   --color-error: #d43939;
   --color-success: #28bd14;
-  --grid-maxWidth: 180rem;
+  /* --grid-maxWidth: 180rem; */
+  --grid-maxWidth: 96vw;
   --grid-gutter: 2rem;
   --font-size: 1.6rem;
   --font-color: #333333;
   --font-family-sans: 'Poppins';
   --font-family-mono: monaco, "Consolas", "Lucida Console", monospace;
+}
+
+@media only screen and (min-width: 1600px) {
+
+  :root {
+    --grid-maxWidth: 75vw;
+  }
+
 }
 
 html.dark {
@@ -63,12 +72,12 @@ body {
   font-family: 'Poppins';
   font-weight: 400;
 
-  background-color: var(--bg-color);
-  transition: all ease-in-out .3s;
+  /* background: var(--bg-color); */
+  transition: all ease-in-out 1s;
 }
 
 div {
-  transition: all ease-in-out .3s;
+  transition: all ease-in-out 1s;
 }
 
 .mono {
