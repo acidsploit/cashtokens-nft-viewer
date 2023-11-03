@@ -8,6 +8,7 @@ import { useFavorites } from "@/stores/favorites"
 
 import PageLoading from "@/components/PageLoading.vue";
 import SearchError from "@/components/SearchError.vue";
+import CashAddress from "@/components/CashAddress.vue";
 
 const props = defineProps({
   address: { type: String, required: true },
@@ -90,8 +91,8 @@ async function share(address: string | undefined, tokenId: string) {
         <h3>NFT</h3>
         <h3>Collections</h3>
       </div>
-      <div class="address" v-if="search.result.wallet">
-        On address: {{ search.result.wallet.tokenaddr }}
+      <div class="address" v-if="search.result.wallet?.tokenaddr">
+        <CashAddress :addr="search.result.wallet.tokenaddr" />
       </div>
     </div>
 
