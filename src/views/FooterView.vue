@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import CashAddress from "@/components/CashAddress.vue";
+
 </script>
 
 <template>
@@ -11,15 +13,11 @@
       <p>
         If there is any change you could chuck my way to offset the costs, or buy me a beer, that would make my day :)
       </p>
-      <p>
-        CashAddress<br />
-        <a
-          href="bitcoincash:qrnml95v6wmduw6xzwvddph4cevahxzzhq9n56y2sv">bitcoincash:qrnml95v6wmduw6xzwvddph4cevahxzzhq9n56y2sv</a>
+      <p>CashAddress<br />
+        <CashAddress addr="bitcoincash:qrnml95v6wmduw6xzwvddph4cevahxzzhq9n56y2sv" type="uri" />
       </p>
-      <p>
-        TokenAddress<br />
-        <a
-          href="bitcoincash:zrnml95v6wmduw6xzwvddph4cevahxzzhqze8y2v0l">bitcoincash:zrnml95v6wmduw6xzwvddph4cevahxzzhqze8y2v0l</a>
+      <p>TokenAddress<br />
+        <CashAddress addr="bitcoincash:zrnml95v6wmduw6xzwvddph4cevahxzzhqze8y2v0l" type="uri" />
       </p>
       <p>
         By <a href="https://twitter.com/acidsploit" target="_blank">sploit</a> with <span class="heart">❤️</span>
@@ -65,8 +63,8 @@
 }
 
 .first {
-    word-wrap: break-word;
-  }
+  word-wrap: break-word;
+}
 
 
 
