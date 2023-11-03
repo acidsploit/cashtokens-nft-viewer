@@ -2,7 +2,7 @@
 import { useSearch } from '@/stores/search';
 import { useSettings } from '@/stores/settings';
 import type { Token } from '@/utils';
-import { computed, onMounted, ref } from 'vue';
+import { computed, onMounted, ref, watch } from 'vue';
 
 const props = defineProps({
   address: { type: String, required: true },
@@ -28,6 +28,24 @@ onMounted(() => {
     })
   }
 })
+
+watch(
+  [() => props.address, () => props.tokenId, () => props.commitment],
+  async ([newAaddress, newTokenId, newCommitment]) => {
+    let searchCollection = search.result.tokens.find((token) => { return token.id === newTokenId })
+    if (search.result.address === newAaddress && searchCollection != undefined) {
+      collection.value = searchCollection
+    } else {
+      search.search("props", newAaddress, newTokenId).then(() => {
+        searchCollection = search.result.tokens.find((token) => { return token.id === newTokenId })
+
+        if (searchCollection != undefined) {
+          collection.value = searchCollection
+        }
+      })
+    }
+  }
+)
 
 const nftName = computed(() => {
   return collection?.value?.bcmr?.token?.nfts?.parse.types[props.commitment].name
