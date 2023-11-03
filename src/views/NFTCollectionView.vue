@@ -167,7 +167,6 @@ function toggleLinks() {
 
     <div class="metadata ">
       <div class="address">
-        <!-- <div class="mono break">{{ search.result.wallet?.tokenaddr }}</div> -->
         <CashAddress class="ca" :addr="search.result.wallet?.tokenaddr!" />
         <div class="mono">{{ collection?.amount }} {{ collection.bcmr?.token?.symbol ? `${collection.bcmr?.token?.symbol}
           NFTs` : "NFTs" }}</div>
@@ -192,15 +191,6 @@ function toggleLinks() {
           class="button outline primary mono"
           :href="value" target="_blank">{{ key }}</a>
       </div>
-
-      <!-- <div v-show="links">
-        <div v-if="collection.bcmr?.uris">
-          <div class="mono" v-for="[key, value] of Object.entries(collection.bcmr.uris)" v-bind:key="key"
-            v-show="!['icon', 'image'].includes(key)">
-            <a :href="value" target="_blank">{{ key }}</a>
-          </div>
-        </div>
-      </div> -->
     </div>
 
     <div class="nft-container">
@@ -231,15 +221,12 @@ function toggleLinks() {
 .metadata {
   padding: 0 4rem 2rem 4rem;
 }
-
 .ca {
   margin: 0 4rem 0 0;
 }
-
 .dropdown {
   margin: 1rem 0 0 0;
 }
-
 .small {
   font-variation-settings:
     'FILL' 0,
@@ -247,7 +234,6 @@ function toggleLinks() {
     'GRAD' -25,
     'opsz' 20
 }
-
 .wrapper {
   border-style: solid;
   border-radius: 8px;
@@ -255,7 +241,6 @@ function toggleLinks() {
   border-color: var(--color-darkGrey);
   height: 100%;
 }
-
 h3.name {
   max-width: 30rem;
   word-wrap: break-word;
@@ -265,7 +250,6 @@ h3.name {
   line-height: 30px;
   transform: rotate(-13deg);
 }
-
 .header {
   display: flex;
   flex-direction: row;
@@ -273,39 +257,32 @@ h3.name {
   justify-content: space-between;
   margin: 2rem 2rem 1rem 1rem;
 }
-
 .favorite:hover {
   cursor: pointer;
 }
-
 .favorite {
   text-align: right;
   max-width: fit-content;
   font-size: 4rem;
 }
-
 .share:hover {
   cursor: pointer;
 }
-
 .share {
   text-align: right;
   max-width: fit-content;
   font-size: 4rem;
   margin: 0 1rem 0 0;
 }
-
 .nft-container {
   width: 100%;
   display: flex;
   flex-wrap: wrap;
   justify-content: space-around;
 }
-
 .nft-card:hover {
   cursor: pointer;
 }
-
 .nft-card {
   display: flex;
   flex-direction: column;
@@ -317,19 +294,16 @@ h3.name {
   padding: 10px;
   border-radius: 12px;
 }
-
 .nft-card img {
   width: 230px;
   margin-bottom: 15px;
   border-radius: 8px;
 }
-
 .img {
   width: 230px;
   height: 230px;
   margin-bottom: 15px;
 }
-
 .spinner {
   display: flex;
   flex-direction: column;
@@ -341,16 +315,13 @@ h3.name {
   margin-bottom: 15px;
   align-self: center;
 }
-
 .commitment {
   font-size: 12;
   align-self: baseline;
 }
-
 .red {
   color: red;
 }
-
 .data {
   word-wrap: break-word;
   white-space: pre-wrap;
