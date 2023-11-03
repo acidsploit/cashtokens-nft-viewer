@@ -1,15 +1,15 @@
 <script setup lang="ts">
-import { useDark } from '@vueuse/core';
+import { useSettingsStore } from '@/stores/settings';
 import { AtomSpinner } from 'epic-spinners'
 
-const isDark = useDark()
+const settings = useSettingsStore()
 </script>
 
 <template>
   <div class="container">
     <h1>Charging Flux Capacitor...</h1>
-    <atom-spinner v-if="isDark" :animation-duration="1000" :size="60" color="#00c3ff" />
-    <atom-spinner v-if="!isDark" :animation-duration="1000" :size="60" color="#0ac18e" />
+    <atom-spinner v-if="settings.isDark" :animation-duration="1000" :size="60" color="#00c3ff" />
+    <atom-spinner v-if="!settings.isDark" :animation-duration="1000" :size="60" color="#0ac18e" />
   </div>
 </template>
 

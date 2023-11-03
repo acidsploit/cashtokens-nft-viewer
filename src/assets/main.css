@@ -72,12 +72,13 @@ body {
   font-family: 'Poppins';
   font-weight: 400;
 
-  /* background: var(--bg-color); */
-  transition: all ease-in-out 1s;
+  background: var(--bg-color);
+  transition: background ease-in-out .5s;
+  /* transition: color ease-in-out .5s; */
 }
 
 div {
-  transition: all ease-in-out 1s;
+  /* transition: all ease-in-out 1s; */
 }
 
 .mono {

@@ -1,12 +1,11 @@
 <script setup lang="ts">
 import { ref } from "vue";
-import { useDark } from "@vueuse/core"
-
-import { useSearchStore } from "@/stores/search"
 
 import SearchError from "./SearchError.vue";
+import { useSettingsStore } from "@/stores/settings";
+import { useSearchStore } from "@/stores/search"
 
-const isDark = useDark()
+const settings = useSettingsStore()
 const search = useSearchStore()
 
 const query =  ref("")
@@ -20,8 +19,8 @@ async function handleSubmit() {
   <div class="search-bar">
     <form @submit.prevent="handleSubmit" class="search-form">
       <input v-model.trim="query" class="search-input" placeholder="search by cashaddress" />
-      <img v-if="!isDark" @click="handleSubmit" src="../assets/images/search.svg" alt="search">
-      <img v-if="isDark" @click="handleSubmit" src="../assets/images/search-dark.svg" alt="search">
+      <img v-if="!settings.isDark" @click="handleSubmit" src="../assets/images/search.svg" alt="search">
+      <img v-if="settings.isDark" @click="handleSubmit" src="../assets/images/search-dark.svg" alt="search">
     </form>
     <SearchError v-if="search.error !== null" :error="search.error" :type="'inline'" />
   </div>

@@ -1,27 +1,25 @@
 <script setup lang="ts">
 import { computed, onMounted, ref, watch } from 'vue';
 import { useToast } from 'vue-toast-notification';
-import { useDark } from '@vueuse/core';
 import { AtomSpinner } from 'epic-spinners'
+import type { UtxoI } from 'mainnet-js';
 
 import type { Token } from '../utils'
+import router from '@/router';
 
 import { useSettingsStore } from '@/stores/settings';
 import { useFavorites } from '@/stores/favorites';
+import { useSearchStore } from '@/stores/search';
 
 import PageLoading from "@/components/PageLoading.vue";
 import SearchError from "@/components/SearchError.vue";
 import CashAddress from '@/components/CashAddress.vue';
-import { useSearchStore } from '@/stores/search';
-import type { UtxoI } from 'mainnet-js';
-import router from '@/router';
 
 const props = defineProps({
   address: { type: String, required: true },
   tokenId: { type: String, required: true },
 })
 
-const isDark = useDark()
 const settings = useSettingsStore()
 const search = useSearchStore()
 const favorites = useFavorites()
@@ -212,8 +210,8 @@ function toggleLinks() {
           <img v-show="!loading[utxo.txid + utxo.vout]" :src="formatImgUri(utxo)"
             @load="loading[utxo.txid + utxo.vout] = false" />
           <div v-if="loading[utxo.txid + utxo.vout]" class="spinner">
-            <atom-spinner v-if="isDark" :animation-duration="1000" :size="60" color="#00c3ff" />
-            <atom-spinner v-if="!isDark" :animation-duration="1000" :size="60" color="#0ac18e" />
+            <atom-spinner v-if="settings.isDark" :animation-duration="1000" :size="60" color="#00c3ff" />
+            <atom-spinner v-if="!settings.isDark" :animation-duration="1000" :size="60" color="#0ac18e" />
           </div>
         </div>
         <p>{{ nftCardName(utxo.token?.commitment) }}</p>

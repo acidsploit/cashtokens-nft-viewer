@@ -1,15 +1,16 @@
 <script setup lang="ts">
 import { RouterView } from "vue-router"
-import { useDark } from "@vueuse/core"
 
 import router from './router'
+
+import { useSettingsStore } from "./stores/settings"
 
 import FavoritesView from './views/FavoritesView.vue'
 import FooterView from './views/FooterView.vue'
 import DarkSwitch from './components/DarkSwitch.vue'
 import TopSearchBar from './components/TopSearchBar.vue'
 
-const isDark = useDark()
+const settings = useSettingsStore()
 
 function handleLogoClick() {
   router.push('/')
@@ -24,11 +25,12 @@ function toggleSidebar() {
 </script>
 
 <template>
-  <header class="bg-primary">
+  <!-- <header class="bg-primary"> -->
+    <header>
     <TopSearchBar />
     <button type="button" id="btn-open-sidebar" @click="toggleSidebar" class="button clear icon-only">
-      <img v-if="!isDark" src="./assets/images/menu.svg" alt="icon">
-      <img v-if="isDark" src="./assets/images/menu-dark.svg" alt="icon">
+      <img v-if="!settings.isDark" src="./assets/images/menu.svg" alt="icon">
+      <img v-if="settings.isDark" src="./assets/images/menu-dark.svg" alt="icon">
     </button>
     <DarkSwitch />
     <div class="brand">
@@ -41,7 +43,7 @@ function toggleSidebar() {
   </header>
 
   <main class="container">
-    <div id="sidebar" class="sidebar bg-primary collapsed">
+    <div id="sidebar" class="sidebar collapsed">
       <FavoritesView />
     </div>
     <div class="content">
