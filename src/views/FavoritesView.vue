@@ -58,12 +58,6 @@ function toggleEdit() {
 </template>
 
 <style scoped>
-.wrapper {
-  border-right-color: var(--color-primary);
-  border-right-style: solid;
-  border-right-width: 1px;
-}
-
 .btn-menu {
   float: right;
   margin: 1rem 1rem 0 0;
