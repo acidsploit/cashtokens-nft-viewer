@@ -77,10 +77,6 @@ body {
   /* transition: color ease-in-out .5s; */
 }
 
-div {
-  /* transition: all ease-in-out 1s; */
-}
-
 .mono {
   font-family: monospace;
 }
