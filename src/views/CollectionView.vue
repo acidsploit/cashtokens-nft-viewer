@@ -145,7 +145,7 @@ function toggleLinks() {
   <div v-if="collection !== undefined" class="wrapper container">
 
     <div class="header">
-      <h3 class="name">{{ collectionNameFormat }}</h3>
+      <h3 class="name">{{ collection.utxos.length }} {{ collectionNameFormat }}</h3>
       <div class="actions">
         <span class="share material-symbols-outlined" @click="share(search.result.wallet?.cashaddr, props.tokenId)"
           title="Copy shareable link">
@@ -168,8 +168,8 @@ function toggleLinks() {
     <div class="metadata ">
       <div class="address">
         <CashAddress class="ca" :addr="search.result.wallet?.tokenaddr!" />
-        <div class="mono">{{ collection?.amount }} {{ collection.bcmr?.token?.symbol ? `${collection.bcmr?.token?.symbol}
-          NFTs` : "NFTs" }}</div>
+        <!-- <div class="mono">{{ collection?.amount }} {{ collection.bcmr?.token?.symbol ? `${collection.bcmr?.token?.symbol}
+          NFTs` : "NFTs" }}</div> -->
       </div>
       <div class="dropdown is-vertical-align">
         <span @click="toggleDescription" class="material-symbols-outlined small pointer">
