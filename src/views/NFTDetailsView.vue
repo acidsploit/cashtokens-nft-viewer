@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { useSearchStore } from '@/stores/search';
-import { useSettingsStore } from '@/stores/settings';
+import { useSearch } from '@/stores/search';
+import { useSettings } from '@/stores/settings';
 import type { Token } from '@/utils';
 import { computed, onMounted, ref } from 'vue';
 
@@ -10,8 +10,8 @@ const props = defineProps({
   commitment: { type: String, required: true },
 })
 
-const settings = useSettingsStore()
-const search = useSearchStore()
+const settings = useSettings()
+const search = useSearch()
 const collection = ref(null as Token | null)
 
 onMounted(() => {

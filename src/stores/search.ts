@@ -7,11 +7,11 @@ import {
   isValidAddress,
   type Token
 } from '../utils'
-import { useSettingsStore } from "./settings";
+import { useSettings } from "./settings";
 import router from "@/router";
 
-export const useSearchStore = defineStore('search', () => {
-  const settings = useSettingsStore()
+export const useSearch = defineStore('search', () => {
+  const settings = useSettings()
   const error = ref(null as any)
   const result = ref({
     address: null as string | null,
@@ -169,5 +169,5 @@ export const useSearchStore = defineStore('search', () => {
 })
 
 if (import.meta.hot) {
-  import.meta.hot.accept(acceptHMRUpdate(useSearchStore, import.meta.hot))
+  import.meta.hot.accept(acceptHMRUpdate(useSearch, import.meta.hot))
 }

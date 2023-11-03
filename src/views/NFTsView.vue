@@ -2,8 +2,8 @@
 import { onMounted, watch } from "vue";
 import { useToast } from 'vue-toast-notification';
 
-import { useSearchStore } from "@/stores/search";
-import { useSettingsStore } from "@/stores/settings";
+import { useSearch } from "@/stores/search";
+import { useSettings } from "@/stores/settings";
 import { useFavorites } from "@/stores/favorites"
 
 import PageLoading from "@/components/PageLoading.vue";
@@ -13,8 +13,8 @@ const props = defineProps({
   address: { type: String, required: true },
 })
 
-const settings = useSettingsStore()
-const search = useSearchStore()
+const settings = useSettings()
+const search = useSearch()
 const favorites = useFavorites()
 
 onMounted(async () => {

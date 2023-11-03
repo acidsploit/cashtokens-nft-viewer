@@ -7,9 +7,9 @@ import type { UtxoI } from 'mainnet-js';
 import type { Token } from '../utils'
 import router from '@/router';
 
-import { useSettingsStore } from '@/stores/settings';
+import { useSettings } from '@/stores/settings';
 import { useFavorites } from '@/stores/favorites';
-import { useSearchStore } from '@/stores/search';
+import { useSearch } from '@/stores/search';
 
 import PageLoading from "@/components/PageLoading.vue";
 import SearchError from "@/components/SearchError.vue";
@@ -20,8 +20,8 @@ const props = defineProps({
   tokenId: { type: String, required: true },
 })
 
-const settings = useSettingsStore()
-const search = useSearchStore()
+const settings = useSettings()
+const search = useSearch()
 const favorites = useFavorites()
 const collection = ref(undefined as Token | undefined)
 const loading = ref({} as { [key: string]: boolean })

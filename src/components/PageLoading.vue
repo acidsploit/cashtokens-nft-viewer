@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { useSettingsStore } from '@/stores/settings';
+import { useSettings } from '@/stores/settings';
 import { AtomSpinner } from 'epic-spinners'
 
-const settings = useSettingsStore()
+const settings = useSettings()
 </script>
 
 <template>

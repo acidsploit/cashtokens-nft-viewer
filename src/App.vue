@@ -3,14 +3,14 @@ import { RouterView } from "vue-router"
 
 import router from './router'
 
-import { useSettingsStore } from "./stores/settings"
+import { useSettings } from "./stores/settings"
 
 import FavoritesView from './views/FavoritesView.vue'
 import FooterView from './views/FooterView.vue'
 import DarkSwitch from './components/DarkSwitch.vue'
 import TopSearchBar from './components/TopSearchBar.vue'
 
-const settings = useSettingsStore()
+const settings = useSettings()
 
 function handleLogoClick() {
   router.push('/')

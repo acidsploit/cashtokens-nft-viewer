@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import { useSearchStore } from "@/stores/search";
+import { useSearch } from "@/stores/search";
 
 const props = defineProps<{
     error: any
     type?: string
 }>()
 
-const search = useSearchStore()
+const search = useSearch()
 
 function close() {
     search.error = null

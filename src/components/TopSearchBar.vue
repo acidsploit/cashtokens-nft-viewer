@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { ref } from "vue";
 
-import { useSearchStore } from "@/stores/search"
-import { useSettingsStore } from "@/stores/settings";
+import { useSearch } from "@/stores/search"
+import { useSettings } from "@/stores/settings";
 
-const settings = useSettingsStore()
-const search = useSearchStore()
+const settings = useSettings()
+const search = useSearch()
 
 const query = ref("")
 

@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { ref } from 'vue';
-import { useSettingsStore } from '@/stores/settings';
+import { useSettings } from '@/stores/settings';
 
-const settings = useSettingsStore()
+const settings = useSettings()
 const input = ref<null | HTMLElement>(null);
 </script>
 

@@ -2,11 +2,11 @@
 import { ref } from "vue";
 
 import SearchError from "./SearchError.vue";
-import { useSettingsStore } from "@/stores/settings";
-import { useSearchStore } from "@/stores/search"
+import { useSettings } from "@/stores/settings";
+import { useSearch } from "@/stores/search"
 
-const settings = useSettingsStore()
-const search = useSearchStore()
+const settings = useSettings()
+const search = useSearch()
 
 const query =  ref("")
 

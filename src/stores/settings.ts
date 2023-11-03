@@ -9,7 +9,8 @@ const chaingraphuri = storedChaingraphuri ? storedChaingraphuri : "https://gql.c
 const storedIpfsGateway: string | null = localStorage.getItem("ipfsgateway")
 const ipfsgateway = storedIpfsGateway ? storedIpfsGateway : "https://ipfs.io/ipfs/"
 
-export const useSettingsStore = defineStore('settings', () => {
+
+export const useSettings = defineStore('settings', () => {
   const _isDark = useDark({ disableTransition: false })
   const toggleDark = useToggle(_isDark);
   const isDark = ref(_isDark.value)
@@ -26,5 +27,5 @@ export const useSettingsStore = defineStore('settings', () => {
 })
 
 if (import.meta.hot) {
-  import.meta.hot.accept(acceptHMRUpdate(useSettingsStore, import.meta.hot))
+  import.meta.hot.accept(acceptHMRUpdate(useSettings, import.meta.hot))
 }
