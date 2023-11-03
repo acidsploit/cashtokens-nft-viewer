@@ -58,9 +58,11 @@ function toggleEdit() {
 </template>
 
 <style scoped>
+
 .btn-menu {
   float: right;
   margin: 1rem 1rem 0 0;
+  color: var(--color-lightGrey);
 }
 
 .edit {
@@ -91,6 +93,7 @@ function toggleEdit() {
 }
 
 .title h3 {
+  color: var(--color-lightGrey);
   margin-top: 2rem;
   margin-left: 1.7rem;
   width: fit-content;
@@ -141,6 +144,14 @@ function toggleEdit() {
     border-color: var(--color-darkGrey);
     /* border-width: 0 0 0 0; */
     background-color: transparent;
+  }
+
+  .btn-menu {
+    color: var(--color-text)
+  }
+
+  .title h3 {
+    color: var(--color-text)
   }
 
 }
