@@ -9,10 +9,10 @@ import HomeView from '@/views/HomeView.vue'
 // route level code-splitting
 // this generates a separate chunk (About.[hash].js) for this route
 // which is lazy-loaded when the route is visited.
-const NFTsView = () => import('@/views/NFTsView.vue')
+const AddressView = () => import('@/views/AddressView.vue')
 const SettingsView = () => import('@/views/SettingsView.vue')
-const NFTCollectionView = () => import('@/views/NFTCollectionView.vue')
-const NFTDetailsView = () => import('@/views/NFTDetailsView.vue')
+const CollectionView = () => import('@/views/CollectionView.vue')
+const NFTView = () => import('@/views/NFTView.vue')
 
 
 const router = createRouter({
@@ -24,22 +24,22 @@ const router = createRouter({
       component: HomeView
     },
     {
-      path: '/nfts/:address',
-      name: 'nfts',
+      path: '/address/:address',
+      name: 'address',
       props: true,
-      component: NFTsView
+      component: AddressView
     },
     {
       path: '/collection/:address/:tokenId',
       name: 'collection',
       props: true,
-      component: NFTCollectionView
+      component: CollectionView
     },
     {
       path: '/nft/:address/:tokenId/:commitment',
-      name: 'nft-detail',
+      name: 'nft',
       props: true,
-      component: NFTDetailsView
+      component: NFTView
     },
     {
       path: '/settings',

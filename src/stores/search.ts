@@ -26,7 +26,7 @@ export const useSearch = defineStore('search', () => {
       const isValidatedAddress = isValidAddress(address)
       if (isValidatedAddress === true) {
         if (type === "query") {
-          router.push(`/nfts/${formatCashAddress(address)}`)
+          router.push(`/address/${formatCashAddress(address)}`)
         } else {
           result.value.address = formatCashAddress(address)
           console.log("Validate address as: " + result.value.address)
