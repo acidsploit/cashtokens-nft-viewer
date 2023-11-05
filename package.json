@@ -1,6 +1,7 @@
 {
   "name": "vue-vite",
   "version": "2.2.4",
+  "license": "Unlicense",
   "scripts": {
     "dev": "vite",
     "build": "run-p type-check build-only",
