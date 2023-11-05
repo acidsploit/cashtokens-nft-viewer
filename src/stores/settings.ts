@@ -13,7 +13,6 @@ const ipfsgateway = storedIpfsGateway ? storedIpfsGateway : "https://ipfs.io/ipf
 const storedElectrumUri: string | null = localStorage.getItem("electrumuri")
 const electrumuri = storedElectrumUri ? storedElectrumUri : "fulcrum.greyh.at"
 
-
 export const useSettings = defineStore('settings', () => {
   const _isDark = useDark({ disableTransition: false })
   const toggleDark = useToggle(_isDark);

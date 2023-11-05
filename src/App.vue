@@ -104,7 +104,6 @@ main.container {
 .content {
   align-self: flex-start;
   min-height: 60vh;
-  /* height: 100% */
 }
 
 .sidebar {

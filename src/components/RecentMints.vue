@@ -1,6 +1,5 @@
 <script setup lang="ts">
-// import { ElectrumClient, ElectrumTransport, type RequestResponse } from "electrum-cash";
-import * as ElectrumCash from "electrum-cash"
+import { ElectrumClient, ElectrumTransport } from "electrum-cash";
 import type { ElectrumRawTransaction } from "mainnet-js";
 import { computed, onMounted, onUnmounted, ref } from "vue";
 import type { IdentitySnapshot } from 'mainnet-js/dist/module/wallet/bcmr-v2.schema';
@@ -48,11 +47,11 @@ const monitoredProjects = ref([
 
 const recentMints = ref([] as Mint[])
 const settings = useSettings()
-const electrum = ref(null as ElectrumCash.ElectrumClient | null)
+const electrum = ref(null as ElectrumClient | null)
 const height = ref(0)
 
 onMounted(async () => {
-  electrum.value = new ElectrumCash.ElectrumClient('cashtokens-nft-viewer', '1.4.3', settings.electrumUri, ElectrumCash.ElectrumTransport.WSS.Port, ElectrumCash.ElectrumTransport.WSS.Scheme)
+  electrum.value = new ElectrumClient('cashtokens-nft-viewer', '1.4.3', settings.electrumUri, ElectrumTransport.WSS.Port, ElectrumTransport.WSS.Scheme)
   await electrum.value.connect().then(() => {
     console.log(`Connected to electrum server at: ${electrum.value!.connection.host}`)
   })
@@ -114,7 +113,6 @@ const mints = computed(() => {
   console.log("SORT")
 
   mints.sort((a, b) => {
-    // console.log(a.confirmations, b.confirmations)
     return a.confirmations - b.confirmations
   })
 
@@ -165,7 +163,6 @@ function prefixImgUri(uri: string): string {
   border-radius: 12px;
   padding: 1rem;
   margin: 2rem;
-  /* max-width: 80rem; */
 }
 
 .icon {
