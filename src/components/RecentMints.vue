@@ -6,6 +6,8 @@ import type { IdentitySnapshot } from 'mainnet-js/dist/module/wallet/bcmr-v2.sch
 import { useSettings } from "@/stores/settings";
 import { calcNftId } from "@/utils";
 import CashAddress from "./CashAddress.vue";
+import { AtomSpinner } from 'epic-spinners'
+
 
 
 export interface AddressHistory {
@@ -19,8 +21,8 @@ export interface Mint {
   address: string,
   category: string,
   commitment: string,
-  name: string | undefined,
-  imgUri: string | undefined,
+  name: string,
+  imgUri: string,
 }
 
 const monitoredProjects = ref([
@@ -46,9 +48,16 @@ const monitoredProjects = ref([
 
 
 const recentMints = ref([] as Mint[])
+const loading = ref({} as { [key: string]: boolean })
 const settings = useSettings()
 const electrum = ref(null as ElectrumClient | null)
 const height = ref(0)
+
+function setImageLoaders() {
+  recentMints.value.forEach((mint) => {
+    loading.value[mint.hash + mint.commitment] = true
+  })
+}
 
 onMounted(async () => {
   electrum.value = new ElectrumClient('cashtokens-nft-viewer', '1.4.3', settings.electrumUri, ElectrumTransport.WSS.Port, ElectrumTransport.WSS.Scheme)
@@ -78,6 +87,7 @@ onMounted(async () => {
           }
 
           recentMints.value.push({
+            // confirmations: tx.confirmations,
             confirmations: tx.confirmations,
             hash: tx.hash,
             address: tx.vout[1].scriptPubKey.addresses[0],
@@ -91,6 +101,8 @@ onMounted(async () => {
       })
     })
   })
+
+  setImageLoaders()
 })
 
 onUnmounted(async () => {
@@ -105,6 +117,10 @@ const handleNotifications = ((data: any) => {
   if (data.method === 'blockchain.headers.subscribe') {
     console.log(JSON.stringify(data, null, 4))
     height.value = data.params[0].height
+
+    recentMints.value.forEach((mint) => {
+      mint.confirmations = mint.confirmations + 1
+    })
   }
 })
 
@@ -131,65 +147,71 @@ function prefixImgUri(uri: string): string {
 </script>
 
 <template>
-  <div class="mints-container">
-    <h1 class="text-center">Recent Mints</h1>
-    <p class="text-center mono">current chain height: {{ height }}</p>
-    <div class="mint" v-for="mint in mints" v-bind:key="mint.hash">
-      <img class="icon" v-if="mint.imgUri != undefined" :src="prefixImgUri(mint.imgUri)" />
-      <div class="data">
-        <div class="name">
-          <h4>{{ mint.name }}</h4>
-          <div>
-            <div class="commitment text-right mono">commitment: {{ mint.commitment }}</div>
-            <div class="confirmations text-right mono">confirmations: {{ mint.confirmations }}</div>
-          </div>
+  <h1 class="text-center">Recent Featured Mints</h1>
+  <p class="text-center mono">current chain height: {{ height }}</p>
+  <div class="nft-container">
+    <div class="nft-card" v-for="mint in mints" v-bind:key="mint.hash">
+      <div class="img">
+        <img v-show="!loading[mint.hash + mint.commitment]" :src="prefixImgUri(mint.imgUri)"
+          @load="loading[mint.hash + mint.commitment] = false" />
+        <div v-if="loading[mint.hash + mint.commitment]" class="spinner">
+          <atom-spinner v-if="settings.isDark" :animation-duration="1000" :size="60" color="#00c3ff" />
+          <atom-spinner v-if="!settings.isDark" :animation-duration="1000" :size="60" color="#0ac18e" />
         </div>
-        <CashAddress :addr="mint.address" type="link" />
       </div>
+      <p>{{ mint.name }}</p>
+      <div v-if="mint.commitment" class="commitment mono">commitment: {{ mint.commitment }}</div>
+      <div v-if="mint.confirmations" class="commitment mono">confirmations: {{ mint.confirmations }}</div>
     </div>
   </div>
 </template>
 
 <style scoped>
-.mints-container {
+.nft-container {
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+}
+
+.nft-card {
   display: flex;
   flex-direction: column;
-}
-.mint {
-  display: flex;
-  flex-direction: row;
+  justify-content: space-between;
+  width: 250px;
   color: var(--color-lightGrey);
   background-color: var(--bg-secondary-color);
+  margin: 15px;
+  padding: 10px;
   border-radius: 12px;
-  padding: 1rem;
-  margin: 2rem;
 }
 
-.icon {
-  width: 125px;
-  border-radius: 90px;
-  margin: 0 2rem 0 0;
-  flex-grow: 0;
+.nft-card img {
+  width: 230px;
+  margin-bottom: 15px;
+  border-radius: 8px;
 }
-.data {
-  flex-grow: 5;
 
+.img {
+  width: 230px;
+  height: 230px;
+  margin-bottom: 15px;
+}
+
+.spinner {
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  align-items: center;
+  justify-content: center;
+
+  width: 230px;
+  height: 230px;
+  margin-bottom: 15px;
+  align-self: center;
 }
 
-.name {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  
-}
-
-@media only screen and (min-width: 1200px) {
-  .mints-container {
-    padding: 0 10vw 0 10vw;
-  }
-
+.commitment {
+  font-size: 12;
+  align-self: baseline;
 }
 </style>
