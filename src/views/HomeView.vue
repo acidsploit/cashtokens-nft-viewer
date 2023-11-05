@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import HomeSearchBar from '@/components/HomeSearchBar.vue';
+import RecentMints from '@/components/RecentMints.vue';
 </script>
 
 <template>
@@ -8,13 +9,14 @@ import HomeSearchBar from '@/components/HomeSearchBar.vue';
         <p>By searching for a Bitcoin Cash address you can browse, track and share CashTokens NFT collections.</p>
         <HomeSearchBar />
     </div>
+    <RecentMints />
+    
 </template>
 
 <style scoped>
 .wrapper {
     display: flex;
     flex-direction: column;
-    flex-grow: stretch;
     justify-content: center;
     align-items: center;
     min-height: 40vh;
@@ -27,9 +29,5 @@ import HomeSearchBar from '@/components/HomeSearchBar.vue';
 
 h1 {
     text-align: center;
-}
-
-.strike-through {
-    text-decoration: line-through;
 }
 </style>
