@@ -165,6 +165,7 @@ export const useSearch = defineStore('search', () => {
     error,
     result,
     search,
+    fetchTokenMetadata,
   }
 })
 

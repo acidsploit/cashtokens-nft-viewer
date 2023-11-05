@@ -1,17 +1,18 @@
 // import { Buffer } from 'buffer';
 // eslint-disable-next-line
 import { 
-    CashAddressType,
-    decodeCashAddress, 
-    decodeCashAddressFormatWithoutPrefix, 
-    encodeCashAddress,
-    isHex,
-    hexToBin,
-    // binToHex,
-    // swapEndianness,
-CashAddressNetworkPrefix,
-// cashAddressTypeBitsToType,
-decodeCashAddressVersionByte
+  CashAddressType,
+  decodeCashAddress, 
+  decodeCashAddressFormatWithoutPrefix, 
+  encodeCashAddress,
+  isHex,
+  hexToBin,
+  // binToHex,
+  CashAddressNetworkPrefix,
+  // cashAddressTypeBitsToType,
+  decodeCashAddressVersionByte,
+  // swapEndianness,
+vmNumberToBigInt
 } from '@bitauth/libauth'
 import type { UtxoI } from 'mainnet-js/dist/module/interface';
 import type { IdentitySnapshot } from 'mainnet-js/dist/module/wallet/bcmr-v2.schema';
@@ -88,6 +89,18 @@ export function isTokenID(input: string): boolean {
     }
 
     return false    
+}
+
+export function calcNftId(commitmentHex: string): number | string {
+  const commitmentNumber = Number(vmNumberToBigInt(hexToBin(commitmentHex)));
+
+  let result: string | number = commitmentNumber + 1
+
+  if (commitmentNumber < 0) {
+    result = `X${commitmentHex}`.toUpperCase()
+  }
+
+  return result
 }
 
 

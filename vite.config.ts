@@ -14,14 +14,14 @@ export default defineConfig({
   build: {
     target: 'esnext',
   },
-  define: {global: 'globalThis'},
+  define: { global: 'globalThis' },
   optimizeDeps: {
     esbuildOptions: {
       target: 'esnext',
       plugins: [
         NodeGlobalsPolyfillPlugin({
-            process: true,
-            buffer: true,
+          process: true,
+          buffer: true,
         }),
       ]
     },
@@ -42,7 +42,9 @@ export default defineConfig({
       https: EMPTY_PATH,
       libpq: EMPTY_PATH,
       module: EMPTY_PATH,
-      net: EMPTY_PATH,
+      net: "./empty.cjs",
+      // net: require.resolve("./empty.cjs"),
+      // net: require.resolve('websockets'),
       os: EMPTY_PATH,
       "parse-database-url": EMPTY_PATH,
       path: EMPTY_PATH,
@@ -50,9 +52,12 @@ export default defineConfig({
       "pg-format": EMPTY_PATH,
       "pg-native": EMPTY_PATH,
       solc: EMPTY_PATH,
-      tls: EMPTY_PATH,
+      tls: "./empty.cjs",
+      // tls: require.resolve("./empty.cjs"),
+      // tls: require.resolve('websockets'),
       url: EMPTY_PATH,
       zlib: EMPTY_PATH,
+      util: require.resolve('rollup-plugin-node-polyfills/polyfills/util.js'),
 
       stream: require.resolve('stream-browserify'),
     },
