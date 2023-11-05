@@ -5,10 +5,7 @@ import { computed, onMounted, onUnmounted, ref } from "vue";
 import type { IdentitySnapshot } from 'mainnet-js/dist/module/wallet/bcmr-v2.schema';
 import { useSettings } from "@/stores/settings";
 import { calcNftId } from "@/utils";
-import CashAddress from "./CashAddress.vue";
 import { AtomSpinner } from 'epic-spinners'
-
-
 
 export interface AddressHistory {
   height: number,
@@ -46,18 +43,11 @@ const monitoredProjects = ref([
   }
 ])
 
-
 const recentMints = ref([] as Mint[])
 const loading = ref({} as { [key: string]: boolean })
 const settings = useSettings()
 const electrum = ref(null as ElectrumClient | null)
 const height = ref(0)
-
-function setImageLoaders() {
-  recentMints.value.forEach((mint) => {
-    loading.value[mint.hash + mint.commitment] = true
-  })
-}
 
 onMounted(async () => {
   electrum.value = new ElectrumClient('cashtokens-nft-viewer', '1.4.3', settings.electrumUri, ElectrumTransport.WSS.Port, ElectrumTransport.WSS.Scheme)
@@ -96,7 +86,7 @@ onMounted(async () => {
             name: `${project.ticker}-${calcNftId(tx.vout[1].tokenData?.nft?.commitment!)}`,
             imgUri: imgUri,
           } as Mint)
-          console.log("pushed mint tx: " + tx.hash)
+          // console.log("pushed mint tx: " + tx.hash)
         })
       })
     })
@@ -113,9 +103,15 @@ onUnmounted(async () => {
   })
 })
 
+function setImageLoaders() {
+  recentMints.value.forEach((mint) => {
+    loading.value[mint.hash + mint.commitment] = true
+  })
+}
+
 const handleNotifications = ((data: any) => {
   if (data.method === 'blockchain.headers.subscribe') {
-    console.log(JSON.stringify(data, null, 4))
+    // console.log(JSON.stringify(data, null, 4))
     height.value = data.params[0].height
 
     recentMints.value.forEach((mint) => {
@@ -126,7 +122,7 @@ const handleNotifications = ((data: any) => {
 
 const mints = computed(() => {
   let mints = recentMints.value
-  console.log("SORT")
+  // console.log("SORT")
 
   mints.sort((a, b) => {
     return a.confirmations - b.confirmations
