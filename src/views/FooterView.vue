@@ -8,10 +8,13 @@ import CashAddress from "@/components/CashAddress.vue";
     <div class="content first">
       <p>
         Building and maintaining a project on a fast and progressively evolving platform like Bitcoin Cash requires
-        continious maintenance and updates. In short, a lot of work. I am, nevertheless, having a lot of fun with this.
+        continious maintenance and updates. In short, a lot of work.
       </p>
       <p>
         If there is any change you could chuck my way to offset the costs, or buy me a beer, that would make my day :)
+      </p>
+      <p>
+        I am, nevertheless, having a lot of fun with this.
       </p>
       <p>CashAddress<br />
         <CashAddress addr="bitcoincash:qrnml95v6wmduw6xzwvddph4cevahxzzhq9n56y2sv" type="uri" />
