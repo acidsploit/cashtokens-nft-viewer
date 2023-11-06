@@ -10,12 +10,9 @@ import router from './router'
 const pinia = createPinia()
 
 const app = createApp(App)
-    .use(router)
-    .use(pinia)
-    
-// app.use(VueMeta)
-// app.use(pinia)
-// app.use(router)
-await router.isReady()
+app.use(pinia)
+app.use(router)
+
+// await router.isReady()
 
 app.mount('#app')
