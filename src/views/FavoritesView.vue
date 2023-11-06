@@ -104,6 +104,11 @@ function toggleEdit() {
   transform: rotate(-13deg);
 }
 
+.favorite:hover {
+  opacity: 0.7;
+  border: 1px solid var(--color-primary);
+  transition: all ease-in-out 0.3s;
+}
 .favorite {
   display: flex;
   flex-direction: row;
@@ -111,6 +116,7 @@ function toggleEdit() {
   justify-content: space-between;
   color: var(--color-lightGrey);
   background-color: var(--bg-secondary-color);
+  border: 1px solid var(--bg-secondary-color);
   border-radius: 8px;
   margin-bottom: 1rem;
   font-weight: 600;
