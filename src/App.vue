@@ -10,6 +10,12 @@ import FooterView from './views/FooterView.vue'
 import DarkSwitch from './components/DarkSwitch.vue'
 import TopSearchBar from './components/TopSearchBar.vue'
 
+import { useHead } from 'unhead'
+
+useHead({
+  title: 'CT NFT Viewer'
+})
+
 const settings = useSettings()
 
 function handleLogoClick() {
