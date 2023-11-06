@@ -50,7 +50,7 @@ const electrum = ref(null as ElectrumClient | null)
 const height = ref(0)
 
 onMounted(async () => {
-  electrum.value = new ElectrumClient('cashtokens-nft-viewer', '1.4.3', settings.electrumUri, ElectrumTransport.WSS.Port, ElectrumTransport.WSS.Scheme)
+  electrum.value = new ElectrumClient('cashtokens-nft-viewer', '1.5.1', settings.electrumUri, ElectrumTransport.WSS.Port, ElectrumTransport.WSS.Scheme)
   await electrum.value.connect().then(() => {
     console.log(`Connected to electrum server at: ${electrum.value!.connection.host}`)
   })
