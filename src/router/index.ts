@@ -1,10 +1,10 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '@/views/HomeView.vue'
 
-// import NFTsView from '@/views/NFTsView.vue'
+// import AddressView from '@/views/AddressView.vue'
 // import SettingsView from '@/views/SettingsView.vue'
-// import NFTCollectionView from '@/views/NFTCollectionView.vue'
-// import NFTDetailsView from '@/views/NFTDetailsView.vue'
+// import CollectionView from '@/views/CollectionView.vue'
+// import NFTView from '@/views/NFTView.vue'
 
 // route level code-splitting
 // this generates a separate chunk (About.[hash].js) for this route

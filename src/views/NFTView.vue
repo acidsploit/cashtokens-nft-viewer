@@ -2,7 +2,6 @@
 import { useSearch } from '@/stores/search';
 import { useSettings } from '@/stores/settings';
 import type { Token } from '@/utils';
-import { useSeoMeta } from '@unhead/vue';
 import { computed, onMounted, ref, watch } from 'vue';
 
 const props = defineProps({
@@ -15,35 +14,16 @@ const settings = useSettings()
 const search = useSearch()
 const collection = ref(null as Token | null)
 
-function setSeoMeta() {
-  useSeoMeta({
-  title: collection.value?.bcmr?.token?.nfts?.parse.types[props.commitment].name,
-  description: collection.value?.bcmr?.token?.nfts?.parse.types[props.commitment].description,
-  ogDescription: collection.value?.bcmr?.token?.nfts?.parse.types[props.commitment].description,
-  ogTitle: collection.value?.bcmr?.token?.nfts?.parse.types[props.commitment].name,
-  ogImage: collection.value?.bcmr?.token?.nfts?.parse.types[props.commitment].uris?.image,
-  twitterCard: 'summary_large_image',
-  twitterSite: window.location.href,
-  twitterTitle: collection.value?.bcmr?.token?.nfts?.parse.types[props.commitment].name,
-  twitterDescription: collection.value?.bcmr?.token?.nfts?.parse.types[props.commitment].description,
-  twitterImage: collection.value?.bcmr?.token?.nfts?.parse.types[props.commitment].uris?.image,
-})
-}
-
-
-
 onMounted(() => {
   let searchCollection = search.result.tokens.find((token) => { return token.id === props.tokenId })
   if (search.result.address === props.address && searchCollection != undefined) {
     collection.value = searchCollection
-    setSeoMeta()
   } else {
     search.search("props", props.address, props.tokenId).then(() => {
       searchCollection = search.result.tokens.find((token) => { return token.id === props.tokenId })
 
       if (searchCollection != undefined) {
         collection.value = searchCollection
-        setSeoMeta()
       }
     })
   }
@@ -55,14 +35,12 @@ watch(
     let searchCollection = search.result.tokens.find((token) => { return token.id === newTokenId })
     if (search.result.address === newAaddress && searchCollection != undefined) {
       collection.value = searchCollection
-      setSeoMeta()
     } else {
       search.search("props", newAaddress, newTokenId).then(() => {
         searchCollection = search.result.tokens.find((token) => { return token.id === newTokenId })
 
         if (searchCollection != undefined) {
           collection.value = searchCollection
-          setSeoMeta()
         }
       })
     }
