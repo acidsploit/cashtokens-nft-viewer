@@ -205,8 +205,8 @@ function toggleLinks() {
           </div>
         </div>
         <p>{{ nftCardName(utxo.token?.commitment) }}</p>
-        <p v-if="utxo.token?.capability !== 'none'" class="commitment mono">Capability: {{ utxo.token?.capability }}</p>
-        <p v-if="utxo.token?.commitment" class="commitment mono">Commitment: {{ utxo.token?.commitment }}</p>
+        <div v-if="utxo.token?.capability !== 'none'" class="commitment mono">Capability: {{ utxo.token?.capability }}</div>
+        <div v-if="utxo.token?.commitment" class="commitment mono">Commitment: {{ utxo.token?.commitment }}</div>
       </div>
     </div>
 
