@@ -23,10 +23,13 @@ function toggleEdit() {
   <div class="wrapper">
 
     <div class="btn-menu">
-      <span @click="toggleEdit" :class="edit ? 'hide' : ''" class="edit material-symbols-outlined" title="Edit favorites">
+      <!-- <span v-show="!edit" @click="toggleEdit" :class="edit ? 'hide' : ''" class="edit material-symbols-outlined" title="Edit favorites"> -->
+      <span v-show="!edit" @click="toggleEdit" class="edit material-symbols-outlined" title="Edit favorites">
         edit
       </span>
-      <span @click="toggleEdit" :class="edit ? '' : 'hide'" class="done material-symbols-outlined" title="Save changes">
+      <!-- <span v-show="edit" @click="toggleEdit" :class="edit ? '' : 'hide'" class="done material-symbols-outlined" -->
+      <!-- title="Save changes"> -->
+      <span v-show="edit" @click="toggleEdit" class="done material-symbols-outlined" title="Save changes">
         done
       </span>
       <span @click="toggleSidebar" id="btn-close-sidebar" class="close material-symbols-outlined" title="Close sidebar">
@@ -41,14 +44,14 @@ function toggleEdit() {
 
     <div class="container favourites">
       <div class="favorite" v-for="favorite in favorites.list" v-bind:key="favorite.id">
-        <div @click="router.push(`/collection/${favorite.id}`)" :class="edit ? 'hide' : ''" class="fav-title">{{
+        <div v-show="!edit" @click="router.push(`/collection/${favorite.id}`)" class="fav-title">{{
           favorite.title }}</div>
-        <span @click="favorites.remove(favorite.id)" :class="edit ? 'hide' : ''" class="remove material-symbols-outlined"
+        <span v-show="!edit" @click="favorites.remove(favorite.id)" class="remove material-symbols-outlined"
           :title="`Remove ${favorite.title}`">
           close
         </span>
-        <form @submit.prevent="toggleEdit">
-          <input :class="edit ? '' : 'hide'" v-model.trim="favorite.title">
+        <form v-show="edit" @submit.prevent="toggleEdit">
+          <input v-model.trim="favorite.title">
         </form>
 
       </div>
@@ -58,7 +61,6 @@ function toggleEdit() {
 </template>
 
 <style scoped>
-
 .btn-menu {
   float: right;
   margin: 1rem 1rem 0 0;
@@ -109,6 +111,7 @@ function toggleEdit() {
   border: 1px solid var(--color-primary);
   /* transition: all ease-in-out 0.3s; */
 }
+
 .favorite {
   display: flex;
   flex-direction: row;
@@ -121,6 +124,11 @@ function toggleEdit() {
   margin-bottom: 1rem;
   font-weight: 600;
   transition: all ease-in-out 0.3s;
+}
+
+form input {
+  border: 0px;
+  border-radius: 8px;
 }
 
 .fav-title {
