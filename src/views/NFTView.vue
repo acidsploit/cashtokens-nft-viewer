@@ -1,8 +1,14 @@
 <script setup lang="ts">
+import { computed, onMounted, ref, watch } from 'vue';
+import { AtomSpinner } from 'epic-spinners'
+
+import type { Token } from '@/utils';
+
 import { useSearch } from '@/stores/search';
 import { useSettings } from '@/stores/settings';
-import type { Token } from '@/utils';
-import { computed, onMounted, ref, watch } from 'vue';
+
+import PageLoading from "@/components/PageLoading.vue";
+import SearchError from "@/components/SearchError.vue";
 
 const props = defineProps({
   address: { type: String, required: true },
@@ -13,6 +19,7 @@ const props = defineProps({
 const settings = useSettings()
 const search = useSearch()
 const collection = ref(null as Token | null)
+const loading = ref(true)
 
 onMounted(() => {
   let searchCollection = search.result.tokens.find((token) => { return token.id === props.tokenId })
@@ -83,9 +90,22 @@ const attributes = computed(() => {
 </script>
 
 <template>
-  <div class="container wrapper">
+  <SearchError v-if="search.error != null" :error="search.error" :type="'page'" />
+
+  <div v-if="collection == undefined">
+    <PageLoading />
+  </div>
+
+  <div v-if="collection != undefined" class="container wrapper">
     <h1 class="nft-name">{{ nftName ? nftName : props.commitment }}</h1>
-    <img v-if="imgUri" :src="imgUri" />
+    <!-- <img v-if="imgUri" :src="imgUri" /> -->
+    <div class="img">
+      <img v-show="!loading && imgUri" :src="imgUri" @load="loading = false" />
+      <div v-if="loading" class="spinner">
+        <atom-spinner v-if="settings.isDark" :animation-duration="1000" :size="60" color="#00c3ff" />
+        <atom-spinner v-if="!settings.isDark" :animation-duration="1000" :size="60" color="#0ac18e" />
+      </div>
+    </div>
 
     <div class="container meta">
       <div v-if="attributes" class="attributes">
@@ -150,6 +170,19 @@ img {
   border-radius: 12px;
 }
 
+.img {
+  width: 100%;
+}
+
+.spinner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  align-self: center;
+}
+
 .meta {
   display: flex;
   flex-direction: row;
@@ -192,6 +225,22 @@ img {
 @media only screen and (min-width: 1200px) {
   img {
     max-width: 40vw;
+  }
+
+  .img {
+    width: fit-content;
+    height: fit-content;
+  }
+
+  .spinner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    width: 40vw;
+    height: 40vw;
+    align-self: center;
   }
 
   .meta {
