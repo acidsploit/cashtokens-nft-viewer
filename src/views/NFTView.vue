@@ -224,6 +224,7 @@ img {
 
 @media only screen and (min-width: 1200px) {
   img {
+    min-width: 250px;
     max-width: 40vw;
   }
 
