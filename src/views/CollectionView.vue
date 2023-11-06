@@ -282,10 +282,8 @@ h3.name {
 }
 .nft-card:hover {
   cursor: pointer;
-  opacity: 0.7;
-  border: 1px solid var(--color-primary);
-  transition: all ease-in-out 0.3s;
-  
+  opacity: 0.8;
+  border: 1px solid var(--color-primary);  
 }
 .nft-card {
   display: flex;
@@ -298,6 +296,7 @@ h3.name {
   border-radius: 12px;
   margin: 15px;
   padding: 10px;
+  transition: all ease-in-out 0.3s;
 }
 .nft-card img {
   width: 230px;

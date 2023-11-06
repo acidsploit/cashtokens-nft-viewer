@@ -105,9 +105,9 @@ function toggleEdit() {
 }
 
 .favorite:hover {
-  opacity: 0.7;
+  opacity: 0.8;
   border: 1px solid var(--color-primary);
-  transition: all ease-in-out 0.3s;
+  /* transition: all ease-in-out 0.3s; */
 }
 .favorite {
   display: flex;
@@ -120,6 +120,7 @@ function toggleEdit() {
   border-radius: 8px;
   margin-bottom: 1rem;
   font-weight: 600;
+  transition: all ease-in-out 0.3s;
 }
 
 .fav-title {
