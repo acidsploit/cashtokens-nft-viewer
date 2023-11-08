@@ -1,0 +1,7 @@
+version: "3"
+services:
+  prod:
+    build:
+      dockerfile: Dockerfile
+    ports:
+      - "8083:80"
